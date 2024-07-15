@@ -1,13 +1,18 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
+import RegisterView from '../views/RegisterView.vue'
 import NuevaCita from '../views/NuevaCita.vue'
 import TicketGenerado from '../views/TicketGenerado.vue'
+import Dashboard from '../views/DashboardView.vue'
+import Login from '../views/LoginView.vue'
+import Reporte from '../views/ReportesCitas.vue'
+import user from '../views/UserProfile.vue'
+import materias from '../views/MateriasDisponibles.vue'
 
 const routes: Array<RouteRecordRaw> = [
   {
-    path: '/home',
-    name: 'home',
-    component: HomeView
+    path: '/register',
+    name: 'register',
+    component: RegisterView
   },
   {
     path: '/',
@@ -23,9 +28,34 @@ const routes: Array<RouteRecordRaw> = [
     component: NuevaCita
   },
   {
-    path: '/ticket-generado',
+    path: '/ticket',
     name: 'TicketGenerado',
     component: TicketGenerado
+  },
+  {
+    path: '/dashboard',
+    name: 'Dashboard',
+    component: Dashboard
+  },
+  {
+    path: '/login',
+    name: 'Login',
+    component: Login
+  },
+  {
+    path : '/reporte',
+    name : 'Reporte',
+    component : Reporte
+  },
+  {
+    path : '/user',
+    name : 'user',
+    component : user
+  },
+  {
+    path : '/materias',
+    name : 'materias',
+    component : materias
   }
 ]
 
