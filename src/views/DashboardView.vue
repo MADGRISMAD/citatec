@@ -1,111 +1,111 @@
 <template>
-    <div class="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
-      <header class="bg-white shadow">
-        <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8 flex items-center justify-between">
-          <div class="flex items-center">
-            <img class="h-10 w-auto mr-4" src="@/assets/logo.png" alt="TNM Logo">
-            <h1 class="text-3xl font-bold text-gray-900">Dashboard del Coordinador</h1>
-          </div>
-          <button class="px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-            Cerrar Sesión
-          </button>
+  <div class="min-h-screen bg-gray-50">
+    <header class="bg-white shadow">
+      <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8 flex items-center justify-between">
+        <div class="flex items-center">
+          <img class="h-10 w-auto mr-4" src="@/assets/logo.png" alt="TNM Logo">
+          <h1 class="text-3xl font-bold text-[#1B396A]">Dashboard del Coordinador</h1>
         </div>
-      </header>
-      
-      <!-- Estadísticas -->
-      <div class="bg-white shadow-sm border-b border-gray-200">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div class="flex justify-between items-center py-3 text-sm">
-            <div class="text-center">
-              <span class="text-gray-500">Tiempo espera:</span>
-              <span class="font-semibold text-indigo-600 ml-1">{{ stats.avgWaitTime }} min</span>
-            </div>
-            <div class="text-center">
-              <span class="text-gray-500">En espera:</span>
-              <span class="font-semibold text-indigo-600 ml-1">{{ stats.waitingPeople }} / {{ stats.totalPeople }}</span>
-            </div>
-            <div class="text-center">
-              <span class="text-gray-500">Atendidos hoy:</span>
-              <span class="font-semibold text-indigo-600 ml-1">{{ stats.ticketsAttendedToday }}</span>
-            </div>
-            <div class="text-center">
-              <span class="text-gray-500">Eficiencia:</span>
-              <span class="font-semibold text-indigo-600 ml-1">{{ stats.attendanceEfficiency }}%</span>
-            </div>
+        <button class="px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-[#1B396A] hover:bg-[#294d8e] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#1B396A]">
+          Cerrar Sesión
+        </button>
+      </div>
+    </header>
+    
+    <!-- Estadísticas -->
+    <div class="bg-white shadow-sm border-b border-gray-200">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between items-center py-3 text-sm">
+          <div class="text-center">
+            <span class="text-gray-500">Tiempo espera:</span>
+            <span class="font-semibold text-[#1B396A] ml-1">{{ stats.avgWaitTime }} min</span>
+          </div>
+          <div class="text-center">
+            <span class="text-gray-500">En espera:</span>
+            <span class="font-semibold text-[#1B396A] ml-1">{{ stats.waitingPeople }} / {{ stats.totalPeople }}</span>
+          </div>
+          <div class="text-center">
+            <span class="text-gray-500">Atendidos hoy:</span>
+            <span class="font-semibold text-[#1B396A] ml-1">{{ stats.ticketsAttendedToday }}</span>
+          </div>
+          <div class="text-center">
+            <span class="text-gray-500">Eficiencia:</span>
+            <span class="font-semibold text-[#1B396A] ml-1">{{ stats.attendanceEfficiency }}%</span>
           </div>
         </div>
       </div>
-  
-      <main class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-        <!-- Ticket en atención -->
-        <div v-if="ticketEnAtencion" class="mb-8">
-          <h2 class="text-2xl font-semibold mb-4 text-gray-800">Ticket en Atención</h2>
-          <div class="bg-white shadow overflow-hidden sm:rounded-lg p-6">
-            <div class="flex justify-between items-center">
-              <div>
-                <p class="text-lg font-medium text-indigo-600">Ticket #{{ ticketEnAtencion.id }}</p>
-                <p class="text-sm text-gray-500">{{ ticketEnAtencion.service }}</p>
-                <p class="text-sm text-gray-500">{{ ticketEnAtencion.userData.name }}</p>
-              </div>
-              <button @click="cerrarTicket(ticketEnAtencion.id)" 
-                      class="px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
-                Cerrar Ticket
-              </button>
+    </div>
+
+    <main class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+      <!-- Ticket en atención -->
+      <div v-if="ticketEnAtencion" class="mb-8">
+        <h2 class="text-2xl font-semibold mb-4 text-[#1B396A]">Ticket en Atención</h2>
+        <div class="bg-white shadow overflow-hidden sm:rounded-lg p-6">
+          <div class="flex justify-between items-center">
+            <div>
+              <p class="text-lg font-medium text-[#1B396A]">Ticket #{{ ticketEnAtencion.id }}</p>
+              <p class="text-sm text-gray-500">{{ ticketEnAtencion.service }}</p>
+              <p class="text-sm text-gray-500">{{ ticketEnAtencion.userData.name }}</p>
             </div>
+            <button @click="cerrarTicket(ticketEnAtencion.id)" 
+                    class="px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-[#1B396A] hover:bg-[#294d8e] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#1B396A]">
+              Cerrar Ticket
+            </button>
           </div>
         </div>
-  
-        <!-- Lista de Tickets -->
-        <div class="px-4 py-6 sm:px-0">
-          <h2 class="text-2xl font-semibold mb-4 text-gray-800">Tickets Entrantes</h2>
-          <div class="bg-white shadow overflow-hidden sm:rounded-lg">
-            <ul class="divide-y divide-gray-200">
-              <li v-for="ticket in ticketsActivos" :key="ticket.id" class="px-6 py-4 hover:bg-gray-50">
-                <div @click="toggleTicketDetails(ticket.id)" class="cursor-pointer">
-                  <div class="flex items-center justify-between">
-                    <div class="flex-1 min-w-0">
-                      <div class="flex items-center justify-between">
-                        <p class="text-lg font-medium text-indigo-600 truncate">
-                          Ticket #{{ ticket.id }}
+      </div>
+
+      <!-- Lista de Tickets -->
+      <div class="px-4 py-6 sm:px-0">
+        <h2 class="text-2xl font-semibold mb-4 text-[#1B396A]">Tickets Entrantes</h2>
+        <div class="bg-white shadow overflow-hidden sm:rounded-lg">
+          <ul class="divide-y divide-gray-200">
+            <li v-for="ticket in ticketsActivos" :key="ticket.id" class="px-6 py-4 hover:bg-gray-50">
+              <div @click="toggleTicketDetails(ticket.id)" class="cursor-pointer">
+                <div class="flex items-center justify-between">
+                  <div class="flex-1 min-w-0">
+                    <div class="flex items-center justify-between">
+                      <p class="text-lg font-medium text-[#1B396A] truncate">
+                        Ticket #{{ ticket.id }}
+                      </p>
+                      <div class="ml-2 flex-shrink-0 flex">
+                        <p class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                          {{ ticket.status }}
                         </p>
-                        <div class="ml-2 flex-shrink-0 flex">
-                          <p class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                            {{ ticket.status }}
-                          </p>
-                        </div>
                       </div>
-                      <p class="mt-2 flex items-center text-sm text-gray-500">
-                        <span class="truncate">{{ ticket.service }}</span>
-                      </p>
-                      <p class="mt-1 flex items-center text-xs text-gray-500">
-                        <span>{{ ticket.timestamp }}</span>
-                      </p>
                     </div>
-                    <div class="ml-4">
-                      <button @click.stop="atenderTicket(ticket.id)" 
-                              class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                        Atender
-                      </button>
-                    </div>
+                    <p class="mt-2 flex items-center text-sm text-gray-500">
+                      <span class="truncate">{{ ticket.service }}</span>
+                    </p>
+                    <p class="mt-1 flex items-center text-xs text-gray-500">
+                      <span>{{ ticket.timestamp }}</span>
+                    </p>
                   </div>
-                  
-                  <!-- Detalles del usuario (expandible) -->
-                  <div v-if="ticket.showDetails" class="mt-4 bg-gray-50 p-4 rounded-md">
-                    <h4 class="text-lg font-semibold mb-2">Detalles del Usuario</h4>
-                    <p><strong>Nombre:</strong> {{ ticket.userData.name }}</p>
-                    <p><strong>Matrícula:</strong> {{ ticket.userData.studentId }}</p>
-                    <p><strong>Correo:</strong> {{ ticket.userData.email }}</p>
-                    <p><strong>Carrera:</strong> {{ ticket.userData.major }}</p>
-                    <p><strong>Semestre:</strong> {{ ticket.userData.semester }}</p>
+                  <div class="ml-4">
+                    <button @click.stop="atenderTicket(ticket.id)" 
+                            class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-[#1B396A] hover:bg-[#294d8e] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#1B396A]">
+                      Atender
+                    </button>
                   </div>
                 </div>
-              </li>
-            </ul>
-          </div>
+                
+                <!-- Detalles del usuario (expandible) -->
+                <div v-if="ticket.showDetails" class="mt-4 bg-gray-50 p-4 rounded-md">
+                  <h4 class="text-lg font-semibold mb-2 text-[#1B396A]">Detalles del Usuario</h4>
+                  <p><strong>Nombre:</strong> {{ ticket.userData.name }}</p>
+                  <p><strong>Matrícula:</strong> {{ ticket.userData.studentId }}</p>
+                  <p><strong>Correo:</strong> {{ ticket.userData.email }}</p>
+                  <p><strong>Carrera:</strong> {{ ticket.userData.major }}</p>
+                  <p><strong>Semestre:</strong> {{ ticket.userData.semester }}</p>
+                </div>
+              </div>
+            </li>
+          </ul>
         </div>
-      </main>
-    </div>
-  </template>
+      </div>
+    </main>
+  </div>
+</template>
   
   <script lang="ts">
   import { defineComponent, ref, computed } from 'vue';

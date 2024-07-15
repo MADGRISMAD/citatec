@@ -1,9 +1,9 @@
-<template>
-  <div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 py-12 px-4 sm:px-6 lg:px-8">
+vueCopy<template>
+  <div class="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
     <div class="max-w-4xl w-full space-y-8 bg-white p-8 rounded-xl shadow-lg">
       <div class="text-center">
         <img class="mx-auto h-24 w-auto" src="@/assets/logo.png" alt="TNM Logo">
-        <h2 class="mt-6 text-3xl font-extrabold text-gray-900">
+        <h2 class="mt-6 text-3xl font-extrabold text-[#1B396A]">
           Solicitar Cita
         </h2>
         <p class="mt-2 text-sm text-gray-600">
@@ -19,22 +19,22 @@
           class="flex flex-col items-center p-4 border-2 rounded-lg transition-all duration-200 ease-in-out"
           :class="[
             selectedService?.id === service.id 
-              ? 'border-indigo-500 bg-indigo-50 shadow-md' 
-              : 'border-gray-200 hover:border-indigo-300 hover:bg-indigo-50'
+              ? 'border-[#1B396A] bg-[#E6EBF4] shadow-md' 
+              : 'border-gray-200 hover:border-[#1B396A] hover:bg-[#E6EBF4]'
           ]"
         >
-          <i :class="['text-4xl mb-2', service.icon, selectedService?.id === service.id ? 'text-indigo-600' : 'text-gray-600']"></i>
+          <i :class="['text-4xl mb-2', service.icon, selectedService?.id === service.id ? 'text-[#1B396A]' : 'text-gray-600']"></i>
           <span class="text-sm font-medium text-center">{{ service.name }}</span>
         </button>
       </div>
 
       <transition name="fade">
-        <div v-if="selectedService" class="mt-6 p-4 bg-indigo-50 rounded-md border border-indigo-200">
-          <h3 class="text-lg font-semibold text-indigo-800 mb-2">Detalles del servicio</h3>
-          <p class="text-sm text-indigo-700">
+        <div v-if="selectedService" class="mt-6 p-4 bg-[#E6EBF4] rounded-md border border-[#1B396A]">
+          <h3 class="text-lg font-semibold text-[#1B396A] mb-2">Detalles del servicio</h3>
+          <p class="text-sm text-[#1B396A]">
             Servicio seleccionado: <strong>{{ selectedService.name }}</strong>
           </p>
-          <p class="text-sm text-indigo-700 mt-1">
+          <p class="text-sm text-[#1B396A] mt-1">
             Tiempo estimado: <strong>{{ selectedService.time }} minutos</strong>
           </p>
         </div>
@@ -43,7 +43,7 @@
       <div class="mt-8">
         <button
           @click="requestAppointment"
-          class="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-150 ease-in-out transform hover:scale-105"
+          class="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-[#1B396A] hover:bg-[#294d8e] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#1B396A] transition duration-150 ease-in-out transform hover:scale-105"
           :disabled="!selectedService"
           :class="{'opacity-50 cursor-not-allowed': !selectedService}"
         >
