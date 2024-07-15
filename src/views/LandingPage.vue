@@ -1,38 +1,37 @@
 <template>
-  <div class="flex flex-col items-center justify-center min-h-screen bg-gray-100 dark:bg-gray-900">
-    <transition
-      enter-active-class="transition-all duration-1000 ease-out"
-      enter-from-class="opacity-0 scale-150"
-      enter-to-class="opacity-100 scale-100"
-      leave-active-class="transition-all duration-500 ease-in"
-      leave-from-class="opacity-100 scale-100"
-      leave-to-class="opacity-0 scale-95"
+  <div class="flex flex-col items-center justify-center min-h-screen bg-gray-100 dark:bg-gray-900 overflow-hidden">
+    <div 
+      :class="[
+        'transition-all duration-1000 ease-in-out transform',
+        animationComplete ? 'translate-y-[-20vh] scale-75' : 'translate-y-0 scale-100'
+      ]"
     >
       <img 
-        v-if="showLogo" 
-        alt="Vue logo" 
-        src="../assets/logo.png" 
+        alt="TNM Logo" 
+        src="@/assets/logo.png" 
         class="w-64 h-64 mb-8"
       >
-    </transition>
+    </div>
 
-    <transition
-      enter-active-class="transition-all duration-500 ease-out delay-1000"
-      enter-from-class="opacity-0 translate-y-10"
-      enter-to-class="opacity-100 translate-y-0"
+    <div 
+      :class="[
+        'text-center px-4 transition-all duration-1000 ease-out transform',
+        animationComplete ? 'opacity-100 translate-y-0 mt-16' : 'opacity-0 translate-y-10 mt-0'
+      ]"
     >
-      <div v-if="showButton" class="text-center">
-        <h1 class="text-4xl font-bold mb-6 text-gray-800 dark:text-gray-100">
-          Bienvenido a Tu App Vue.js + TypeScript
-        </h1>
-        <button 
-          @click="startApp" 
-          class="px-6 py-3 bg-green-500 text-white font-semibold rounded-lg shadow-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-opacity-75 transition-colors duration-200"
-        >
-          Comenzar
-        </button>
-      </div>
-    </transition>
+      <h1 class="text-4xl font-bold mb-6 text-[#1B396A] dark:text-[#807E82]">
+        Bienvenido a CITATEC
+      </h1>
+      <p class="text-xl mb-8 text-gray-700 dark:text-gray-300">
+        Control de Inscripciones y Turnos Asignados para Tecnología en Sistemas Computacionales
+      </p>
+      <button 
+        @click="startApp" 
+        class="px-6 py-3 bg-[#1B396A] text-white font-semibold rounded-lg shadow-md hover:bg-[#294d8e] focus:outline-none focus:ring-2 focus:ring-[#1B396A] focus:ring-opacity-75 transition-colors duration-200"
+      >
+        Comenzar
+      </button>
+    </div>
   </div>
 </template>
 
@@ -42,26 +41,21 @@ import { defineComponent, ref, onMounted } from 'vue';
 export default defineComponent({
   name: 'LandingPage',
   setup() {
-    const showLogo = ref(true);
-    const showButton = ref(false);
+    const animationComplete = ref(false);
 
     onMounted(() => {
       setTimeout(() => {
-        showLogo.value = false;
-        setTimeout(() => {
-          showButton.value = true;
-        }, 500);
+        animationComplete.value = true;
       }, 2000);
     });
 
     const startApp = () => {
-      // Aquí puedes agregar la lógica para iniciar tu aplicación
-      console.log('Iniciando la aplicación...');
+      console.log('Iniciando CITATEC...');
+      // Aquí puedes agregar la lógica para iniciar la aplicación CITATEC
     };
 
     return {
-      showLogo,
-      showButton,
+      animationComplete,
       startApp,
     };
   },
