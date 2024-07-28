@@ -1,4 +1,5 @@
 import { Ticket } from "../types/Ticket";
+import { NotAnymoreTicketsError } from "./Errors";
 
 export class Cola {
     constructor(public tickets: Ticket[]) {
@@ -8,7 +9,11 @@ export class Cola {
         this.tickets.push(ticket);
     }
     obtenerTicket(): Ticket {
-        return this.tickets.shift() as Ticket;
+        const ticket = this.tickets.shift();
+        if (ticket)
+            return ticket;
+
+        throw new NotAnymoreTicketsError("No hay más tickets en la cola");
     }
     obtenerTickets(): Ticket[] {
         return this.tickets as Ticket[];

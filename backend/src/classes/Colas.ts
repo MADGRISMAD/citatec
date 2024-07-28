@@ -3,11 +3,12 @@ import { TramiteType } from "../enums/TramiteType";
 import { Ticket } from "../types/Ticket";
 import { Cola } from "./Cola";
 import fs from 'fs';
+import { NotAnymoreTicketsError } from "./Errors";
 export class Colas {
 
     // Las colas son un objeto que contiene un conjunto de colas, 
     // una por cada tipo de trámite.
-    public colas: Record<TramiteType, Cola> = {} as Record<TramiteType, Cola>;
+    private colas: Record<TramiteType, Cola> = {} as Record<TramiteType, Cola>;
     // Inicializa las colas
     constructor() {
         Object.values(TramiteType).forEach((tramite: TramiteType) => {
@@ -16,7 +17,7 @@ export class Colas {
     }
 
     // Guarda las colas en el archivo temporal
-    public guardarColas() {
+    private guardarColas() {
         fs.writeFileSync(DATA_DIR, JSON.stringify(this.colas));
     }
 
@@ -37,9 +38,14 @@ export class Colas {
 
     // Obtiene los tickets de una cola
     public obtenerTicket(tramite: TramiteType): Ticket {
-        const ticket: Ticket = this.colas[tramite].obtenerTicket();
-        this.guardarColas();
-        return ticket;
+        try {
+            const ticket: Ticket = this.colas[tramite].obtenerTicket();
+            this.guardarColas();
+            return ticket;
+        }
+        catch (e) {
+            throw new NotAnymoreTicketsError("No hay más tickets en la cola de " + tramite);
+        }
     }
 
     // Obtiene todos los tickets de una cola

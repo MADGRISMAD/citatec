@@ -1,8 +1,6 @@
 import express, { Express, Request, Response } from 'express';
 import dotenv from 'dotenv';
 import { Colas } from './classes/Colas';
-import { Ticket } from './types/Ticket';
-import { TramiteType } from './enums/TramiteType';
 dotenv.config();
 
 const app: Express = express();
@@ -16,16 +14,6 @@ app.get('/', (req: Request, res: Response) => {
 export let colas = new Colas();
 colas.cargarColas();
 
-// const ticket: Ticket = {
-//   id: 1,
-//   letra: 'A',
-//   numero: 1,
-//   tipoTramite: TramiteType.BECA,
-//   data: { numeroDeControl: 1234568 } as unknown as JSON,
-// };
-
-// colas.agregarTicket(ticket);
-// colas.guardarColas();
 // Crea una variable global con las colas
 app.locals.colas = colas;
 
