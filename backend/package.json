@@ -5,7 +5,7 @@
   "main": "src/index.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "serve": "nodemon src/index.ts",
+    "serve": "nodemon src/index.ts --ignore ./src/dist/ --ignore ./src/data",
     "build": "npx tsc",
     "start": "node dist/index.js"
   },

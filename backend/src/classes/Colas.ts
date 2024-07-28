@@ -16,8 +16,8 @@ export class Colas {
     }
 
     // Guarda las colas en el archivo temporal
-    public guardarColas(colas: Colas) {
-        fs.writeFileSync(DATA_DIR, JSON.stringify(colas));
+    public guardarColas() {
+        fs.writeFileSync(DATA_DIR, JSON.stringify(this.colas));
     }
 
     // Obtiene las colas del archivo temporal
@@ -32,20 +32,20 @@ export class Colas {
     // Agrega un ticket a la cola correspondiente
     public agregarTicket(ticket: Ticket) {
         this.colas[ticket.tipoTramite].agregarTicket(ticket);
-        this.guardarColas(this);
+        this.guardarColas();
     }
 
     // Obtiene los tickets de una cola
     public obtenerTicket(tramite: TramiteType): Ticket {
         const ticket: Ticket = this.colas[tramite].obtenerTicket();
-        this.guardarColas(this);
+        this.guardarColas();
         return ticket;
     }
 
     // Obtiene todos los tickets de una cola
     public obtenerTicketsDeCola(tramite: TramiteType): Ticket[] {
         const tickets: Ticket[] = this.colas[tramite].obtenerTickets();
-        this.guardarColas(this);
+
         return tickets;
     }
 
@@ -56,7 +56,7 @@ export class Colas {
         Object.values(TramiteType).forEach((tramite: TramiteType) => {
             tickets[tramite] = this.colas[tramite].obtenerTickets();
         });
-        this.guardarColas(this);
+
         return tickets;
     }
 
