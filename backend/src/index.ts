@@ -11,18 +11,31 @@ const port = process.env.PORT;
 
 
 // Crea las colas de los trámites
-export let colas = new Colas();
+export let colas: Colas = new Colas();
 colas.cargarColas();
+
+import { FechaTicket } from './classes/FechaTicket';
 
 const ticket: Ticket = {
   id: uuidv4(),
-  letra: 'A',
+  letra: 'B',
   numero: 1,
+  tipoTramite: TramiteType.INSCRIPCION,
+  data: JSON.parse(JSON.stringify({ numControl: 1234 })),
+  fechaCreacion: new FechaTicket(),
+}
+
+const ticket2: Ticket = {
+  id: uuidv4(),
+  letra: 'C',
+  numero: 2,
   tipoTramite: TramiteType.BECA,
-  data: JSON.parse(JSON.stringify({ numControl: 1234 }))
+  data: JSON.parse(JSON.stringify({ numControl: 1235 })),
+  fechaCreacion: new FechaTicket(),
 }
 
 colas.agregarTicket(ticket);
+// colas.agregarTicket(ticket2);
 // Crea una variable global con las colas
 app.locals.colas = colas;
 
