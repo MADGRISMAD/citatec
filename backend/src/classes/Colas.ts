@@ -93,10 +93,10 @@ export class Colas {
     public obtenerSiguienteTicket(): Ticket {
         const tramites: TramiteType[] = Object.values(TramiteType);
 
-        for (let i = 0; i < tramites.length; i++) {
-            const tramite: TramiteType = tramites[i];
+        for (const tramite of tramites) {
             try {
-                const ticket: Ticket = this.obtenerTicket(tramite);
+                const ticket: Ticket = this.obtenerTicket(tramite as TramiteType);
+                console.log("Se obtuvo el ticket ", ticket.numero, " de la cola de ", tramite, " con fecha ", ticket.fechaProgramada?.getDate());
                 return ticket;
             }
             catch (e) {
@@ -111,10 +111,9 @@ export class Colas {
     private obtenerTicket(tramite: TramiteType): Ticket {
         try {
             const ticket: Ticket = this.colas[tramite].obtenerTicket();
-            this.guardarColas();
             return ticket;
         }
-        catch (e) {
+        catch (e: any) {
             throw new NotAnymoreTicketsError("No hay más tickets en la cola de " + tramite);
         }
     }

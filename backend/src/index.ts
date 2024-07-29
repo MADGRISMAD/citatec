@@ -25,17 +25,10 @@ const ticket: Ticket = {
   fechaCreacion: new FechaTicket(),
 }
 
-const ticket2: Ticket = {
-  id: uuidv4(),
-  letra: 'C',
-  numero: 2,
-  tipoTramite: TramiteType.BECA,
-  data: JSON.parse(JSON.stringify({ numControl: 1235 })),
-  fechaCreacion: new FechaTicket(),
-}
 
 colas.agregarTicket(ticket);
 // colas.agregarTicket(ticket2);
+console.log(colas.obtenerTickets());
 // Crea una variable global con las colas
 app.locals.colas = colas;
 

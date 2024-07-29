@@ -9,7 +9,7 @@ export class Cola {
         this.tickets.push(ticket);
     }
     obtenerTicket(): Ticket {
-        const ticket = this.tickets.shift();
+        const ticket = this.tickets[0];
         if (ticket)
             return ticket;
 
@@ -17,5 +17,8 @@ export class Cola {
     }
     obtenerTickets(): Ticket[] {
         return this.tickets;
+    }
+    eliminarPrimerTicket(): void {
+        this.tickets.shift();
     }
 }
