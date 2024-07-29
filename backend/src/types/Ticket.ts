@@ -1,6 +1,6 @@
 import { TramiteType } from '../enums/TramiteType';
 export interface Ticket {
-    id: number;
+    id: string;
     letra: string;
     numero: number;
     tipoTramite: TramiteType;

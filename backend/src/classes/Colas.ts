@@ -3,7 +3,7 @@ import { TramiteType } from "../enums/TramiteType";
 import { Ticket } from "../types/Ticket";
 import { Cola } from "./Cola";
 import fs from 'fs';
-import { NotAnymoreTicketsError } from "./Errors";
+import { NotAnymoreTicketsError, TicketNotFoundError } from "./Errores";
 export class Colas {
 
     // Las colas son un objeto que contiene un conjunto de colas, 
@@ -36,8 +36,25 @@ export class Colas {
         this.guardarColas();
     }
 
+    public obtenerSiguienteTicket(): Ticket {
+        const tramites: TramiteType[] = Object.values(TramiteType);
+
+        for (let i = 0; i < tramites.length; i++) {
+            const tramite: TramiteType = tramites[i];
+            try {
+                const ticket: Ticket = this.obtenerTicket(tramite);
+                return ticket;
+            }
+            catch (e) {
+                continue;
+            }
+        }
+
+        throw new NotAnymoreTicketsError("No hay más tickets en ninguna cola");
+    }
+
     // Obtiene los tickets de una cola
-    public obtenerTicket(tramite: TramiteType): Ticket {
+    private obtenerTicket(tramite: TramiteType): Ticket {
         try {
             const ticket: Ticket = this.colas[tramite].obtenerTicket();
             this.guardarColas();
@@ -50,8 +67,8 @@ export class Colas {
 
     // Obtiene todos los tickets de una cola
     public obtenerTicketsDeCola(tramite: TramiteType): Ticket[] {
-        const tickets: Ticket[] = this.colas[tramite].obtenerTickets();
 
+        const tickets: Ticket[] = this.colas[tramite].obtenerTickets();
         return tickets;
     }
 
@@ -66,5 +83,16 @@ export class Colas {
         return tickets;
     }
 
+    public buscarTicket(tramite: TramiteType, ticketNumber: number): Ticket {
+        const tickets: Ticket[] = this.obtenerTicketsDeCola(tramite);
 
+        const ticket: Ticket | undefined = tickets.find(({ numero }: Ticket) => numero == ticketNumber);
+
+        if (ticket) {
+            return ticket;
+        }
+
+        throw new TicketNotFoundError("No se encontró el ticket " + ticketNumber + " en la cola de " + tramite);
+
+    }
 }

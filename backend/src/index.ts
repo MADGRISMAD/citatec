@@ -1,21 +1,41 @@
 import express, { Express, Request, Response } from 'express';
 import dotenv from 'dotenv';
 import { Colas } from './classes/Colas';
+import { Ticket } from './types/Ticket';
+import { TramiteType } from './enums/TramiteType';
+import { v4 as uuidv4 } from 'uuid';
 dotenv.config();
 
 const app: Express = express();
 const port = process.env.PORT;
 
-app.get('/', (req: Request, res: Response) => {
-  res.send('Express + TypeScript Server');
-});
 
 // Crea las colas de los trámites
 export let colas = new Colas();
 colas.cargarColas();
 
+const ticket: Ticket = {
+  id: uuidv4(),
+  letra: 'A',
+  numero: 1,
+  tipoTramite: TramiteType.BECA,
+  data: JSON.parse(JSON.stringify({ numControl: 1234 }))
+}
+
+colas.agregarTicket(ticket);
 // Crea una variable global con las colas
 app.locals.colas = colas;
+
+
+// Rutas
+import { router as ticketsRouter } from './routes/tickets';
+
+app.use('/tickets', ticketsRouter);
+
+// HEALTH CHECK
+app.get('/health', (req: Request, res: Response) => {
+  res.send('Healthy');
+});
 
 
 app.listen(port, () => {
