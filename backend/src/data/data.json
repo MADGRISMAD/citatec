@@ -1,1 +1,1 @@
-{"fechaDisponible":"2024-07-30T21:20:00.767Z","colas":{"Inscripción":{"tickets":[{"id":"a8f88365-b6f6-45c7-b5a9-4455b2b2c04e","letra":"B","numero":1,"tipoTramite":"Inscripción","data":{"numControl":1234},"fechaCreacion":{"fecha":"2024-07-29T04:20:00.860Z"},"fechaProgramada":{"fecha":"2024-07-30T21:20:00.767Z"}}]},"Beca":{"tickets":[]},"Certificado":{"tickets":[]}}}
+{"fechaDisponible":"2024-07-31T21:15:00.767Z","manejadorHuecos":{"huecos":["2024-07-31T21:15:00.767Z"]},"colas":{"Inscripcion":{"tickets":[]},"Beca":{"tickets":[]},"Certificado":{"tickets":[]}}}

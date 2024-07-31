@@ -6,13 +6,13 @@ import fs from 'fs';
 import { NotAnymoreTicketsError, TicketNotFoundError } from "./Errores";
 import { HOY, HORARIO } from "../constants/horario";
 import { TIEMPOEXTRA, tramiteDuration } from "../constants/tramite";
-import { redondearAMultiploDe5 } from "../utils/tramites";
 import { FechaTicket } from "./FechaTicket";
+import { ManejadorHuecos } from "./ManejadorHuecos";
 export class Colas {
 
     // Fecha hasta la cual se está disponible para sacar tickets
     public fechaDisponible: Date = new Date(HOY);
-
+    private manejadorHuecos: ManejadorHuecos = new ManejadorHuecos();
 
     // Las colas son un objeto que contiene un conjunto de colas, 
     // una por cada tipo de trámite.
@@ -54,6 +54,12 @@ export class Colas {
 
     // Calcula la fecha para el ticket creado
     private calcularFechaParaTicket(tramite: TramiteType): FechaTicket {
+        const huecoDisponible = this.manejadorHuecos.buscarHuecoDisponible(tramite);
+        if (huecoDisponible) {
+            const fecha = new FechaTicket(huecoDisponible);
+            console.log("Se creó un ticket para el trámite ", tramite, " con fecha ", fecha.getDate());
+            return fecha;
+        }
         // Sin tiempo extra porque al final del día no se atienden más trámites
         const minutosTramite = tramiteDuration[tramite];
 
@@ -137,16 +143,35 @@ export class Colas {
     }
 
     // Busca un ticket en una cola
-    public buscarTicket(tramite: TramiteType, ticketNumber: number): Ticket {
+    public buscarTicket(tramite: TramiteType, ticketId: string): Ticket {
         const tickets: Ticket[] = this.obtenerTicketsDeCola(tramite);
 
-        const ticket: Ticket | undefined = tickets.find(({ numero }: Ticket) => numero == ticketNumber);
+        const ticket: Ticket | undefined = tickets.find(({ id }: Ticket) => id == ticketId);
 
         if (ticket) {
             return ticket;
         }
 
-        throw new TicketNotFoundError("No se encontró el ticket " + ticketNumber + " en la cola de " + tramite);
+        throw new TicketNotFoundError("No se encontró el ticket " + ticketId + " en la cola de " + tramite);
 
+    }
+
+    // Cancela la cita de un ticket
+    public cancelarTicket(tramiteType: TramiteType, ticketId: string): void {
+
+        try {
+
+            const ticket: Ticket = this.buscarTicket(tramiteType, ticketId);
+
+
+            this.colas[tramiteType].eliminarTicket(ticket);
+
+            this.manejadorHuecos.cancelarCita(ticket.fechaProgramada.getDate());
+
+            this.guardarColas();
+        }
+        catch (e) {
+            throw new TicketNotFoundError("No se encontró el ticket " + ticketId + " en la cola de " + tramiteType);
+        }
     }
 }

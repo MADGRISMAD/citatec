@@ -20,9 +20,9 @@ const ticket: Ticket = {
   id: uuidv4(),
   letra: 'B',
   numero: 1,
-  tipoTramite: TramiteType.INSCRIPCION,
+  tipoTramite: TramiteType.BECA,
   data: JSON.parse(JSON.stringify({ numControl: 1234 })),
-  fechaCreacion: new FechaTicket(),
+  fechaProgramada: new FechaTicket()
 }
 
 

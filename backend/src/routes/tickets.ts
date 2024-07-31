@@ -1,6 +1,6 @@
 import express, { Request, Response } from 'express';
 import { TramiteType } from '../enums/TramiteType';
-import { buscarTicket, obtenerSiguienteTicket } from '../controllers/tickets';
+import { buscarTicket, eliminarTicket, obtenerSiguienteTicket } from '../controllers/tickets';
 export const router = express();
 
 router.get('/', (req: Request, res: Response): void => {
@@ -8,4 +8,6 @@ router.get('/', (req: Request, res: Response): void => {
 });
 router.get("/siguiente", obtenerSiguienteTicket);
 
-router.get('/:tramiteType/:ticketNumber', buscarTicket);
+router.get('/:tramiteType/:ticketId', buscarTicket);
+
+router.delete('/:tramiteType/:ticketId', eliminarTicket);

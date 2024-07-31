@@ -5,7 +5,7 @@ export interface Ticket {
     letra: string;
     numero: number;
     tipoTramite: TramiteType;
-    fechaCreacion: FechaTicket;
-    fechaProgramada?: FechaTicket;
+    // fechaCreacion: FechaTicket;
+    fechaProgramada: FechaTicket;
     data: JSON;
 }

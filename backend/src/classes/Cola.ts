@@ -21,4 +21,8 @@ export class Cola {
     eliminarPrimerTicket(): void {
         this.tickets.shift();
     }
+    eliminarTicket(ticket: Ticket): void {
+        const index = this.tickets.indexOf(ticket);
+        this.tickets.splice(index, 1);
+    }
 }

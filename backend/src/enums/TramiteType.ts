@@ -1,5 +1,5 @@
 export enum TramiteType {
-    INSCRIPCION = 'Inscripción',
+    INSCRIPCION = 'Inscripcion',
     BECA = 'Beca',
     CERTIFICADO = 'Certificado',
 }
