@@ -1,3 +1,4 @@
+// DEPRECATED
 import { HOY } from "../constants/horario";
 import { Dias } from "../enums/Dias";
 import { redondearAMultiploDe5 } from "../utils/tramites"

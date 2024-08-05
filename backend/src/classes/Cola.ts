@@ -6,7 +6,6 @@ export class Cola {
         this.tickets = [] as Ticket[];
     }
     agregarTicket(ticket: Ticket): void {
-        console.log(this.tickets);
         this.tickets.push(ticket);
     }
     obtenerTicket(): Ticket {

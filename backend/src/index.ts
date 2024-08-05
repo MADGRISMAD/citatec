@@ -25,7 +25,7 @@ const ticket: Ticket = {
   numero: 1,
   tipoTramite: TramiteType.BECA,
   data: JSON.parse(JSON.stringify({ numControl: 1234 })),
-  fechaProgramada: new FechaTicket()
+  fechaProgramada: new Date()
 }
 
 

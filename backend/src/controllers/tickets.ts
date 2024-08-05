@@ -68,6 +68,7 @@ export function crearTicket(req: Request, res: Response) {
             id: uuidv4(),
             ...req.body
         } as Ticket;
+        console.log(ticket);
         if (!ticket.tipoTramite || !ticket) {
             return res.status(400).json({ message: 'Missing parameters' });
         }
@@ -82,14 +83,18 @@ export function crearTicket(req: Request, res: Response) {
             }
 
         }
-        catch { }
+        catch (e: any) {
+
+        }
 
 
 
         colas.agregarTicket(ticket);
+        console.log("CONTROLLER:", ticket.fechaProgramada);
         return res.status(201).send(ticket);
     }
     catch (e: any) {
+        console.log(e);
         return res.status(500).json({ message: e.message });
     }
 }

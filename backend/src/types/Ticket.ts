@@ -7,6 +7,6 @@ export interface Ticket {
     numero: number;
     tipoTramite: TramiteType;
     // fechaCreacion: FechaTicket;
-    fechaProgramada: FechaTicket;
+    fechaProgramada: Date;
     data: AlumnoData;
 }

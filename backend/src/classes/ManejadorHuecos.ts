@@ -13,7 +13,7 @@ export class ManejadorHuecos {
     buscarHuecoDisponible(tramite: TramiteType): Date | null {
         const duracionTramite = tramiteDuration[tramite] + TIEMPOEXTRA;
         for (let i = 0; i < this.huecos.length; i++) {
-            const hueco = this.huecos[i];
+            const hueco: Date = this.huecos[i];
             const siguienteHueco = this.huecos[i + 1];
             const finTramite = new Date(hueco.getTime() + duracionTramite * 60000);
 
@@ -26,6 +26,7 @@ export class ManejadorHuecos {
     }
 
     cancelarCita(fecha: Date): void {
+        console.log(fecha);
         this.agregarHueco(fecha);
         console.log("Se canceló la cita para el día ", fecha);
     }
