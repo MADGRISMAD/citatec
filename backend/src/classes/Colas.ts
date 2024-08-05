@@ -34,6 +34,11 @@ export class Colas {
     public cargarColas(): void {
         if (!fs.existsSync(DATA_DIR)) {
             fs.writeFileSync(DATA_DIR, JSON.stringify({}));
+            Object.values(TramiteType).forEach((tramite: TramiteType) => {
+                // Previene que crashee si se agrega un nuevo trámite
+                this.colas[tramite] = new Cola([]);
+            });
+            return;
         }
         const data: Colas = JSON.parse(fs.readFileSync(DATA_DIR).toString());
         // Carga las colas
@@ -155,6 +160,19 @@ export class Colas {
         throw new TicketNotFoundError("No se encontró el ticket " + ticketId + " en la cola de " + tramite);
 
     }
+
+    public buscarTicketPorNumControl(tramite: TramiteType, numControl: number): Ticket {
+        const tickets: Ticket[] = this.obtenerTicketsDeCola(tramite);
+
+        const ticket: Ticket | undefined = tickets.find(({ data }: Ticket) => data.numControl == numControl);
+
+        if (ticket) {
+            return ticket;
+        }
+
+        throw new TicketNotFoundError("No se encontró el ticket con número de control " + numControl + " en la cola de " + tramite);
+    }
+
 
     // Cancela la cita de un ticket
     public cancelarTicket(tramiteType: TramiteType, ticketId: string): void {

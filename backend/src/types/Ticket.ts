@@ -1,5 +1,6 @@
 import { FechaTicket } from '../classes/FechaTicket';
 import { TramiteType } from '../enums/TramiteType';
+import { AlumnoData } from './AlumnoData';
 export interface Ticket {
     id: string;
     letra: string;
@@ -7,5 +8,5 @@ export interface Ticket {
     tipoTramite: TramiteType;
     // fechaCreacion: FechaTicket;
     fechaProgramada: FechaTicket;
-    data: JSON;
+    data: AlumnoData;
 }

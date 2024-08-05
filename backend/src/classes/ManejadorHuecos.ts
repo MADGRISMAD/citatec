@@ -27,5 +27,6 @@ export class ManejadorHuecos {
 
     cancelarCita(fecha: Date): void {
         this.agregarHueco(fecha);
+        console.log("Se canceló la cita para el día ", fecha);
     }
 }

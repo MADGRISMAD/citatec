@@ -1,0 +1,1 @@
+export const numControl = "\d{8}"

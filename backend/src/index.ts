@@ -9,6 +9,9 @@ dotenv.config();
 const app: Express = express();
 const port = process.env.PORT;
 
+// Permite JSON (application/json) en las peticiones
+app.use(express.json());
+
 
 // Crea las colas de los trámites
 export let colas: Colas = new Colas();
