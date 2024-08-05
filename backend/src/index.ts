@@ -29,7 +29,7 @@ const ticket: Ticket = {
 }
 
 
-colas.agregarTicket(ticket);
+// colas.agregarTicket(ticket);
 // colas.agregarTicket(ticket2);
 console.log(colas.obtenerTickets());
 // Crea una variable global con las colas

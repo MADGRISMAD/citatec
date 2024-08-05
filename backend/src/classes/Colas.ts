@@ -8,6 +8,7 @@ import { HOY, HORARIO } from "../constants/horario";
 import { TIEMPOEXTRA, tramiteDuration } from "../constants/tramite";
 import { FechaTicket } from "./FechaTicket";
 import { ManejadorHuecos } from "./ManejadorHuecos";
+import { isTramiteType } from "../utils/tramites";
 export class Colas {
 
     // Fecha hasta la cual se está disponible para sacar tickets
@@ -44,7 +45,7 @@ export class Colas {
         // Carga las colas
         Object.values(TramiteType).forEach((tramite: TramiteType) => {
             // Previene que crashee si se agrega un nuevo trámite
-            this.colas[tramite] = new Cola(data.colas[tramite] ? data.colas[tramite].tickets : []);
+            this.colas[tramite].tickets = data.colas[tramite].tickets ? data.colas[tramite].tickets : [];
         });
         this.fechaDisponible = new Date(data.fechaDisponible);
     }
@@ -62,7 +63,7 @@ export class Colas {
         const huecoDisponible = this.manejadorHuecos.buscarHuecoDisponible(tramite);
         if (huecoDisponible) {
             const fecha = new FechaTicket(huecoDisponible);
-            console.log("Se creó un ticket para el trámite ", tramite, " con fecha ", fecha.getDate());
+            console.log("Se creó un ticket en un HUECO para el trámite ", tramite, " con fecha ", fecha.getDate());
             return fecha;
         }
         // Sin tiempo extra porque al final del día no se atienden más trámites
@@ -84,7 +85,7 @@ export class Colas {
         else {
             fecha.setMinutes(fecha.getMinutes());
         }
-        console.log("Se creó un ticket para el trámite ", tramite, " con fecha ", fecha.getDate());
+        console.log("Se creó un ticket al FINAL para el trámite ", tramite, " con fecha ", fecha.getDate());
         return fecha;
     }
 
@@ -165,7 +166,6 @@ export class Colas {
         const tickets: Ticket[] = this.obtenerTicketsDeCola(tramite);
 
         const ticket: Ticket | undefined = tickets.find(({ data }: Ticket) => data.numControl == numControl);
-
         if (ticket) {
             return ticket;
         }
