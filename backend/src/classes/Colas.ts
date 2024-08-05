@@ -8,6 +8,7 @@ import { HOY, HORARIO } from "../constants/horario";
 import { TIEMPOEXTRA, tramiteDuration } from "../constants/tramite";
 import { ManejadorHuecos } from "./ManejadorHuecos";
 import { setSiguienteDiaDisponible } from "../utils/Fecha";
+import { redondearAMultiploDe5 } from "../utils/tramites";
 export class Colas {
 
     // Fecha hasta la cual se está disponible para sacar tickets
@@ -85,10 +86,10 @@ export class Colas {
             // Iniciando el siguiente día
             fecha = setSiguienteDiaDisponible(fecha);
             fecha.setHours(HORARIO.INICIO.getHours());
-            fecha.setMinutes(TIEMPOEXTRA);
+            redondearAMultiploDe5(fecha, TIEMPOEXTRA);
         }
         else {
-            fecha.setMinutes(fecha.getMinutes());
+            redondearAMultiploDe5(fecha, fecha.getMinutes());
         }
         console.log("Se creó un ticket al FINAL para el trámite ", tramite, " con fecha ", fecha);
         return fecha;
@@ -101,7 +102,7 @@ export class Colas {
         const minutos = tramiteDuration[tramite] + TIEMPOEXTRA;
 
         //Suma el tiempo extra (ya se sumó el tiempo de trámite)
-        nuevaFecha.setMinutes(nuevaFecha.getMinutes() + minutos);
+        redondearAMultiploDe5(nuevaFecha, nuevaFecha.getMinutes() + minutos);
         // Sobrescribe la fecha disponible global
         this.fechaDisponible = nuevaFecha;
         console.log("Fecha para la siguiente cita: ", nuevaFecha);
@@ -189,7 +190,7 @@ export class Colas {
 
             this.colas[tramiteType].eliminarTicket(ticket);
 
-            this.manejadorHuecos.cancelarCita(ticket.fechaProgramada);
+            this.manejadorHuecos.cancelarTicket(ticket.fechaProgramada);
 
             this.guardarColas();
         }

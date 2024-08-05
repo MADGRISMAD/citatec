@@ -17,7 +17,6 @@ app.use(express.json());
 export let colas: Colas = new Colas();
 colas.cargarColas();
 
-import { FechaTicket } from './classes/FechaTicket';
 
 const ticket: Ticket = {
   id: uuidv4(),

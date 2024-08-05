@@ -90,7 +90,6 @@ export function crearTicket(req: Request, res: Response) {
 
 
         colas.agregarTicket(ticket);
-        console.log("CONTROLLER:", ticket.fechaProgramada);
         return res.status(201).send(ticket);
     }
     catch (e: any) {
