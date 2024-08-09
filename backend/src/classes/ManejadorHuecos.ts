@@ -1,33 +1,66 @@
 import { TIEMPOEXTRA, tramiteDuration } from "../constants/tramite";
 import { TramiteType } from "../enums/TramiteType";
-// import { FechaTicket } from "./FechaTicket";
-
+import { Ticket } from "../types/Ticket";
 export class ManejadorHuecos {
-    private huecos: Date[] = [];
 
-    agregarHueco(fecha: Date): void {
-        this.huecos.push(fecha);
-        this.huecos.sort((a, b) => a.getTime() - b.getTime());
+    constructor(public huecos: [inicio:Date, final:Date][] = []) {
+        this.huecos = huecos;
+    }
+
+    agregarHueco(fechaInicio: Date, fechaFinal: Date): void {
+        this.huecos.push([fechaInicio, fechaFinal]);
+        this.huecos.sort(
+            (a: [Date, Date], b: [Date, Date]) =>
+                new Date(a[0]).getTime() - new Date(b[0]).getTime()
+        );
     }
 
     buscarHuecoDisponible(tramite: TramiteType): Date | null {
-        const duracionTramite: number = tramiteDuration[tramite] + TIEMPOEXTRA;
+        const duracionTramiteMilisegundos: number = (tramiteDuration[tramite] + TIEMPOEXTRA) * 60000;
         for (let i = 0; i < this.huecos.length; i++) {
-            const hueco: Date = new Date(this.huecos[i]);
-            const siguienteHueco: Date = new Date(this.huecos[i + 1]);
-            const finTramite = new Date(hueco.getTime() + duracionTramite * 60000);
-
-            if (!siguienteHueco || finTramite.getTime() <= siguienteHueco.getTime()) {
+            const inicioHueco: Date = new Date(this.huecos[i][0]);
+            // Comprueba si el hueco es en el pasado, lo borra
+            if (inicioHueco.getTime() < Date.now()){
                 this.huecos.splice(i, 1);
-                return hueco;
+                i--;
+                continue;
             }
+            let cadenaFinal = 0;
+            let finHueco: Date;
+            do {
+                finHueco = new Date(this.huecos[i + cadenaFinal][1]);
+                const tiempoHuecoMilisegundos: number =
+                    finHueco.getTime() - inicioHueco.getTime();
+                // Comprueba si en el hueco cabe el trámite
+                if (duracionTramiteMilisegundos <= tiempoHuecoMilisegundos) {
+                    // Borra todos los rangos usados
+                    const tempArray: [Date,Date][] = this.huecos;
+                    tempArray.splice(i, cadenaFinal + 1);
+                    this.huecos = tempArray;
+                    // Si sobra tiempo, crea otro rango con el tiempo restante
+                    if (tiempoHuecoMilisegundos - duracionTramiteMilisegundos > 0) {
+                        const milisegundosNuevoHueco: number =
+                            inicioHueco.getTime() +
+                            duracionTramiteMilisegundos;
+                        this.agregarHueco(new Date(milisegundosNuevoHueco), finHueco);
+                    }
+                    return inicioHueco;
+                }
+                cadenaFinal++;
+                // Comprueba si el siguiente hueco es justo despues del anterior, para unir los huecos en uno
+            } while (new Date(this.huecos[i + cadenaFinal][0]).getTime() == finHueco.getTime());
         }
         return null;
     }
 
-    cancelarTicket(fecha: Date): void {
-        console.log(fecha);
-        this.agregarHueco(fecha);
-        console.log("Se canceló el ticket para el día ", fecha);
+    cancelarTicket(ticket: Ticket): void {
+        console.log(ticket.fechaProgramada);
+        const fechaInicio:Date = new Date(ticket.fechaProgramada);
+        const duracion :number =
+            tramiteDuration[ticket.tipoTramite as TramiteType] + TIEMPOEXTRA;
+
+        const fechaFinal = new Date(fechaInicio.getTime() + duracion * 60000);
+        this.agregarHueco(fechaInicio, fechaFinal);
+        console.log("Se canceló el ticket para el día ", fechaInicio);
     }
 }

@@ -4,7 +4,8 @@ import { TramiteType } from "../enums/TramiteType";
 export const tramiteDuration: Record<TramiteType, number> = {
     [TramiteType.INSCRIPCION]: 10,
     [TramiteType.BECA]: 5,
-    [TramiteType.CERTIFICADO]: 2,
+    [TramiteType.CERTIFICADO]: 5,
+    [TramiteType.CONSTANCIA]: 60,
 }
 
 export const TIEMPOEXTRA = 5; // Tiempo extra en minutos entre trámite y trámite

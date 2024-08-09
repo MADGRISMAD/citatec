@@ -8,7 +8,6 @@ dotenv.config();
 
 const app: Express = express();
 const port = process.env.PORT;
-
 // Permite JSON (application/json) en las peticiones
 app.use(express.json());
 
@@ -30,13 +29,15 @@ const ticket: Ticket = {
 
 // colas.agregarTicket(ticket);
 // colas.agregarTicket(ticket2);
-console.log(colas.obtenerTickets());
+// console.log(colas.obtenerTickets());
 // Crea una variable global con las colas
 app.locals.colas = colas;
 
 
 // Rutas
 import { router as ticketsRouter } from './routes/tickets';
+import { HOY } from './constants/horario';
+console.log(HOY());
 
 app.use('/tickets', ticketsRouter);
 
