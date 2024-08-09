@@ -48,8 +48,9 @@ export class ManejadorHuecos {
                 }
                 cadenaFinal++;
                 // Comprueba si el siguiente hueco es justo despues del anterior, para unir los huecos en uno
-            } while (new Date(this.huecos[i + cadenaFinal][0]).getTime() == finHueco.getTime());
+            } while (i + cadenaFinal < this.huecos.length && new Date(this.huecos[i + cadenaFinal][0]).getTime() == finHueco.getTime());
         }
+
         return null;
     }
 

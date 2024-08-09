@@ -64,6 +64,7 @@ export class Colas {
 
     // Agrega un ticket a la cola correspondiente
     public agregarTicket(ticket: Ticket): void {
+        this.verificarFechaDisponible();
         const fechaHueco : Date | null = this.buscarHuecoDisponible(ticket.tipoTramite);
         // Si hay un hueco disponible, se agrega el ticket ahí
         if (fechaHueco) {
@@ -106,7 +107,6 @@ export class Colas {
         // Sin tiempo extra porque al final del día no se atienden más trámites
         const minutosTramite = tramiteDuration[tramite];
 
-        this.verificarFechaDisponible();
 
         let fecha = new Date(this.fechaDisponible);
 
