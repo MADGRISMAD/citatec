@@ -1,6 +1,7 @@
 import { TIEMPOEXTRA, tramiteDuration } from "../constants/tramite";
 import { TramiteType } from "../enums/TramiteType";
 import { Ticket } from "../types/Ticket";
+import { compararRangosDeFechas } from "../utils/Fecha";
 export class ManejadorHuecos {
 
     constructor(public huecos: [inicio:Date, final:Date][] = []) {
@@ -8,14 +9,18 @@ export class ManejadorHuecos {
     }
 
     agregarHueco(fechaInicio: Date, fechaFinal: Date): void {
-        this.huecos.push([fechaInicio, fechaFinal]);
-        this.huecos.sort(
-            (a: [Date, Date], b: [Date, Date]) =>
-                new Date(a[0]).getTime() - new Date(b[0]).getTime()
-        );
+        const nuevoHueco: [Date, Date] = [fechaInicio, fechaFinal];
+
+        const index = this.huecos.findIndex(rango => compararRangosDeFechas(rango, nuevoHueco) > 0);
+
+        if (index === -1) {
+            this.huecos.push(nuevoHueco);
+        } else {
+            this.huecos.splice(index, 0, nuevoHueco);
+        }
     }
 
-    buscarHuecoDisponible(tramite: TramiteType): Date | null {
+    buscarHuecoDisponible(tramite: TramiteType): Date | undefined {
         const duracionTramiteMilisegundos: number = (tramiteDuration[tramite] + TIEMPOEXTRA) * 60000;
         for (let i = 0; i < this.huecos.length; i++) {
             const inicioHueco: Date = new Date(this.huecos[i][0]);
@@ -50,8 +55,8 @@ export class ManejadorHuecos {
                 // Comprueba si el siguiente hueco es justo despues del anterior, para unir los huecos en uno
             } while (i + cadenaFinal < this.huecos.length && new Date(this.huecos[i + cadenaFinal][0]).getTime() == finHueco.getTime());
         }
-
-        return null;
+        console.log("UNDEFINED");
+        return undefined;
     }
 
     cancelarTicket(ticket: Ticket): void {

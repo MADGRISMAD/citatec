@@ -10,3 +10,7 @@ export function setSiguienteDiaDisponible(fecha: Date): Date {
     }
     return fecha;
 }
+export function compararRangosDeFechas(a: [Date, Date], b: [Date, Date]): number {
+    if(a[0].getTime() !== b[0].getTime()) return a[0].getTime() - b[0].getTime();
+    return a[1].getTime() - b[1].getTime();
+}

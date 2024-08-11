@@ -65,18 +65,18 @@ export class Colas {
     // Agrega un ticket a la cola correspondiente
     public agregarTicket(ticket: Ticket): void {
         this.verificarFechaDisponible();
-        const fechaHueco : Date | null = this.buscarHuecoDisponible(ticket.tipoTramite);
+        const fechaHueco : Date | undefined = this.buscarHuecoDisponible(ticket.tipoTramite);
         // Si hay un hueco disponible, se agrega el ticket ahí
         if (fechaHueco) {
             ticket.fechaProgramada = new Date(fechaHueco);
-            this.colas[ticket.tipoTramite].agregarTicket(ticket);
+            this.colas[ticket.tipoTramite].agregarTicket(ticket, true);
         }
         else {
             // Si no hay hueco disponible, se calcula la fecha para el ticket
             ticket.fechaProgramada = this.calcularFechaParaTicket(
                 ticket.tipoTramite
             );
-            this.colas[ticket.tipoTramite].agregarTicket(ticket);
+            this.colas[ticket.tipoTramite].agregarTicket(ticket, false);
             this.calcularProximaFechaDisponible(
                 ticket.tipoTramite,
                 ticket.fechaProgramada
@@ -86,7 +86,7 @@ export class Colas {
         this.guardarColas();
     }
 
-    private buscarHuecoDisponible(tramite: TramiteType): Date | null {
+    private buscarHuecoDisponible(tramite: TramiteType): Date | undefined {
         const huecoDisponible =
             this.manejadorHuecos.buscarHuecoDisponible(tramite);
         if (huecoDisponible) {
@@ -99,7 +99,7 @@ export class Colas {
             );
             return fecha;
         }
-        return null;
+        return undefined;
     }
 
     // Calcula la fecha para el ticket creado
@@ -111,14 +111,15 @@ export class Colas {
         let fecha = new Date(this.fechaDisponible);
 
         const horaDisponible = fecha.getHours();
+        console.log("Hora disponible: ", horaDisponible, "HOrario FINAL", HORARIO.FINAL.getHours(), fecha.getMinutes(), minutosTramite);
 
-        // Si la fecha del trámite termina después del horario de cierre, se pasa al siguiente día
+        // Si el trámite es creado fuera del horario de atención, se programa para el siguiente día
         if (
             horaDisponible >= HORARIO.FINAL.getHours() ||
             (horaDisponible == HORARIO.FINAL.getHours() - 1 &&
                 fecha.getMinutes() >= 60 - minutosTramite)
         ) {
-            // Iniciando el siguiente día
+            // Iniciando el siguiente día disponible
             fecha = setSiguienteDiaDisponible(fecha);
             fecha.setHours(HORARIO.INICIO.getHours());
             redondearAMultiploDe5(fecha, TIEMPOEXTRA);
@@ -126,6 +127,12 @@ export class Colas {
             // Llena el hueco con la fecha que se saltó
             const hueco: Date = new Date(fecha);
             redondearAMultiploDe5(hueco, 60);
+            /* Si el tramite es creado dentro del horario de atención, 
+            pero no hay tiempo suficiente para atenderlo ese día
+            se programa para el siguiente día, pero se llena el hueco con la fecha que se saltó
+            */
+           
+           
             this.manejadorHuecos.agregarHueco(fecha, hueco);
         } else {
             redondearAMultiploDe5(fecha, fecha.getMinutes());
@@ -155,7 +162,7 @@ export class Colas {
         console.log("Fecha para la siguiente cita: ", nuevaFecha);
     }
 
-    // Obtiene el siguiente ticket de la cola
+    // Obtiene el siguiente ticket de las colas
     public obtenerSiguienteTicket(): Ticket {
         const tramites: TramiteType[] = Object.values(TramiteType);
 
@@ -172,6 +179,7 @@ export class Colas {
                     " con fecha ",
                     ticket.fechaProgramada
                 );
+                // Si la fecha del ticket es mayor a la fecha actual, se devuelve
                 return ticket;
             } catch (e) {
                 continue;
