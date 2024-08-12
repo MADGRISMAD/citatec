@@ -1,9 +1,8 @@
 import { redondearAMultiploDe5 } from "../utils/tramites";
-import { TIEMPOEXTRA } from "./tramite";
 
 export function HOY(): Date {
     const hoy :Date = new Date();
-    redondearAMultiploDe5(hoy, hoy.getMinutes() + TIEMPOEXTRA);
+    redondearAMultiploDe5(hoy, hoy.getMinutes());
     return hoy;
 }
 // 8:00 AM

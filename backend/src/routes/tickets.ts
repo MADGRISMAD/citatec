@@ -1,5 +1,4 @@
-import express, { Request, Response } from 'express';
-import { TramiteType } from '../enums/TramiteType';
+import express from 'express';
 import { buscarTicket, crearTicket, eliminarTicket, obtenerSiguienteTicket } from '../controllers/tickets';
 export const router = express();
 
