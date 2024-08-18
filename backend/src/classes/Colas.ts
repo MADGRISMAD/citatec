@@ -7,11 +7,12 @@ import { NotAnymoreTicketsError, TicketNotFoundError } from "./Errores";
 import { HOY, HORARIO } from "../constants/horario";
 import { TIEMPOEXTRA, tramiteDuration } from "../constants/tramite";
 import { ManejadorHuecos } from "./ManejadorHuecos";
-import { setSiguienteDiaDisponible } from "../utils/Fecha";
+import { esDiaDisponible, setSiguienteDiaDisponible } from "../utils/Fecha";
 import { redondearAMultiploDe5 } from "../utils/tramites";
 import { Dias } from "../enums/Dias";
 export class Colas {
     // Fecha hasta la cual se está disponible para sacar tickets
+    public fechaAnterior: Date|undefined = undefined;
     public fechaDisponible: Date = new Date(HOY());
     private manejadorHuecos: ManejadorHuecos = new ManejadorHuecos();
 
@@ -111,37 +112,35 @@ export class Colas {
         let fecha = new Date(this.fechaDisponible);
 
         const horaDisponible = fecha.getHours();
-        console.log(
-            "Hora disponible: ",
-            horaDisponible,
-            "HOrario FINAL",
-            HORARIO.FINAL.getHours(),
-            fecha.getMinutes(),
-            minutosTramite
-        );
-
-        // Si el trámite es creado fuera del horario de atención, se programa para el siguiente día
+        console.log("FECHA", fecha);
+        console.log("HORA DISPONIBLE: ", horaDisponible - Math.ceil(minutosTramite/60));
+        console.log("HORARIO FINAL: ", HORARIO.FINAL.getHours() - Math.ceil(minutosTramite / 60));
+        console.log("ES DIA DISPONIBLE: ", esDiaDisponible(fecha));  
+        /* Si el trámite es creado fuera del horario de atención
+        se programa para el siguiente día */
         if (
-            horaDisponible >= HORARIO.FINAL.getHours() ||
-            (horaDisponible == HORARIO.FINAL.getHours() - 1 &&
-                fecha.getMinutes() >= 60 - minutosTramite)
+            horaDisponible >= HORARIO.FINAL.getHours() 
         ) {
+
+            /* 
+            Si el trámite no cabe al final del día, se programa para el siguiente día
+            y se crea un hueco en el tiempo que fué saltado */  
+            if(horaDisponible == HORARIO.FINAL.getHours() && esDiaDisponible(fecha)){
+                
+                const inicioHueco: Date = new Date(fecha);  
+                inicioHueco.setHours(inicioHueco.getHours(), -minutosTramite, 0, 0);       
+                const finalHueco: Date = new Date(fecha);
+                finalHueco.setHours(HORARIO.FINAL.getHours(), 0, 0, 0);
+                console.log("Fecha inicial: ", inicioHueco, ", fecha final:", finalHueco);
+                this.manejadorHuecos.agregarHueco(inicioHueco, finalHueco);
+            }
+
             // Iniciando el siguiente día disponible
             fecha = setSiguienteDiaDisponible(fecha);
             fecha.setHours(HORARIO.INICIO.getHours());
             redondearAMultiploDe5(fecha, TIEMPOEXTRA);
 
-            /* Si el tramite es creado dentro del horario de atención, 
-            pero no hay tiempo suficiente para atenderlo ese día
-            se programa para el siguiente día, pero se llena el hueco con la fecha que se saltó
-            */
-            const hoy :Date = HOY();
-            if (hoy.getDay() == Dias.FRIDAY) {
-                // Llena el hueco con la fecha que se saltó
-                const hueco: Date = new Date(hoy);
-                hueco.setMinutes(60);
-                this.manejadorHuecos.agregarHueco(hoy, hueco);
-            }
+            
         } else {
             redondearAMultiploDe5(fecha, fecha.getMinutes());
         }
@@ -285,7 +284,8 @@ export class Colas {
             );
         }
     }
-
+    
+    // Asegura que la fecha disponible no sea en el pasado
     private verificarFechaDisponible(): void {
         if (this.fechaDisponible < HOY()) {
             this.fechaDisponible = HOY();
