@@ -1,8 +1,7 @@
 import express, { Express, Request, Response } from 'express';
 import dotenv from 'dotenv';
 import { Colas } from './classes/Colas';
-import { Ticket } from './types/Ticket';
-import { TramiteType } from './enums/TramiteType';
+import { Ticket, TramiteType } from 'shared-types';
 import { v4 as uuidv4 } from 'uuid';
 dotenv.config();
 
@@ -36,10 +35,12 @@ app.locals.colas = colas;
 
 // Rutas
 import { router as ticketsRouter } from './routes/tickets';
+import { router as tramitesRouter } from './routes/tramites';
 import { HOY } from './constants/horario';
 console.log(HOY());
 
 app.use('/tickets', ticketsRouter);
+app.use('/tramites', tramitesRouter);
 
 // HEALTH CHECK
 app.get('/health', (req: Request, res: Response) => {

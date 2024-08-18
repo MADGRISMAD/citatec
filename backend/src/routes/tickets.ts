@@ -1,5 +1,5 @@
-import express from 'express';
-import { buscarTicket, crearTicket, eliminarTicket, obtenerSiguienteTicket } from '../controllers/tickets';
+const express = require('express');
+const { buscarTicket, crearTicket, eliminarTicket, obtenerSiguienteTicket } = require('../controllers/tickets')
 export const router = express();
 
 router.post('/', crearTicket);

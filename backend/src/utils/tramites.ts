@@ -1,4 +1,4 @@
-import { TramiteType } from "../enums/TramiteType";
+import { TramiteType } from "../../../shared/src/enums/TramiteType";
 
 export function isTramiteType(value: TramiteType): boolean {
     return Object.values(TramiteType).includes(value);

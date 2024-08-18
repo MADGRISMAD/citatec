@@ -1,4 +1,4 @@
-import { Dias } from "../enums/Dias";
+import { Dias } from "../../../shared/src/enums/Dias";
 
 export function setSiguienteDiaDisponible(fecha: Date): Date {
     fecha.setDate(fecha.getDate() + 1);

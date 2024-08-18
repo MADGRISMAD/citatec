@@ -1,6 +1,5 @@
 import { TIEMPOEXTRA, tramiteDuration } from "../constants/tramite";
-import { TramiteType } from "../enums/TramiteType";
-import { Ticket } from "../types/Ticket";
+import { TramiteType, Ticket } from "shared-types";
 import { compararRangosDeFechas } from "../utils/Fecha";
 export class ManejadorHuecos {
 

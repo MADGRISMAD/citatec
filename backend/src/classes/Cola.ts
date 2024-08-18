@@ -1,4 +1,4 @@
-import { Ticket } from "../types/Ticket";
+import {Ticket} from "shared-types"
 import { NotAnymoreTicketsError } from "./Errores";
 
 export class Cola {

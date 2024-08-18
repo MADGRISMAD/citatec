@@ -1,6 +1,5 @@
 import { Request, Response } from "express";
-import { TramiteType } from "../enums/TramiteType";
-import { Ticket } from "../types/Ticket";
+import { Ticket, TramiteType } from "shared-types";
 import { colas } from "..";
 import { isTramiteType } from "../utils/tramites";
 import {

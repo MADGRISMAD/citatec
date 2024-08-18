@@ -1,4 +1,4 @@
-import { TramiteType } from "../enums/TramiteType";
+import { TramiteType } from "shared-types";
 
 // El tiempo que tarda cada trámite en ser atendido en minutos (usar múltipos de 5)
 export const tramiteDuration: Record<TramiteType, number> = {

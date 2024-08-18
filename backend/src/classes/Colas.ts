@@ -1,6 +1,5 @@
 import { DATA_DIR } from "../constants/paths";
-import { TramiteType } from "../enums/TramiteType";
-import { Ticket } from "../types/Ticket";
+import { Ticket,TramiteType } from "shared-types";
 import { Cola } from "./Cola";
 import fs from "fs";
 import { NotAnymoreTicketsError, TicketNotFoundError } from "./Errores";
@@ -9,7 +8,6 @@ import { TIEMPOEXTRA, tramiteDuration } from "../constants/tramite";
 import { ManejadorHuecos } from "./ManejadorHuecos";
 import { esDiaDisponible, setSiguienteDiaDisponible } from "../utils/Fecha";
 import { redondearAMultiploDe5 } from "../utils/tramites";
-import { Dias } from "../enums/Dias";
 export class Colas {
     // Fecha hasta la cual se está disponible para sacar tickets
     public fechaAnterior: Date|undefined = undefined;
