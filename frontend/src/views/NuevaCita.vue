@@ -95,6 +95,9 @@ vueCopy
               <strong>Servicio:</strong> {{ ticket?.tipoTramite }}
             </p>
           </div>
+          <button @click="deleteTicket()" class="mt-4 text-sm text-red-500 hover:text-red-700 focus:outline-none">
+            Cancelar cita
+          </button>
         </div>
       </transition>
     </div>
@@ -103,9 +106,9 @@ vueCopy
 
 <script lang="ts">
 import { defineComponent, onMounted, ref } from "vue";
-import { SetTramiteDuration, Ticket } from "shared-types";
+import { SetTramiteDuration, Ticket, TramiteType } from "shared-types";
 import { obtenerTramites } from "@/services/tramite";
-import { crearTicket } from "@/services/ticket";
+import { crearTicket, eliminarTicket } from "@/services/ticket";
 
 export default defineComponent({
   name: "RequestAppointment",
@@ -157,6 +160,21 @@ export default defineComponent({
       }
     };
 
+
+    const deleteTicket = async () => {
+      try {
+        if(!ticket.value) return;
+        await eliminarTicket(ticket.value.tipoTramite, ticket.value.id);
+      } catch (error) {
+        console.error("Error al eliminar el ticket:", error);
+      }
+      appointmentAssigned.value = false;
+      ticket.value = null;
+      selectedService.value = null;
+      numeroDeControl.value = 0;
+      console.log("Ticket eliminado");
+    };
+
     // const formatDate = (dateString: string) => {
     //   const options: Intl.DateTimeFormatOptions = {
     //     year: "numeric",
@@ -175,6 +193,7 @@ export default defineComponent({
       // formatDate,
       numeroDeControl,
       ticket,
+      deleteTicket,
     };
   },
 });
