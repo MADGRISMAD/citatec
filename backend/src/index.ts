@@ -3,10 +3,18 @@ import dotenv from 'dotenv';
 import { Colas } from './classes/Colas';
 import { Ticket, TramiteType } from 'shared-types';
 import { v4 as uuidv4 } from 'uuid';
+const cors = require('cors');
 dotenv.config();
+
 
 const app: Express = express();
 const port = process.env.PORT;
+
+
+app.use(cors({
+  origin: 'http://localhost:8081',
+}));
+
 // Permite JSON (application/json) en las peticiones
 app.use(express.json());
 
@@ -19,9 +27,8 @@ colas.cargarColas();
 const ticket: Ticket = {
   id: uuidv4(),
   letra: 'B',
-  numero: 1,
+  numeroDeControl: 1,
   tipoTramite: TramiteType.BECA,
-  data: JSON.parse(JSON.stringify({ numControl: 1234 })),
   fechaProgramada: new Date()
 }
 

@@ -1,22 +1,23 @@
 import { Ticket, TramiteType} from "shared-types";
 import { BACKEND_URL } from "../constants/url";
-import axios from "axios";
-export const crearTicket = async (ticket:Ticket) => {
-    const url = BACKEND_URL + "/tickets";
-    return await axios.post(url, ticket);
+import axios, { AxiosResponse } from "axios";
+export async function crearTicket(tramiteType: TramiteType, numeroDeControl:number) {
+    const url = `${BACKEND_URL}/tickets/${tramiteType}/${numeroDeControl}`;
+    const res:AxiosResponse<Ticket> = await axios.post(url);
+    return res.data as Ticket;
 }
 
-export const obtenerSiguienteTicket = async () => {
+export async function obtenerSiguienteTicket() {
     const url = BACKEND_URL + "/tickets/siguiente";
     return await axios.get(url);
 }
 
-export const buscarTicket = async (tramiteType:TramiteType, ticketId:string) => {
+export async function buscarTicket(tramiteType:TramiteType, ticketId:string){
     const url = BACKEND_URL + `/tickets/${tramiteType}/${ticketId}`;
     return await axios.get(url);
 }
 
-export const eliminarTicket = async (tramiteType:TramiteType, ticketId:string) => {
+export async function eliminarTicket(tramiteType:TramiteType, ticketId:string){
     const url = BACKEND_URL + `/tickets/${tramiteType}/${ticketId}`;
     return await axios.delete(url);
 }

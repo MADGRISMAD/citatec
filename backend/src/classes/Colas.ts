@@ -178,7 +178,7 @@ export class Colas {
                 );
                 console.log(
                     "Se obtuvo el ticket ",
-                    ticket.numero,
+                    ticket.numeroDeControl,
                     " de la cola de ",
                     tramite,
                     " con fecha ",
@@ -246,9 +246,8 @@ export class Colas {
         numControl: number
     ): Ticket {
         const tickets: Ticket[] = this.obtenerTicketsDeCola(tramite);
-
         const ticket: Ticket | undefined = tickets.find(
-            ({ data }: Ticket) => data.numControl == numControl
+            (ticket: Ticket) => ticket.numeroDeControl == numControl && new Date(ticket.fechaProgramada) >= HOY()
         );
         if (ticket) {
             return ticket;

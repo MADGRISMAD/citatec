@@ -8,4 +8,11 @@ export const tramiteDuration: Record<TramiteType, number> = {
     [TramiteType.CONSTANCIA]: 60,
 }
 
+export const tramiteLetter: Record<TramiteType, string> = {
+    [TramiteType.INSCRIPCION]: "I",
+    [TramiteType.BECA]: "B",
+    [TramiteType.CERTIFICADO]: "C",
+    [TramiteType.CONSTANCIA]: "CO",
+}
+
 export const TIEMPOEXTRA = 5; // Tiempo extra en minutos entre trámite y trámite

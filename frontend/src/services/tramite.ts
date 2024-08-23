@@ -1,6 +1,11 @@
-import axios from 'axios';
+import axios, { AxiosResponse } from 'axios';
 import { BACKEND_URL } from '../constants/url';
-export const obtenerTramites = async () => {
+import { SetTramiteDuration } from 'shared-types';
+
+
+export async function obtenerTramites() : Promise<SetTramiteDuration[]> {
     const url = BACKEND_URL + "/tramites";
-    return await axios.get(url);
+    const res:AxiosResponse<SetTramiteDuration[]> =  await axios.get(url);
+    const tramites:SetTramiteDuration[]= res.data;  
+    return tramites;
 }

@@ -1,10 +1,11 @@
 import { TramiteType } from '../enums/TramiteType';
-import { AlumnoData } from './AlumnoData';
 export interface Ticket {
     id: string;
     letra: string;
-    numero: number;
+    numeroDeControl: number;
     tipoTramite: TramiteType;
     fechaProgramada: Date;
-    data: AlumnoData;
+}
+export interface TicketBase {
+    numeroDeControl: number;
 }
