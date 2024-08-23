@@ -115,8 +115,6 @@ export default defineComponent({
     const error = ref<string | null>(null);
     const selectedService = ref<SetTramiteDuration | null>(null);
     const appointmentAssigned = ref(false);
-    const appointmentDate = ref("");
-    const appointmentTime = ref("");
     const numeroDeControl = ref(0);
     const ticket = ref<Ticket | null>(null);
 
@@ -174,8 +172,6 @@ export default defineComponent({
       selectService,
       requestAppointment,
       appointmentAssigned,
-      appointmentDate,
-      appointmentTime,
       // formatDate,
       numeroDeControl,
       ticket,
