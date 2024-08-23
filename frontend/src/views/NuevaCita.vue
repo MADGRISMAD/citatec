@@ -106,7 +106,7 @@ vueCopy
 
 <script lang="ts">
 import { defineComponent, onMounted, ref } from "vue";
-import { SetTramiteDuration, Ticket, TramiteType } from "shared-types";
+import { SetTramiteDuration, Ticket } from "shared-types";
 import { obtenerTramites } from "@/services/tramite";
 import { crearTicket, eliminarTicket } from "@/services/ticket";
 
@@ -120,6 +120,14 @@ export default defineComponent({
     const appointmentAssigned = ref(false);
     const numeroDeControl = ref(0);
     const ticket = ref<Ticket | null>(null);
+
+    const ticketFromLS = localStorage.getItem("ticket");
+    if(ticketFromLS) {
+      const tempTicket = JSON.parse(ticketFromLS as string);
+      tempTicket.fechaProgramada = new Date(tempTicket.fechaProgramada);
+      ticket.value = tempTicket;
+      appointmentAssigned.value = true;
+    }
 
     onMounted(async () => {
       try {
@@ -152,6 +160,7 @@ export default defineComponent({
         if (ticket.value) {
           ticket.value.fechaProgramada = new Date(ticket.value.fechaProgramada);
           appointmentAssigned.value = true;
+          localStorage.setItem("ticket", JSON.stringify(ticket.value));
         } else {
           console.error("No se pudo asignar la cita");
         }
@@ -172,6 +181,7 @@ export default defineComponent({
       ticket.value = null;
       selectedService.value = null;
       numeroDeControl.value = 0;
+      localStorage.removeItem("ticket");
       console.log("Ticket eliminado");
     };
 
