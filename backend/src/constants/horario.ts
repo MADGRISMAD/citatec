@@ -1,3 +1,4 @@
+import { Dias } from "shared-types";
 import { redondearAMultiploDe5 } from "../utils/tramites";
 
 export function HOY(): Date {
@@ -16,6 +17,8 @@ function FIN_HORARIO(): Date {
     const hoy:Date = HOY();
     return new Date(hoy.getFullYear(), hoy.getMonth(), hoy.getDate(), 16, 0, 0);
 }
+
+export const DIAS_DISPONIBLES: Dias[] = [Dias.MONDAY, Dias.TUESDAY, Dias.WEDNESDAY, Dias.THURSDAY , Dias.FRIDAY];
 
 export const HORARIO: Record<string, Date> = {
     INICIO: INICIO_HORARIO(),

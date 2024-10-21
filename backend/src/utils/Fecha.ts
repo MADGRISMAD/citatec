@@ -1,12 +1,9 @@
-import { Dias } from "../../../shared/src/enums/Dias";
+import { DIAS_DISPONIBLES } from "../constants/horario";
 
 export function setSiguienteDiaDisponible(fecha: Date): Date {
-    fecha.setDate(fecha.getDate() + 1);
-    if (fecha.getDay() === Dias.SUNDAY) {
+    while(true) {
         fecha.setDate(fecha.getDate() + 1);
-    }
-    else if (fecha.getDay() === Dias.SATURDAY) {
-        fecha.setDate(fecha.getDate() + 2);
+        if(esDiaDisponible(fecha)) break;
     }
     return fecha;
 }
@@ -16,5 +13,5 @@ export function compararRangosDeFechas(a: [Date, Date], b: [Date, Date]): number
 }
 
 export function esDiaDisponible(fecha: Date): boolean {
-    return fecha.getDay() !== Dias.SUNDAY && fecha.getDay() !== Dias.SATURDAY;
+    return DIAS_DISPONIBLES.includes(fecha.getDay());
 }
