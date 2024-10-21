@@ -45,7 +45,7 @@
 
 <script lang="ts">
 import { defineComponent, ref, onMounted } from 'vue';
-
+import { outputLog } from 'shared-types';
 export default defineComponent({
   name: 'LandingPage',
   setup() {
@@ -65,12 +65,12 @@ export default defineComponent({
     });
 
     const register = () => {
-      console.log('Redirigiendo a la página de registro...');
+      outputLog('Redirigiendo a la página de registro...');
       // Aquí puedes agregar la lógica para redirigir a la página de registro
     };
 
     const login = () => {
-      console.log('Redirigiendo a la página de inicio de sesión...');
+      outputLog('Redirigiendo a la página de inicio de sesión...');
       // Aquí puedes agregar la lógica para redirigir a la página de inicio de sesión
     };
 

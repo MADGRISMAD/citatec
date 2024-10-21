@@ -106,7 +106,7 @@ vueCopy
 
 <script lang="ts">
 import { defineComponent, onMounted, ref } from "vue";
-import { SetTramiteDuration, Ticket } from "shared-types";
+import {SetTramiteDuration, Ticket, outputLog} from "shared-types";
 import { obtenerTramites } from "@/services/tramite";
 import { crearTicket, eliminarTicket } from "@/services/ticket";
 
@@ -182,7 +182,7 @@ export default defineComponent({
       selectedService.value = null;
       numeroDeControl.value = 0;
       localStorage.removeItem("ticket");
-      console.log("Ticket eliminado");
+      outputLog("Ticket eliminado");
     };
 
     // const formatDate = (dateString: string) => {

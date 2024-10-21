@@ -1,7 +1,7 @@
 import express, { Express, Request, Response } from 'express';
 import dotenv from 'dotenv';
 import { Colas } from './classes/Colas';
-import { Ticket, TramiteType } from 'shared-types';
+import { outputLog, Ticket, TramiteType } from 'shared-types';
 import { v4 as uuidv4 } from 'uuid';
 const cors = require('cors');
 dotenv.config();
@@ -35,16 +35,13 @@ const ticket: Ticket = {
 
 // colas.agregarTicket(ticket);
 // colas.agregarTicket(ticket2);
-// console.log(colas.obtenerTickets());
+// outputLog(colas.obtenerTickets());
 // Crea una variable global con las colas
 app.locals.colas = colas;
-
 
 // Rutas
 import { router as ticketsRouter } from './routes/tickets';
 import { router as tramitesRouter } from './routes/tramites';
-import { HOY } from './constants/horario';
-console.log(HOY());
 
 app.use('/tickets', ticketsRouter);
 app.use('/tramites', tramitesRouter);

@@ -47,7 +47,7 @@
   
   <script lang="ts">
   import { defineComponent, ref } from 'vue';
-  
+  import { outputLog } from 'shared-types';
   export default defineComponent({
     name: 'PlanDeEstudios',
     setup() {
@@ -68,7 +68,7 @@
           // y obtendrías la URL del archivo subido
           const fakeUploadedUrl = URL.createObjectURL(selectedFile.value);
           pdfUrl.value = fakeUploadedUrl;
-          console.log('PDF subido:', selectedFile.value.name);
+          outputLog('PDF subido:', selectedFile.value.name);
         }
       };
   

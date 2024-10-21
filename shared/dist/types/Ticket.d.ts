@@ -6,6 +6,3 @@ export interface Ticket {
     tipoTramite: TramiteType;
     fechaProgramada: Date;
 }
-export interface TicketBase {
-    numeroDeControl: number;
-}

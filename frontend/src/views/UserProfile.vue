@@ -69,7 +69,7 @@
   
   <script lang="ts">
   import { defineComponent, ref } from 'vue';
-  
+  import { outputLog } from 'shared-types';
   interface User {
     name: string;
     email: string;
@@ -94,17 +94,17 @@
       });
   
       const editProfile = () => {
-        console.log('Editar perfil');
+        outputLog('Editar perfil');
         // Implementar lógica para editar perfil
       };
   
       const viewAppointments = () => {
-        console.log('Ver citas');
+        outputLog('Ver citas');
         // Implementar lógica para ver citas
       };
   
       const requestDocument = () => {
-        console.log('Solicitar documento');
+        outputLog('Solicitar documento');
         // Implementar lógica para solicitar documento
       };
   

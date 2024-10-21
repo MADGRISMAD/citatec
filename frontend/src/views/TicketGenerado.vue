@@ -48,7 +48,7 @@
 
 <script lang="ts">
 import { defineComponent, ref, onMounted } from 'vue';
-
+import { outputLog } from 'shared-types';
 export default defineComponent({
   name: 'TicketInfo',
   setup() {
@@ -73,7 +73,7 @@ export default defineComponent({
 
     const closeTicket = () => {
       // Lógica para cerrar el ticket o redirigir al usuario
-      console.log('Cerrando ticket');
+      outputLog('Cerrando ticket');
     };
 
     return {

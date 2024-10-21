@@ -1,5 +1,5 @@
 import { TIEMPOEXTRA, tramiteDuration } from "../constants/tramite";
-import { TramiteType, Ticket } from "shared-types";
+import { TramiteType, Ticket, outputLog } from "shared-types";
 import { compararRangosDeFechas } from "../utils/Fecha";
 export class ManejadorHuecos {
 
@@ -54,18 +54,17 @@ export class ManejadorHuecos {
                 // Comprueba si el siguiente hueco es justo despues del anterior, para unir los huecos en uno
             } while (i + cadenaFinal < this.huecos.length && new Date(this.huecos[i + cadenaFinal][0]).getTime() == finHueco.getTime());
         }
-        console.log("UNDEFINED");
         return undefined;
     }
 
     cancelarTicket(ticket: Ticket): void {
-        console.log(ticket.fechaProgramada);
+        outputLog(ticket.fechaProgramada);
         const fechaInicio:Date = new Date(ticket.fechaProgramada);
         const duracion :number =
             tramiteDuration[ticket.tipoTramite as TramiteType] + TIEMPOEXTRA;
 
         const fechaFinal = new Date(fechaInicio.getTime() + duracion * 60000);
         this.agregarHueco(fechaInicio, fechaFinal);
-        console.log("Se canceló el ticket para el día ", fechaInicio);
+        outputLog("Se canceló el ticket para el día ", fechaInicio);
     }
 }

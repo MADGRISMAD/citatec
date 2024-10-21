@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { Ticket, TramiteType } from "shared-types";
+import { Ticket, TramiteType, outputLog } from "shared-types";
 import { colas } from "..";
 import { isTramiteType } from "../utils/tramites";
 import {
@@ -47,7 +47,7 @@ export function eliminarTicket(req: Request, res: Response) {
         tramiteType: TramiteType;
         ticketId: string;
     };
-    console.log(tramiteType, ticketId);
+    outputLog(tramiteType, ticketId);
     if (!tramiteType || !ticketId) {
         return res.status(400).json({ message: "Missing parameters" });
     }
@@ -98,7 +98,7 @@ export function crearTicket(req: Request, res: Response) {
         colas.agregarTicket(ticket);
         return res.status(201).send(ticket);
     } catch (e: any) {
-        console.log(e);
+        outputLog(e);
         return res.status(500).json({ message: e.message });
     }
 }

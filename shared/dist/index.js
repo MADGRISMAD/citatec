@@ -19,3 +19,4 @@ __exportStar(require("./enums/Dias"), exports);
 __exportStar(require("./types/AlumnoData"), exports);
 __exportStar(require("./types/Ticket"), exports);
 __exportStar(require("./types/SetTramiteDuration"), exports);
+__exportStar(require("./utils/logging"), exports);

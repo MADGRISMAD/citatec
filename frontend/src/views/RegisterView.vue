@@ -58,7 +58,7 @@
 
 <script lang="ts">
 import { defineComponent, reactive } from 'vue';
-
+import { outputLog } from 'shared-types';
 export default defineComponent({
   name: 'SignUp',
   setup() {
@@ -76,7 +76,7 @@ export default defineComponent({
     };
 
     const handleSubmit = () => {
-      console.log('Formulario enviado:', form);
+      outputLog('Formulario enviado:', form);
       // Aquí puedes agregar la lógica para enviar los datos al servidor
     };
 

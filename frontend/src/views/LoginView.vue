@@ -37,7 +37,7 @@
 
 <script lang="ts">
 import { defineComponent, ref, onMounted } from 'vue';
-
+import { outputLog } from 'shared-types';
 export default defineComponent({
   name: 'LoginView',
   setup() {
@@ -46,7 +46,7 @@ export default defineComponent({
     const showContent = ref(false);
 
     const handleLogin = () => {
-      console.log('Iniciando sesión con:', email.value, password.value);
+      outputLog('Iniciando sesión con:', email.value, password.value);
       // Aquí iría la lógica de autenticación
     };
 
