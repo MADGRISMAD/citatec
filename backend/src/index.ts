@@ -12,7 +12,7 @@ const port = process.env.PORT;
 
 
 app.use(cors({
-  origin: 'http://localhost:8081',
+  origin: 'http://localhost:8080',
 }));
 
 // Permite JSON (application/json) en las peticiones
