@@ -190,7 +190,14 @@ export class Colas {
                     ticket.fechaProgramada
                 );
                 // Si la fecha del ticket es mayor a la fecha actual, se devuelve
-                return ticket;
+                if(new Date(ticket.fechaProgramada) >= HOY())
+                    return ticket;
+                // Si no, se cancela el ticket y se sigue buscando
+                else {
+                    this.manejadorHuecos.cancelarTicket(ticket);
+                    this.colas[tramite].eliminarTicket(ticket);
+                    this.guardarColas();
+                }
             } catch (e) {
                 continue;
             }
@@ -269,13 +276,15 @@ export class Colas {
     }
 
     // Cancela la cita de un ticket
-    public cancelarTicket(tramiteType: TramiteType, ticketId: string): void {
+    public cancelarTicket(tramiteType: TramiteType, ticketId: string, unschedulable: boolean = false): void {
         try {
             const ticket: Ticket = this.buscarTicket(tramiteType, ticketId);
 
             this.colas[tramiteType].eliminarTicket(ticket);
 
-            this.manejadorHuecos.cancelarTicket(ticket);
+            if(unschedulable)
+                this.manejadorHuecos.cancelarTicket(ticket);
+
 
             this.guardarColas();
         } catch (e) {
@@ -288,6 +297,17 @@ export class Colas {
             );
         }
     }
+    // Obten los tickets de todas las colas
+    public obtenerTodosLosTickets(): Record<TramiteType, Ticket[]> {
+        const tickets: Record<TramiteType, Ticket[]> = {} as Record<TramiteType, Ticket[]>;
+        const tramites: TramiteType[] = Object.values(TramiteType);
+        for (const tramite of tramites) {
+            tickets[tramite] = this.colas[tramite].obtenerTickets();
+        }
+
+        return tickets;
+    }
+
 
     // Asegura que la fecha disponible no sea en el pasado
     private verificarFechaDisponible(): void {
