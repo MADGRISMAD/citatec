@@ -8,8 +8,10 @@ export function setSiguienteDiaDisponible(fecha: Date): Date {
     return fecha;
 }
 export function compararRangosDeFechas(a: [Date, Date], b: [Date, Date]): number {
-    if(a[0].getTime() !== b[0].getTime()) return a[0].getTime() - b[0].getTime();
-    return a[1].getTime() - b[1].getTime();
+    const A : [Date, Date] = [new Date(a[0]), new Date(a[1])];
+    const B : [Date, Date] = [new Date(b[0]), new Date(b[1])];
+    if(A[0].getTime() !== B[0].getTime()) return A[0].getTime() - B[0].getTime();
+    return A[1].getTime() - B[1].getTime();
 }
 
 export function esDiaDisponible(fecha: Date): boolean {
