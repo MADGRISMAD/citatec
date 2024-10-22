@@ -59,7 +59,6 @@ export class Colas {
         });
         this.fechaDisponible = new Date(data.fechaDisponible);
         this.manejadorHuecos = new ManejadorHuecos(data.manejadorHuecos.huecos);
-        this.verificarFechaDisponible();
     }
 
     // Agrega un ticket a la cola correspondiente
@@ -111,25 +110,37 @@ export class Colas {
         let fecha = new Date(this.fechaDisponible);
 
         const horaDisponible = fecha.getHours();
-
+        // Si el trámite es creado fuera de un día válido, se programa para el siguiente día válido
+        if(!esDiaDisponible(fecha)) {
+            fecha = setSiguienteDiaDisponible(fecha);
+            fecha.setHours(HORARIO.INICIO.getHours(), TIEMPOEXTRA, 0, 0);
+        }
         /* Si el trámite es creado dentro de un día válido, continua */
-        if (esDiaDisponible(fecha) && horaDisponible + minutosTramite / 60 < HORARIO.FINAL.getHours())
+        else if (
+            esDiaDisponible(fecha) &&
+            horaDisponible + minutosTramite / 60 < HORARIO.FINAL.getHours()
+        )
             redondearAMultiploDe5(fecha, fecha.getMinutes());
         else {
             /* 
             Si el trámite no cabe al final del día, se programa para el siguiente día
             y se crea un hueco en el tiempo que fué saltado */
-                const inicioHueco: Date = new Date(fecha);
-                const finalHueco: Date = new Date(fecha);
-                finalHueco.setHours(HORARIO.FINAL.getHours(), 0, 0);
-                outputLog("Se creó un hueco en el tiempo ", inicioHueco, " - ", finalHueco);
-                // outputLog(
-                //     "Fecha inicial: ",
-                //     inicioHueco,
-                //     ", fecha final:",
-                //     finalHueco
-                // );
-                this.manejadorHuecos.agregarHueco(inicioHueco, finalHueco);
+            const inicioHueco: Date = new Date(fecha);
+            const finalHueco: Date = new Date(fecha);
+            finalHueco.setHours(HORARIO.FINAL.getHours(), 0, 0);
+            outputLog(
+                "Se creó un hueco en el tiempo ",
+                inicioHueco,
+                " - ",
+                finalHueco
+            );
+            // outputLog(
+            //     "Fecha inicial: ",
+            //     inicioHueco,
+            //     ", fecha final:",
+            //     finalHueco
+            // );
+            this.manejadorHuecos.agregarHueco(inicioHueco, finalHueco);
 
             // Iniciando el siguiente día disponible
             fecha = setSiguienteDiaDisponible(fecha);
