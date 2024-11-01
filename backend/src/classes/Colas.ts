@@ -1,5 +1,5 @@
 import { DATA_DIR } from "../constants/paths";
-import { Mes, Ticket, TramiteType, outputLog } from "shared-types";
+import { Ticket, TramiteType, outputLog } from "shared-types";
 import { Cola } from "./Cola";
 import fs from "fs";
 import { NotAnymoreTicketsError, TicketNotFoundError } from "./Errores";
