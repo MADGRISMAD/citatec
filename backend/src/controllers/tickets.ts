@@ -9,6 +9,7 @@ import {
 import { v4 as uuidv4 } from "uuid";
 import { HOY } from "../constants/horario";
 import { tramiteLetter } from "../constants/tramite";
+import { Cola } from "../classes/Cola";
 
 export function buscarTicket(req: Request, res: Response) {
     const { tramiteType, ticketId } = req.params as unknown as {
@@ -32,6 +33,7 @@ export function buscarTicket(req: Request, res: Response) {
 
 export function obtenerSiguienteTicket(req: Request, res: Response) {
     try {
+        
         const ticket: Ticket = colas.obtenerSiguienteTicket();
         return res.status(200).send(ticket);
     } catch (e: any) {
@@ -43,9 +45,10 @@ export function obtenerSiguienteTicket(req: Request, res: Response) {
 }
 
 export function eliminarTicket(req: Request, res: Response) {
-    const { tramiteType, ticketId } = req.params as unknown as {
+    const { tramiteType, ticketId, unschedulable } = req.params as unknown as {
         tramiteType: TramiteType;
         ticketId: string;
+        unschedulable?: boolean;
     };
     outputLog(tramiteType, ticketId);
     if (!tramiteType || !ticketId) {
@@ -55,7 +58,8 @@ export function eliminarTicket(req: Request, res: Response) {
         return res.status(400).json({ message: "Invalid tramite type" });
     }
     try {
-        colas.cancelarTicket(tramiteType, ticketId);
+        colas.cancelarTicket(tramiteType, ticketId, unschedulable );
+
         return res.status(200).json({ message: "Ticket deleted" });
     } catch (e: any) {
         if (e instanceof TicketNotFoundError) {
@@ -99,6 +103,31 @@ export function crearTicket(req: Request, res: Response) {
         return res.status(201).send(ticket);
     } catch (e: any) {
         outputLog(e);
+        return res.status(500).json({ message: e.message });
+    }
+}
+
+export function obtenerTodosLosTickets(req: Request, res: Response) {
+    try {
+        
+        const tickets: Record<TramiteType, Ticket[]> = colas.obtenerTodosLosTickets();
+        return res.status(200).send(tickets);
+    } catch (e: any) {
+        if (e instanceof NotAnymoreTicketsError)
+            return res.status(204).json({ message: e.message });
+        else e instanceof Error;
+        return res.status(500).json({ message: e.message });
+    }
+}
+export function obtenerTicketsDelDia(req: Request, res: Response) {
+    try {
+        const{diaToDateString} = req.params as unknown as {diaToDateString: string};
+        const tickets: Ticket[] = colas.obtenerTicketsDelDia(diaToDateString);
+        return res.status(200).send(tickets);
+    } catch (e: any) {
+        if (e instanceof NotAnymoreTicketsError)
+            return res.status(204).json({ message: e.message });
+        else e instanceof Error;
         return res.status(500).json({ message: e.message });
     }
 }

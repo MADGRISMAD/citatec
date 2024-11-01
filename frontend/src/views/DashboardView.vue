@@ -6,6 +6,14 @@
           <img class="h-10 w-auto mr-4" src="@/assets/logo.png" alt="TNM Logo">
           <h1 class="text-3xl font-bold text-[#1B396A]">Dashboard del Coordinador</h1>
         </div>
+        
+        <!-- <button v-if="view==='main'" @click="toggleView()" class="px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-[#808080] hover:bg-[#808080] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#1B396A]">
+          Todos los tickets
+        </button>
+        <button v-else @click="toggleView()" class="px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-[#808080] hover:bg-[#808080] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#1B396A]">
+          Vista centralizada
+        </button> -->
+
         <button class="px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-[#1B396A] hover:bg-[#294d8e] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#1B396A]">
           Cerrar Sesión
         </button>
@@ -43,11 +51,12 @@
         <div class="bg-white shadow overflow-hidden sm:rounded-lg p-6">
           <div class="flex justify-between items-center">
             <div>
-              <p class="text-lg font-medium text-[#1B396A]">Ticket #{{ ticketEnAtencion.id }}</p>
-              <p class="text-sm text-gray-500">{{ ticketEnAtencion.service }}</p>
-              <p class="text-sm text-gray-500">{{ ticketEnAtencion.userData.name }}</p>
+              <p class="text-lg font-medium text-[#1B396A]">Ticket Num. Control {{ ticketEnAtencion.numeroDeControl }}</p>
+              <p class="text-lg font-medium text-[#1B396A]">Hora de inicio: {{ new Date(ticketEnAtencion.fechaProgramada).toLocaleTimeString("es-MX") }}</p>
+              <p class="text-lg font-medium text-[#1B396A]">Duracion: {{ tramites.filter(t => t.tramite === ticketEnAtencion?.tipoTramite)[0].duration }} min</p>
+              <p class="text-sm text-gray-500">{{ ticketEnAtencion.tipoTramite }}</p>
             </div>
-            <button @click="cerrarTicket(ticketEnAtencion.id)" 
+            <button @click="cerrarTicket(ticketEnAtencion.tipoTramite, ticketEnAtencion.id)" 
                     class="px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-[#1B396A] hover:bg-[#294d8e] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#1B396A]">
               Cerrar Ticket
             </button>
@@ -55,49 +64,47 @@
         </div>
       </div>
 
+      <div v-else class="mb-8">
+        <h2 class="text-2xl font-semibold mb-4 text-[#1B396A]">No hay tickets en atención</h2>
+        <div class="bg-white shadow overflow-hidden sm:rounded-lg p-6">
+          <p class="text-lg text-[#1B396A]">¡Excelente trabajo!</p>
+          <p class="text-sm text-gray-500">No hay tickets en atención en este momento.</p>
+          <p class="text-sm text-gray-500">Reintentando en {{ timer }} segundos
+          </p>
+        </div>
+      </div>
+
       <!-- Lista de Tickets -->
-      <div class="px-4 py-6 sm:px-0">
+      <div v-if="tickets" class="px-4 py-6 sm:px-0">
         <h2 class="text-2xl font-semibold mb-4 text-[#1B396A]">Tickets Entrantes</h2>
         <div class="bg-white shadow overflow-hidden sm:rounded-lg">
           <ul class="divide-y divide-gray-200">
-            <li v-for="ticket in ticketsActivos" :key="ticket.id" class="px-6 py-4 hover:bg-gray-50">
-              <div @click="toggleTicketDetails(ticket.id)" class="cursor-pointer">
-                <div class="flex items-center justify-between">
-                  <div class="flex-1 min-w-0">
-                    <div class="flex items-center justify-between">
-                      <p class="text-lg font-medium text-[#1B396A] truncate">
-                        Ticket #{{ ticket.id }}
-                      </p>
-                      <div class="ml-2 flex-shrink-0 flex">
-                        <p class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                          {{ ticket.status }}
-                        </p>
-                      </div>
-                    </div>
-                    <p class="mt-2 flex items-center text-sm text-gray-500">
-                      <span class="truncate">{{ ticket.service }}</span>
-                    </p>
-                    <p class="mt-1 flex items-center text-xs text-gray-500">
-                      <span>{{ ticket.timestamp }}</span>
-                    </p>
-                  </div>
-                  <div class="ml-4">
-                    <button @click.stop="atenderTicket(ticket.id)" 
-                            class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-[#1B396A] hover:bg-[#294d8e] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#1B396A]">
-                      Atender
-                    </button>
-                  </div>
-                </div>
-                
-                <!-- Detalles del usuario (expandible) -->
-                <div v-if="ticket.showDetails" class="mt-4 bg-gray-50 p-4 rounded-md">
+            <li v-for="ticket in tickets" :key="ticket.id" class="px-6 py-4 hover:bg-gray-50">
+              <div class="mb-8">
+        <div class="bg-white shadow overflow-hidden sm:rounded-lg p-6">
+          <div class="flex justify-between items-center">
+            <div>
+              <p class="text-lg font-medium text-[#1B396A]">Ticket Num. Control {{ ticket.numeroDeControl }}</p>
+              <p class="text-lg font-medium text-[#1B396A]">Hora de inicio: {{ new Date(ticket.fechaProgramada).toLocaleTimeString("es-MX") }}</p>
+              <p class="text-lg font-medium text-[#1B396A]">Duracion: {{ tramites.filter(t => t.tramite === ticket.tipoTramite)[0].duration }} min</p>
+              <p class="text-sm text-gray-500">{{ ticket.tipoTramite }}</p>
+            </div>
+            <!-- <button @click="focusTicket(ticket.id)" 
+                    class="px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-[#1B396A] hover:bg-[#294d8e] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#1B396A]">
+              Centrarse en este Ticket
+            </button> -->
+          </div>
+           
+                 <!-- Detalles del usuario (expandible) -->
+                <!-- <div v-if="ticket.showDetails" class="mt-4 bg-gray-50 p-4 rounded-md">
                   <h4 class="text-lg font-semibold mb-2 text-[#1B396A]">Detalles del Usuario</h4>
                   <p><strong>Nombre:</strong> {{ ticket.userData.name }}</p>
                   <p><strong>Matrícula:</strong> {{ ticket.userData.studentId }}</p>
                   <p><strong>Correo:</strong> {{ ticket.userData.email }}</p>
                   <p><strong>Carrera:</strong> {{ ticket.userData.major }}</p>
                   <p><strong>Semestre:</strong> {{ ticket.userData.semester }}</p>
-                </div>
+                </div> -->
+              </div>
               </div>
             </li>
           </ul>
@@ -108,8 +115,11 @@
 </template>
   
   <script lang="ts">
-  import { defineComponent, ref, computed } from 'vue';
-  
+  import { defineComponent, ref, computed, onMounted } from 'vue';
+  import { outputLog, SetTramiteDuration, Ticket, TramiteType } from 'shared-types';
+import { eliminarTicket, obtenerSiguienteTicket, obtenerTicketsDelDia } from '@/services/ticket';
+import { obtenerTramites } from '@/services/tramite';
+import { REFRESH_RATE } from '@/constants/refresh';
   interface UserData {
     name: string;
     studentId: string;
@@ -117,15 +127,7 @@
     major: string;
     semester: number;
   }
-  
-  interface Ticket {
-    id: number;
-    service: string;
-    status: 'Activo' | 'Atendiendo' | 'Atendido';
-    timestamp: string;
-    userData: UserData;
-    showDetails: boolean;
-  }
+
   
   interface Stats {
     avgWaitTime: number;
@@ -137,51 +139,26 @@
   
   export default defineComponent({
     name: 'DashboardView',
-    setup() {
-      const tickets = ref<Ticket[]>([
-        {
-          id: 1,
-          service: 'Reinscripción',
-          status: 'Activo',
-          timestamp: '2024-05-29 10:30:00',
-          userData: {
-            name: 'Juan Pérez',
-            studentId: 'A12345678',
-            email: 'juan.perez@estudiante.tecnm.mx',
-            major: 'Ingeniería en Sistemas Computacionales',
-            semester: 6
-          },
-          showDetails: false
-        },
-        {
-          id: 2,
-          service: 'Baja de materias',
-          status: 'Activo',
-          timestamp: '2024-05-29 10:35:00',
-          userData: {
-            name: 'María González',
-            studentId: 'A87654321',
-            email: 'maria.gonzalez@estudiante.tecnm.mx',
-            major: 'Ingeniería Industrial',
-            semester: 4
-          },
-          showDetails: false
-        },
-        {
-          id: 3,
-          service: 'Solicitud de constancia',
-          status: 'Activo',
-          timestamp: '2024-05-29 10:40:00',
-          userData: {
-            name: 'Carlos Rodríguez',
-            studentId: 'A23456789',
-            email: 'carlos.rodriguez@estudiante.tecnm.mx',
-            major: 'Ingeniería Mecánica',
-            semester: 8
-          },
-          showDetails: false
-        },
-      ]);
+    setup() {  
+      let timer = ref<number>(REFRESH_RATE);
+      const tramites = ref<SetTramiteDuration[]>([]);
+
+      const view = ref<"main"|"all">("main");
+      const ticketEnAtencion = ref<Ticket | null>(null);
+      const tickets = ref<Ticket[]>([]);
+
+      obtenerTramites().then(array => {
+        tramites.value = array;
+      });
+
+      obtenerTicketsDelDia().then(array => {
+        tickets.value = array;
+        ticketEnAtencion.value = tickets.value.splice(0, 1)[0];
+      });
+  
+      // const ticketsActivos = computed(() => {
+      //   return tickets.value.filter(t => t.status === 'Activo');
+      // });
   
       const stats = ref<Stats>({
         avgWaitTime: 15,
@@ -190,50 +167,77 @@
         ticketsAttendedToday: 12,
         attendanceEfficiency: 85
       });
+
   
-      const ticketEnAtencion = ref<Ticket | null>(null);
+      // const atenderTicket = (id: number) => {
+      //   const ticket = tickets.value.find(t => t.id === id);
+      //   if (ticket && ticket.status === 'Activo') {
+      //     ticket.status = 'Atendiendo';
+      //     ticketEnAtencion.value = ticket;
+      //     // Actualizar estadísticas
+      //     stats.value.waitingPeople--;
+      //   }
+      // };
   
-      const ticketsActivos = computed(() => {
-        return tickets.value.filter(t => t.status === 'Activo');
-      });
-  
-      const toggleTicketDetails = (id: number) => {
-        const ticket = tickets.value.find(t => t.id === id);
-        if (ticket) {
-          ticket.showDetails = !ticket.showDetails;
-        }
+      // const focusTicket = (id: string) => {
+      //   const ticket = tickets.value.find(t => t.id === id);
+      //   if (ticket) {
+      //     let i = 0;
+      //     // Encontrar la posición correcta
+      //     while (i < tickets.value.length && new Date(tickets.value[i].fechaProgramada).getTime() < new Date(ticketEnAtencion.value.fechaProgramada).getTime()) {
+      //         i++;
+      //     }
+      //     // Insertar el elemento moviendo los demás
+      //     tickets.value.splice(i, 0, ticketEnAtencion.value as Ticket);
+      //     ticketEnAtencion.value = ticket;
+      //     tickets.value = tickets.value.filter(t => t.id !== ticket.id);
+      //   }
+      // };
+
+      const cerrarTicket = async (tramite: TramiteType, id: string) => {
+        await eliminarTicket(tramite, id, true);
+        ticketEnAtencion.value = tickets.value.splice(0, 1)[0];
+        // Actualizar estadísticas
+        stats.value.ticketsAttendedToday++;
       };
-  
-      const atenderTicket = (id: number) => {
-        const ticket = tickets.value.find(t => t.id === id);
-        if (ticket && ticket.status === 'Activo') {
-          ticket.status = 'Atendiendo';
-          ticketEnAtencion.value = ticket;
-          // Actualizar estadísticas
-          stats.value.waitingPeople--;
-        }
+      
+      const startTimer = () => {
+        setInterval(() => {
+          if (timer.value > 0) {
+            timer.value--;
+          } else {
+            timer.value = REFRESH_RATE;
+            outputLog('Obteniendo siguiente ticket...');
+            obtenerTicketsDelDia().then(ticket => {
+              tickets.value = ticket;
+              ticketEnAtencion.value = tickets.value.splice(0, 1)[0];
+            });
+          }
+        }, 1000);
       };
-  
-      const cerrarTicket = (id: number) => {
-        const ticket = tickets.value.find(t => t.id === id);
-        if (ticket && ticket.status === 'Atendiendo') {
-          ticket.status = 'Atendido';
-          ticketEnAtencion.value = null;
-          // Actualizar estadísticas
-          stats.value.ticketsAttendedToday++;
-          stats.value.attendanceEfficiency = Math.round((stats.value.ticketsAttendedToday / stats.value.totalPeople) * 100);
-        }
+
+      onMounted(() => {
+        startTimer()
+      })
+
+      const toggleView = () => {
+        view.value = view.value === 'main' ? 'all' : 'main';
       };
-  
+
       return {
+        // focusTicket,
+        tramites,
+        timer,
+        view,
         tickets,
         stats,
         ticketEnAtencion,
-        ticketsActivos,
-        toggleTicketDetails,
-        atenderTicket,
-        cerrarTicket
+        // ticketsActivos,
+        // atenderTicket,
+        cerrarTicket,
+        toggleView
       };
+      
     }
   });
   </script>

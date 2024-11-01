@@ -34,7 +34,7 @@
     "src/**/*.vue",
     "tests/**/*.ts",
     "tests/**/*.tsx"
-  ],
+, "../backend/src/constants/horario.ts"  ],
   "exclude": [
     "node_modules"
   ]

@@ -58,7 +58,7 @@ export class ManejadorHuecos {
     }
 
     cancelarTicket(ticket: Ticket): void {
-        outputLog(ticket.fechaProgramada);
+        // Crea un hueco en un ticket cancelado
         const fechaInicio:Date = new Date(ticket.fechaProgramada);
         const duracion :number =
             tramiteDuration[ticket.tipoTramite as TramiteType] + TIEMPOEXTRA;

@@ -1,5 +1,5 @@
 import { DATA_DIR } from "../constants/paths";
-import { Ticket, TramiteType, outputLog } from "shared-types";
+import { Mes, Ticket, TramiteType, outputLog } from "shared-types";
 import { Cola } from "./Cola";
 import fs from "fs";
 import { NotAnymoreTicketsError, TicketNotFoundError } from "./Errores";
@@ -308,6 +308,25 @@ export class Colas {
         return tickets;
     }
 
+
+    public obtenerTicketsDelDia(diaToDateString:string): Ticket[] {
+        let tickets: Ticket[] = [];
+        const tramites: TramiteType[] = Object.values(TramiteType);
+        for (const tramite of tramites) {
+            tickets.push(...this.obtenerTicketsDeCola(tramite));
+        }
+
+        tickets = tickets.filter((ticket: Ticket) => {
+            const ticketToDateString = new Date(ticket.fechaProgramada).toLocaleDateString('es-MX').replace(/\//g, "-");
+            return ticketToDateString == diaToDateString;
+        });
+
+        tickets = tickets.sort((a: Ticket, b: Ticket) => {
+            return new Date(a.fechaProgramada).getTime() - new Date(b.fechaProgramada).getTime();
+        });
+        
+        return tickets;
+    }
 
     // Asegura que la fecha disponible no sea en el pasado
     private verificarFechaDisponible(): void {
