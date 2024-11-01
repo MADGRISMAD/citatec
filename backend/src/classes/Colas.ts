@@ -1,4 +1,4 @@
-import { DATA_DIR } from "../constants/paths";
+import { DATA_DIR, DATA_FOLDER } from "../constants/paths";
 import { Ticket, TramiteType, outputLog } from "shared-types";
 import { Cola } from "./Cola";
 import fs from "fs";
@@ -37,6 +37,9 @@ export class Colas {
             Object.keys(JSON.parse(fs.readFileSync(DATA_DIR).toString()))
                 .length == 0
         ) {
+            if (!fs.existsSync(DATA_FOLDER)) {
+                fs.mkdirSync(DATA_FOLDER);
+            }
             fs.writeFileSync(DATA_DIR, JSON.stringify({}));
             Object.values(TramiteType).forEach((tramite: TramiteType) => {
                 // Previene que crashee si se agrega un nuevo trámite

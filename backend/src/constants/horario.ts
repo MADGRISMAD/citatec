@@ -15,7 +15,7 @@ function INICIO_HORARIO(): Date{
 // 4:00 PM
 function FIN_HORARIO(): Date {
     const hoy:Date = HOY();
-    return new Date(hoy.getFullYear(), hoy.getMonth(), hoy.getDate(), 16, 0, 0);
+    return new Date(hoy.getFullYear(), hoy.getMonth(), hoy.getDate(), 23, 0, 0);
 }
 
 export const DIAS_DISPONIBLES: Dias[] = [Dias.MONDAY, Dias.TUESDAY, Dias.WEDNESDAY, Dias.THURSDAY , Dias.FRIDAY];
