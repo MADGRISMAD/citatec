@@ -57,7 +57,7 @@ export class ConfigManager {
             value = config[key] as T;
         }
 
-        // 3. Si aún no hay valor, usar el default proporcionado o el default global
+        // 3. Si aún no hay valor, usar el default proporcionado o el default global;
         if (value === undefined) {
             value = (defaultValue !== undefined ? defaultValue : this.defaults[key]) as T;
         }
