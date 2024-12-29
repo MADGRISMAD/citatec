@@ -1,24 +1,15 @@
 import express, { Express, Request, Response } from 'express';
-import path from 'path';
 import dotenv from 'dotenv';
 import { Colas } from './classes/Colas';
 import { Ticket, TramiteType } from 'shared-types';
 import { v4 as uuidv4 } from 'uuid';
-import { ConfigManager } from './classes/ConfigLoader';
-import { defaults } from './config/defaults';
+import ConfigManager from './lib/ConfigManager';
 
 const cors = require('cors');
-dotenv.config();
 
-export const config = ConfigManager.getInstance({
-  configPath: process.env.CONFIG_FILE_PATH,
-  defaults: {
-    ...defaults
-  },
-});
 
 const app: Express = express();
-const port = process.env.PORT;
+const port = ConfigManager.get('PORT');
 
 
 app.use(cors({
