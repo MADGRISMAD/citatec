@@ -7,34 +7,29 @@
           Tu Ticket
         </h2>
       </div>
-      
-      <div class="border-4 border-[#1B396A] rounded-lg p-6 text-center bg-[#E6EBF4]">
-        <p class="text-6xl font-bold text-[#1B396A] mb-2">{{ ticketId }}</p>
-        <p class="text-xl font-semibold text-[#1B396A]">Número de ticket</p>
-      </div>
 
       <div class="space-y-4 bg-gray-50 p-6 rounded-lg">
         <div class="flex justify-between items-center">
-          <span class="text-gray-600">Posición en la fila:</span>
-          <span class="font-semibold text-lg text-[#1B396A]">{{ queuePosition }}</span>
+          <span class="text-gray-600">Tipo de Trámite:</span>
+          <span class="font-semibold text-lg text-[#1B396A]">{{ tipoTramite }}</span>
         </div>
         <div class="flex justify-between items-center">
-          <span class="text-gray-600">Total de tickets:</span>
-          <span class="font-semibold text-lg text-[#1B396A]">{{ totalTickets }}</span>
+          <span class="text-gray-600">Fecha Programada:</span>
+          <span class="font-semibold text-lg text-[#1B396A]">{{ fechaProgramada?.toLocaleDateString('es-MX') }}</span>
         </div>
         <div class="flex justify-between items-center">
-          <span class="text-gray-600">Tiempo de espera:</span>
+          <span class="text-gray-600">Hora:</span>
+          <span class="font-semibold text-lg text-[#1B396A]">{{ fechaProgramada?.toLocaleTimeString('es-MX') }}</span>
+        </div>
+        <div v-if="estimatedWaitTime !== null" class="flex justify-between items-center">
+          <span class="text-gray-600">Tiempo estimado de espera:</span>
           <span class="font-semibold text-lg text-[#1B396A]">{{ estimatedWaitTime }} min</span>
-        </div>
-        <div class="flex justify-between items-center">
-          <span class="text-gray-600">Personas esperando:</span>
-          <span class="font-semibold text-lg text-[#1B396A]">{{ peopleWaiting }}</span>
         </div>
       </div>
 
       <div class="mt-6 bg-[#E6EBF4] border-l-4 border-[#1B396A] text-[#1B396A] p-4 rounded-r-lg" role="alert">
         <p class="font-bold mb-1">Importante</p>
-        <p>Guarda este número de ticket: <span class="font-mono font-bold text-[#294d8e]">{{ ticketId }}</span></p>
+        <p>Por favor, asegúrate de estar preparado para tu trámite.</p>
       </div>
 
       <div class="mt-8">
@@ -48,40 +43,41 @@
 
 <script lang="ts">
 import { defineComponent, ref, onMounted } from 'vue';
-import { outputLog } from 'shared-types';
+
 export default defineComponent({
   name: 'TicketInfo',
   setup() {
-    const ticketId = ref('');
-    const queuePosition = ref(0);
-    const totalTickets = ref(0);
-    const estimatedWaitTime = ref(0);
-    const peopleWaiting = ref(0);
-
-    const generateTicketId = () => {
-      return Math.floor(100000 + Math.random() * 900000).toString();
-    };
+    const tipoTramite = ref<string | null>(null);
+    const fechaProgramada = ref<Date | null>(null);
+    const estimatedWaitTime = ref<number | null>(null); // Calculado manualmente si es necesario
 
     onMounted(() => {
-      // Simular la obtención de datos
-      ticketId.value = generateTicketId();
-      queuePosition.value = Math.floor(Math.random() * 10) + 1;
-      totalTickets.value = Math.floor(Math.random() * 50) + 20;
-      estimatedWaitTime.value = queuePosition.value * 5; // 5 minutos por persona
-      peopleWaiting.value = queuePosition.value - 1;
+      try {
+        const savedTicket = localStorage.getItem('ticket');
+        if (savedTicket) {
+          const ticket = JSON.parse(savedTicket);
+          tipoTramite.value = ticket.tipoTramite;
+          fechaProgramada.value = new Date(ticket.fechaProgramada);
+
+          // Si necesitas tiempo de espera simulado, lo puedes calcular aquí
+          estimatedWaitTime.value = 5; // Ejemplo: espera de 5 minutos por defecto
+        } else {
+          console.error('No se encontró información del ticket en el almacenamiento local.');
+        }
+      } catch (error) {
+        console.error('Error al parsear el ticket desde localStorage:', error);
+      }
     });
 
     const closeTicket = () => {
-      // Lógica para cerrar el ticket o redirigir al usuario
-      outputLog('Cerrando ticket');
+      localStorage.removeItem('ticket'); // Elimina el ticket del almacenamiento local
+      alert('Ticket cerrado.'); // O redirige a otra página si es necesario
     };
 
     return {
-      ticketId,
-      queuePosition,
-      totalTickets,
+      tipoTramite,
+      fechaProgramada,
       estimatedWaitTime,
-      peopleWaiting,
       closeTicket
     };
   }
