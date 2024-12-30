@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col items-center justify-center min-h-screen bg-gray-50 overflow-hidden px-4">
+  <div class="flex flex-col items-center justify-center min-h-screen bg-gradient-to-b from-blue-100 to-gray-50 overflow-hidden px-4">
     <!-- Contenedor principal -->
     <div 
       :class="[ 
@@ -11,25 +11,25 @@
       <img 
         alt="TNM Logo" 
         src="@/assets/logo.png" 
-        class="h-40 sm:h-48 lg:h-56 mb-6"
+        class="h-40 sm:h-48 lg:h-56 mb-6 animate-fade-in"
       >
 
       <!-- Texto principal -->
-      <h1 class="text-2xl sm:text-3xl lg:text-4xl font-bold mb-4 text-[#1B396A]">
-        Bienvenido a <span class="text-[#1B396A]">CITATEC</span>
+      <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold mb-4 text-[#1B396A]">
+        Bienvenido a <span class="text-blue-600">CITATEC</span>
       </h1>
 
       <!-- Descripción -->
-      <p class="text-sm sm:text-base lg:text-lg text-gray-700 mb-8 leading-relaxed">
+      <p class="text-base sm:text-lg lg:text-xl text-gray-700 mb-8 leading-relaxed max-w-2xl">
         Control de Inscripciones y Turnos Asignados para Tecnología en Sistemas Computacionales
       </p>
 
       <!-- Botón principal -->
       <button 
-        @click="nuevaCita" 
-        class="px-8 py-3 bg-[#1B396A] text-white font-semibold rounded-lg shadow-lg hover:bg-[#294d8e] focus:outline-none focus:ring-2 focus:ring-[#1B396A] focus:ring-opacity-75 transition-transform duration-200 transform hover:scale-105"
+        @click="generarCita" 
+        class="px-8 py-3 bg-[#1B396A] text-white font-semibold rounded-full shadow-lg hover:bg-[#294d8e] focus:outline-none focus:ring-2 focus:ring-[#1B396A] focus:ring-opacity-75 transition-transform duration-200 transform hover:scale-105"
       >
-        Nueva Cita
+        Generar Cita
       </button>
     </div>
   </div>
@@ -55,14 +55,14 @@ export default defineComponent({
       }, 500);
     });
 
-    const nuevaCita = () => {
+    const generarCita = () => {
       router.push({ path: '/nueva-cita' });
     };
 
     return {
       animationStarted,
       animationComplete,
-      nuevaCita,
+      generarCita,
     };
   },
 });
