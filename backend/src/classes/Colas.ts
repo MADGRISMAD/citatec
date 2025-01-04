@@ -177,40 +177,42 @@ export class Colas {
     }
 
     // Obtiene el siguiente ticket de las colas
-    public obtenerSiguienteTicket(): Ticket {
-        const tramites: TramiteType[] = Object.values(TramiteType);
+    // public obtenerSiguienteTicket(): Ticket {
+    //     const tramites: TramiteType[] = Object.values(TramiteType);
 
-        for (const tramite of tramites) {
-            try {
-                const ticket: Ticket = this.obtenerTicket(
-                    tramite as TramiteType
-                );
-                outputLog(
-                    "Se obtuvo el ticket ",
-                    ticket.numeroDeControl,
-                    " de la cola de ",
-                    tramite,
-                    " con fecha ",
-                    ticket.fechaProgramada
-                );
-                // Sumar el tiempo del trámite
-                const fechaFinal = new Date(ticket.fechaProgramada.getTime() + tramiteDuration[ticket.tipoTramite as TramiteType] * 60 * 1000);
-                // Si la fecha del ticket es mayor a la fecha actual, se devuelve
-                if(fechaFinal >= HOY())
-                    return ticket;
-                // Si no, se cancela el ticket y se sigue buscando
-                else {
-                    this.manejadorHuecos.cancelarTicket(ticket);
-                    this.colas[tramite].eliminarTicket(ticket, TicketEstado.EXPIRADO);
-                    this.guardarColas();
-                }
-            } catch (e) {
-                continue;
-            }
-        }
+    //     for (const tramite of tramites) {
+    //         try {
+    //             const ticket: Ticket = this.obtenerTicket(
+    //                 tramite as TramiteType
+    //             );
+    //             outputLog(
+    //                 "Se obtuvo el ticket ",
+    //                 ticket.numeroDeControl,
+    //                 " de la cola de ",
+    //                 tramite,
+    //                 " con fecha ",
+    //                 ticket.fechaProgramada
+    //             );
+    //             // Sumar el tiempo del trámite
+    //             const fechaFinal = new Date(ticket.fechaProgramada.getTime() + tramiteDuration[ticket.tipoTramite as TramiteType] * 60 * 1000);
+    //             // Si la fecha del ticket es mayor a la fecha actual, se devuelve
+    //             console.log(fechaFinal, HOY(), fechaFinal >= HOY());
+    //             if(fechaFinal >= HOY())
+    //                 return ticket;
+    //             // Si no, se cancela el ticket y se sigue buscando
+    //             else {
+    //                 console.log("ENTRA");
+    //                 this.manejadorHuecos.cancelarTicket(ticket);
+    //                 this.colas[tramite].eliminarTicket(ticket, TicketEstado.EXPIRADO);
+    //                 this.guardarColas();
+    //             }
+    //         } catch (e) {
+    //             continue;
+    //         }
+    //     }
 
-        throw new NotAnymoreTicketsError("No hay más tickets en ninguna cola");
-    }
+    //     throw new NotAnymoreTicketsError("No hay más tickets en ninguna cola");
+    // }
 
     // Obtiene los tickets de una cola
     private obtenerTicket(tramite: TramiteType): Ticket {

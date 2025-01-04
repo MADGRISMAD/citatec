@@ -1,4 +1,4 @@
-import { TramiteType, TicketEstado, TicketHistorial } from "shared-types";
+import { TramiteType, TicketEstado, TicketHistorial, StatsFilter, StatResults } from "shared-types";
 import fs from 'fs';
 import ConfigManager from "./ConfigManager";
 export class TicketStatsService {
@@ -23,12 +23,7 @@ export class TicketStatsService {
         fs.writeFileSync(this.historialPath , JSON.stringify(historial));
     }
 
-    async obtenerEstadisticas(filtros?: {
-        fechaInicio?: Date;
-        fechaFin?: Date;
-        numeroDeControl?: number;
-        tipoTramite?: TramiteType;
-    }) {
+    async obtenerEstadisticas(filtros?: Partial<StatsFilter>) : Promise<StatResults> {
         const historial = await this.obtenerHistorial();
         let ticketsFiltrados = historial;
 
@@ -39,8 +34,8 @@ export class TicketStatsService {
 
                 if (filtros.fechaInicio && filtros.fechaFin) {
                     cumpleFiltros = cumpleFiltros && 
-                        ticket.fechaProgramada >= filtros.fechaInicio &&
-                        ticket.fechaProgramada <= filtros.fechaFin;
+                    new Date(ticket.fechaProgramada).getTime() >= filtros.fechaInicio &&
+                    new Date(ticket.fechaProgramada).getTime() <= filtros.fechaFin;
                 }
 
                 if (filtros.numeroDeControl) {
@@ -64,7 +59,7 @@ export class TicketStatsService {
             expirados: ticketsFiltrados.filter(t => t.estado === TicketEstado.EXPIRADO).length,
             porTipoTramite: this.agruparPorTipoTramite(ticketsFiltrados),
             tickets: ticketsFiltrados
-        };
+        } as StatResults;
     }
 
     private agruparPorTipoTramite(tickets: TicketHistorial[]) {

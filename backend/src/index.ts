@@ -39,10 +39,11 @@ app.locals.colas = colas;
 // Rutas
 import { router as ticketsRouter } from './routes/tickets';
 import { router as tramitesRouter } from './routes/tramites';
-
+import { router as statsRouter } from './routes/stats';
 
 app.use('/tickets', ticketsRouter);
 app.use('/tramites', tramitesRouter);
+app.use('/stats', statsRouter)
 // HEALTH CHECK
 app.get('/health', (req: Request, res: Response) => {
   res.send('Healthy');

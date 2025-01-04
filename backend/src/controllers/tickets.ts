@@ -28,19 +28,19 @@ export function buscarTicket(req: Request, res: Response) {
     return res.status(404).json({ message: "Ticket not found" });
 }
 
-export function obtenerSiguienteTicket(req: Request, res: Response) {
-    try {
+// export function obtenerSiguienteTicket(req: Request, res: Response) {
+//     try {
         
-        const ticket: Ticket = colas.obtenerSiguienteTicket();
+//         const ticket: Ticket = colas.obtenerSiguienteTicket();
         
-        return res.status(200).send(ticket);
-    } catch (e: any) {
-        if (e instanceof NotAnymoreTicketsError)
-            return res.status(204).json({ message: e.message });
-        else e instanceof Error;
-        return res.status(500).json({ message: e.message });
-    }
-}
+//         return res.status(200).send(ticket);
+//     } catch (e: any) {
+//         if (e instanceof NotAnymoreTicketsError)
+//             return res.status(204).json({ message: e.message });
+//         else e instanceof Error;
+//         return res.status(500).json({ message: e.message });
+//     }
+// }
 
 export function eliminarTicket(req: Request, res: Response) {
     const { tramiteType, ticketId, unschedulable, estado } = req.params as unknown as {

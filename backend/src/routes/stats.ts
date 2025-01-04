@@ -1,10 +1,9 @@
 import express from 'express';
-import { TicketStatsService } from '../classes/TicketStatsService';
 import { obtenerEstadisticas } from '../controllers/statistics';
 
-const router = express.Router();
+export const router = express.Router();
 
-router.get('/estadisticas', obtenerEstadisticas);
+router.get('/', obtenerEstadisticas);
 
 // // Endpoint para guardar en historial cuando un ticket es atendido o cancelado
 // router.post('/historial', async (req, res) => {
