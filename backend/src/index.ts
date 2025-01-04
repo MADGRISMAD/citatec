@@ -3,7 +3,7 @@ import dotenv from 'dotenv';
 import { Colas } from './classes/Colas';
 import { Ticket, TramiteType } from 'shared-types';
 import { v4 as uuidv4 } from 'uuid';
-import ConfigManager from './lib/ConfigManager';
+import ConfigManager from './classes/ConfigManager';
 
 const cors = require('cors');
 
@@ -43,7 +43,6 @@ import { router as tramitesRouter } from './routes/tramites';
 
 app.use('/tickets', ticketsRouter);
 app.use('/tramites', tramitesRouter);
-
 // HEALTH CHECK
 app.get('/health', (req: Request, res: Response) => {
   res.send('Healthy');

@@ -1,3 +1,5 @@
+import path from "path";
+
 export const defaults: Record<string, any> = {
     PORT: 3000,
     METRICS_ENDPOINT: 'http://localhost:4318/v1/metrics',
@@ -5,4 +7,6 @@ export const defaults: Record<string, any> = {
     LOGS_ENDPOINT: 'http://localhost:4318/v1/logs',
     TRACES_ENDPOINT: 'http://localhost:4318/v1/traces',
     NODE_ENV: 'development',
+    STATISTICS_PATH: path.resolve(__dirname, '../data/statistics.json'),
+    TICKET_ARCHIVE_PATH: path.resolve(__dirname, '../data/archive.json'),
 }

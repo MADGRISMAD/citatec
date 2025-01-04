@@ -3,7 +3,7 @@ import { getNodeAutoInstrumentations } from '@opentelemetry/auto-instrumentation
 import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-proto';
 import { OTLPMetricExporter } from '@opentelemetry/exporter-metrics-otlp-proto';
 import { PeriodicExportingMetricReader } from '@opentelemetry/sdk-metrics';
-import configManager from '../lib/ConfigManager';
+import configManager from '../classes/ConfigManager';
 
 const sdk = new opentelemetry.NodeSDK({
     traceExporter: new OTLPTraceExporter({

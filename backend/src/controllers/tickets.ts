@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { Ticket, TramiteType, outputLog } from "shared-types";
+import { Ticket, TicketEstado, TramiteType, outputLog } from "shared-types";
 import { colas } from "..";
 import { isTramiteType } from "../utils/tramites";
 import {
@@ -7,10 +7,7 @@ import {
     TicketNotFoundError,
 } from "../classes/Errores";
 import { v4 as uuidv4 } from "uuid";
-import { HOY } from "../constants/horario";
 import { tramiteLetter } from "../constants/tramite";
-import { Cola } from "../classes/Cola";
-
 export function buscarTicket(req: Request, res: Response) {
     const { tramiteType, ticketId } = req.params as unknown as {
         tramiteType: TramiteType;
@@ -35,6 +32,7 @@ export function obtenerSiguienteTicket(req: Request, res: Response) {
     try {
         
         const ticket: Ticket = colas.obtenerSiguienteTicket();
+        
         return res.status(200).send(ticket);
     } catch (e: any) {
         if (e instanceof NotAnymoreTicketsError)
@@ -45,12 +43,12 @@ export function obtenerSiguienteTicket(req: Request, res: Response) {
 }
 
 export function eliminarTicket(req: Request, res: Response) {
-    const { tramiteType, ticketId, unschedulable } = req.params as unknown as {
+    const { tramiteType, ticketId, unschedulable, estado } = req.params as unknown as {
         tramiteType: TramiteType;
         ticketId: string;
         unschedulable?: boolean;
+        estado: TicketEstado;
     };
-    outputLog(tramiteType, ticketId);
     if (!tramiteType || !ticketId) {
         return res.status(400).json({ message: "Missing parameters" });
     }
@@ -58,7 +56,7 @@ export function eliminarTicket(req: Request, res: Response) {
         return res.status(400).json({ message: "Invalid tramite type" });
     }
     try {
-        colas.cancelarTicket(tramiteType, ticketId, unschedulable );
+        colas.cancelarTicket(tramiteType, ticketId, unschedulable, estado );
 
         return res.status(200).json({ message: "Ticket deleted" });
     } catch (e: any) {

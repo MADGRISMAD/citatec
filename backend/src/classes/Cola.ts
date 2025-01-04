@@ -1,6 +1,8 @@
 import {Ticket} from "shared-types"
 import { NotAnymoreTicketsError } from "./Errores";
-
+import { TicketStatsService } from "./TicketStatsService";
+import { TicketEstado, TicketHistorial } from "shared-types/src/types/TicketArchive";
+const ticketStatsService = new TicketStatsService();
 export class Cola {
     constructor(public tickets: Ticket[]) {
         this.tickets = [] as Ticket[];
@@ -27,11 +29,13 @@ export class Cola {
     obtenerTickets(): Ticket[] {
         return this.tickets;
     }
-    eliminarPrimerTicket(): void {
-        this.tickets.shift();
-    }
-    eliminarTicket(ticket: Ticket): void {
+    eliminarTicket(ticket: Ticket, estado: TicketEstado): void {
         const index = this.tickets.indexOf(ticket);
         this.tickets.splice(index, 1);
+        const ticketHistorial: TicketHistorial = {
+            ...ticket,
+            estado
+        }
+        ticketStatsService.guardarEnHistorial(ticketHistorial);
     }
 }

@@ -116,7 +116,7 @@
   
   <script lang="ts">
   import { defineComponent, ref, computed, onMounted } from 'vue';
-  import { outputLog, SetTramiteDuration, Ticket, TramiteType } from 'shared-types';
+  import { outputLog, SetTramiteDuration, Ticket, TicketEstado, TramiteType } from 'shared-types';
 import { eliminarTicket, obtenerSiguienteTicket, obtenerTicketsDelDia } from '@/services/ticket';
 import { obtenerTramites } from '@/services/tramite';
 import { REFRESH_RATE } from '@/constants/refresh';
@@ -195,7 +195,7 @@ import { REFRESH_RATE } from '@/constants/refresh';
       // };
 
       const cerrarTicket = async (tramite: TramiteType, id: string) => {
-        await eliminarTicket(tramite, id, true);
+        await eliminarTicket(tramite, id, true, TicketEstado.ATENDIDO);
         ticketEnAtencion.value = tickets.value.splice(0, 1)[0];
         // Actualizar estadísticas
         stats.value.ticketsAttendedToday++;

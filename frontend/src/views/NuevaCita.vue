@@ -123,7 +123,7 @@
 
 <script lang="ts">
 import { defineComponent, onMounted, ref } from "vue";
-import {SetTramiteDuration, Ticket, outputLog} from "shared-types";
+import {SetTramiteDuration, Ticket, TicketEstado, outputLog} from "shared-types";
 import { obtenerTramites } from "@/services/tramite";
 import { crearTicket, eliminarTicket } from "@/services/ticket";
 
@@ -208,7 +208,7 @@ export default defineComponent({
     const deleteTicket = async () => {
       try {
         if(!ticket.value) return;
-        await eliminarTicket(ticket.value.tipoTramite, ticket.value.id);
+        await eliminarTicket(ticket.value.tipoTramite, ticket.value.id, false, TicketEstado.CANCELADO);
       } catch (error) {
         console.error("Error al eliminar el ticket:", error);
       }

@@ -8,6 +8,7 @@ import { TIEMPOEXTRA, tramiteDuration } from "../constants/tramite";
 import { ManejadorHuecos } from "./ManejadorHuecos";
 import { esDiaDisponible, setSiguienteDiaDisponible } from "../utils/Fecha";
 import { redondearAMultiploDe5 } from "../utils/tramites";
+import { TicketEstado } from "shared-types/src/types/TicketArchive";
 export class Colas {
     // Fecha hasta la cual se está disponible para sacar tickets
     public fechaAnterior: Date | undefined = undefined;
@@ -198,7 +199,7 @@ export class Colas {
                 // Si no, se cancela el ticket y se sigue buscando
                 else {
                     this.manejadorHuecos.cancelarTicket(ticket);
-                    this.colas[tramite].eliminarTicket(ticket);
+                    this.colas[tramite].eliminarTicket(ticket, TicketEstado.EXPIRADO);
                     this.guardarColas();
                 }
             } catch (e) {
@@ -279,11 +280,11 @@ export class Colas {
     }
 
     // Cancela la cita de un ticket
-    public cancelarTicket(tramiteType: TramiteType, ticketId: string, unschedulable: boolean = false): void {
+    public cancelarTicket(tramiteType: TramiteType, ticketId: string, unschedulable: boolean = false, estado: TicketEstado = TicketEstado.EXPIRADO): void {
         try {
             const ticket: Ticket = this.buscarTicket(tramiteType, ticketId);
 
-            this.colas[tramiteType].eliminarTicket(ticket);
+            this.colas[tramiteType].eliminarTicket(ticket,estado);
 
             if(unschedulable)
                 this.manejadorHuecos.cancelarTicket(ticket);
