@@ -8,6 +8,6 @@ router.get("/siguiente/", obtenerSiguienteTicket);
 
 router.get('/:tramiteType/:ticketId', buscarTicket);
 
-router.delete('/:tramiteType/:ticketId/:definitive/:estado', eliminarTicket);
+router.delete('/:tramiteType/:ticketId/:unschedulable/:estado', eliminarTicket);
 
 router.get("/:diaToDateString", obtenerTicketsDelDia);

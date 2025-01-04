@@ -193,8 +193,10 @@ export class Colas {
                     " con fecha ",
                     ticket.fechaProgramada
                 );
+                // Sumar el tiempo del trámite
+                const fechaFinal = new Date(ticket.fechaProgramada.getTime() + tramiteDuration[ticket.tipoTramite as TramiteType] * 60 * 1000);
                 // Si la fecha del ticket es mayor a la fecha actual, se devuelve
-                if(new Date(ticket.fechaProgramada) >= HOY())
+                if(fechaFinal >= HOY())
                     return ticket;
                 // Si no, se cancela el ticket y se sigue buscando
                 else {
@@ -285,8 +287,10 @@ export class Colas {
             const ticket: Ticket = this.buscarTicket(tramiteType, ticketId);
 
             this.colas[tramiteType].eliminarTicket(ticket,estado);
+            outputLog("Eliminando ticket", tramiteType, ticketId, unschedulable, estado);
 
-            if(unschedulable)
+            // Si el ticket no es reprogramable, se cancela sin crear hueco
+            if(!unschedulable)
                 this.manejadorHuecos.cancelarTicket(ticket);
 
 

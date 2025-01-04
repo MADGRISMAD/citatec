@@ -46,7 +46,7 @@ export function eliminarTicket(req: Request, res: Response) {
     const { tramiteType, ticketId, unschedulable, estado } = req.params as unknown as {
         tramiteType: TramiteType;
         ticketId: string;
-        unschedulable?: boolean;
+        unschedulable: boolean;
         estado: TicketEstado;
     };
     if (!tramiteType || !ticketId) {
