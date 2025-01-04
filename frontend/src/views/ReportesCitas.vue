@@ -116,23 +116,23 @@
             </dd>
           </div>
           <div
-            class="px-4 py-5 bg-white shadow rounded-lg overflow-hidden sm:p-6"
+          class="px-4 py-5 bg-white shadow rounded-lg overflow-hidden sm:p-6"
           >
-            <dt class="text-sm font-medium text-gray-500 truncate">
-              Promedio Diario
-            </dt>
-            <!-- <dd class="mt-1 text-3xl font-semibold text-[#1B396A]">{{ promedioDiario }}</dd> -->
-          </div>
-          <div
-            class="px-4 py-5 bg-white shadow rounded-lg overflow-hidden sm:p-6"
-          >
-            <dt class="text-sm font-medium text-gray-500 truncate">
-              Atendidos
-            </dt>
-            <dd class="mt-1 text-3xl font-semibold text-[#1B396A]">
-              {{ atendidos }}
-            </dd>
-          </div>
+          <dt class="text-sm font-medium text-gray-500 truncate">
+            Atendidos
+          </dt>
+          <dd class="mt-1 text-3xl font-semibold text-[#1B396A]">
+            {{ atendidos }}
+          </dd>
+        </div>
+        <div
+          class="px-4 py-5 bg-white shadow rounded-lg overflow-hidden sm:p-6"
+        >
+          <dt class="text-sm font-medium text-gray-500 truncate">
+            No Atendidos
+          </dt>
+          <dd class="mt-1 text-3xl font-semibold text-[#1B396A]">{{ cancelados + expirados }}</dd>
+        </div>
         </dl>
       </div>
 
@@ -226,6 +226,7 @@
 import { defineComponent, ref, computed, Ref, reactive, onMounted } from "vue";
 import BarChart from "./BarChart.vue";
 import {
+  SetTramiteDuration,
   StatResults,
   StatsFilter,
   Ticket,
@@ -235,6 +236,7 @@ import {
 } from "shared-types";
 import { obtenerEstadisticas } from "@/services/stats";
 import { useRoute } from "vue-router";
+import { obtenerTramites } from "@/services/tramite";
 
 export default defineComponent({
   name: "ReportesTickets",
@@ -243,6 +245,8 @@ export default defineComponent({
     const route = useRoute();
     const totaltickets: Ref<number> = ref(0);
     const atendidos: Ref<number> = ref(0);
+    const cancelados: Ref<number> = ref(0);
+    const expirados: Ref<number> = ref(0);
     const tickets: Ref<TicketHistorial[]> = ref<TicketHistorial[]>([]);
     const ticketAtendido: Ref<TicketEstado> = ref(TicketEstado.ATENDIDO);
     
@@ -257,6 +261,11 @@ export default defineComponent({
       const numeroDeControl: Ref<number | undefined> = ref<number|undefined>(route.query.numeroDeControl as unknown as number | undefined);
       const tipoTramite: Ref<TramiteType | undefined> = ref<TramiteType | undefined>(route.query.tipoTramite as TramiteType | undefined);
 
+    obtenerTramites().then((tramites) => {
+      tramites.forEach((tramite) => {
+        tramites.push(tramite);
+      });
+    });
 
     const filtro: Partial<StatsFilter> = {
       fechaInicio: fechaInicio.value.getTime(),
@@ -264,14 +273,8 @@ export default defineComponent({
       numeroDeControl: numeroDeControl.value,
       tipoTramite: tipoTramite.value,
     };
-    // Usa reactive en lugar de ref
-    const ticketsPorTipoTramite = reactive<Record<TramiteType, number>>({
-      [TramiteType.INSCRIPCION]: 0,
-      [TramiteType.BECA]: 0,
-      [TramiteType.CERTIFICADO]: 0,
-      [TramiteType.CONSTANCIA]: 0,
-    });
-
+    // @ts-expect-error No se puede asignar un valor en la inicialización
+    const ticketsPorTipoTramite = reactive<Record<TramiteType, number>>({});
     // Función para cargar los datos
     const loadData = async () => {
       try {
@@ -280,12 +283,16 @@ export default defineComponent({
           total,
           atendidos: atendidosData,
           tickets: ticketsData,
+          expirados:expiradosData,
+          cancelados:canceladosData,
           porTipoTramite,
         } = data;
 
         totaltickets.value = total;
         atendidos.value = atendidosData;
         tickets.value = ticketsData;
+        expirados.value = expiradosData;
+        cancelados.value = canceladosData;
         Object.assign(ticketsPorTipoTramite, porTipoTramite);
       } catch (error) {
         console.error("Error al cargar los datos:", error);
@@ -340,6 +347,8 @@ export default defineComponent({
       tramites,
       numeroDeControl,
       tipoTramite,
+      cancelados,
+      expirados
     };
   },
 });

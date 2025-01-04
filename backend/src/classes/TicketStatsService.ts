@@ -58,7 +58,7 @@ export class TicketStatsService {
             cancelados: ticketsFiltrados.filter(t => t.estado === TicketEstado.CANCELADO).length,
             expirados: ticketsFiltrados.filter(t => t.estado === TicketEstado.EXPIRADO).length,
             porTipoTramite: this.agruparPorTipoTramite(ticketsFiltrados),
-            tickets: ticketsFiltrados
+            tickets: ticketsFiltrados.sort((a, b) => new Date(b.fechaProgramada).getTime() - new Date(a.fechaProgramada).getTime())
         } as StatResults;
     }
 
