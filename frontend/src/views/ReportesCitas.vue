@@ -38,7 +38,7 @@
               id="start-date"
               name="start-date"
               class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-[#1B396A] focus:border-[#1B396A] sm:text-sm"
-              :value="fechaInicio.toISOString().slice(0, 16)"
+              v-model="fechaInicio"
             />
           </div>
           <div>
@@ -52,14 +52,13 @@
               id="end-date"
               name="end-date"
               class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-[#1B396A] focus:border-[#1B396A] sm:text-sm"
-              :value="fechaFin.toISOString().slice(0, 16)"
+              v-model="fechaFin"
             />
           </div>
         </div>
         <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-
           <!-- Numero de control -->
-           <div>
+          <div>
             <label
               for="numero-control"
               class="block text-sm font-medium text-gray-600"
@@ -70,9 +69,9 @@
               id="numero-control"
               name="numero-control"
               class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-[#1B396A] focus:border-[#1B396A] sm:text-sm"
-              v-model=numeroDeControl
+              v-model="numeroDeControl"
             />
-           </div>
+          </div>
           <!-- Tipo de trámite -->
           <div>
             <label
@@ -86,13 +85,25 @@
               class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-[#1B396A] focus:border-[#1B396A] sm:text-sm"
               v-model="tipoTramite"
             >
-              <option v-for="tramite in tramites" :key="tramite" :value="tramite">
+              <option
+                v-for="tramite in tramites"
+                :key="tramite"
+                :value="tramite"
+              >
                 {{ tramite }}
               </option>
             </select>
-        </div>
+          </div>
         </div>
         <button
+          @click="
+            hacerBusqueda({
+              fechaInicio: new Date(fechaInicio).toISOString().slice(0, 16),
+              fechaFin: new Date(fechaFin).toISOString().slice(0, 16),
+              numeroDeControl,
+              tipoTramite,
+            } as unknown as Partial<StatsFilter>)
+          "
           class="mt-4 px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-[#1B396A] hover:bg-[#294d8e] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#1B396A]"
         >
           Filtrar
@@ -116,23 +127,25 @@
             </dd>
           </div>
           <div
-          class="px-4 py-5 bg-white shadow rounded-lg overflow-hidden sm:p-6"
+            class="px-4 py-5 bg-white shadow rounded-lg overflow-hidden sm:p-6"
           >
-          <dt class="text-sm font-medium text-gray-500 truncate">
-            Atendidos
-          </dt>
-          <dd class="mt-1 text-3xl font-semibold text-[#1B396A]">
-            {{ atendidos }}
-          </dd>
-        </div>
-        <div
-          class="px-4 py-5 bg-white shadow rounded-lg overflow-hidden sm:p-6"
-        >
-          <dt class="text-sm font-medium text-gray-500 truncate">
-            No Atendidos
-          </dt>
-          <dd class="mt-1 text-3xl font-semibold text-[#1B396A]">{{ cancelados + expirados }}</dd>
-        </div>
+            <dt class="text-sm font-medium text-gray-500 truncate">
+              Atendidos
+            </dt>
+            <dd class="mt-1 text-3xl font-semibold text-[#1B396A]">
+              {{ atendidos }}
+            </dd>
+          </div>
+          <div
+            class="px-4 py-5 bg-white shadow rounded-lg overflow-hidden sm:p-6"
+          >
+            <dt class="text-sm font-medium text-gray-500 truncate">
+              No Atendidos
+            </dt>
+            <dd class="mt-1 text-3xl font-semibold text-[#1B396A]">
+              {{ cancelados + expirados }}
+            </dd>
+          </div>
         </dl>
       </div>
 
@@ -167,6 +180,12 @@
                   scope="col"
                   class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                 >
+                  Num. Control
+                </th>
+                <th
+                  scope="col"
+                  class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                >
                   Fecha
                 </th>
                 <th
@@ -193,6 +212,9 @@
               <tr v-for="ticket in tickets" :key="ticket.id">
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                   {{ ticket.id }}
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  {{ ticket.numeroDeControl }}
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                   {{ ticket.fechaProgramada }}
@@ -226,21 +248,23 @@
 import { defineComponent, ref, computed, Ref, reactive, onMounted } from "vue";
 import BarChart from "./BarChart.vue";
 import {
-  SetTramiteDuration,
   StatResults,
   StatsFilter,
-  Ticket,
   TicketEstado,
   TicketHistorial,
   TramiteType,
 } from "shared-types";
 import { obtenerEstadisticas } from "@/services/stats";
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import { obtenerTramites } from "@/services/tramite";
+import router from "@/router";
 
 export default defineComponent({
   name: "ReportesTickets",
   components: { BarChart },
+  methods: {
+
+  },
   setup() {
     const route = useRoute();
     const totaltickets: Ref<number> = ref(0);
@@ -249,42 +273,51 @@ export default defineComponent({
     const expirados: Ref<number> = ref(0);
     const tickets: Ref<TicketHistorial[]> = ref<TicketHistorial[]>([]);
     const ticketAtendido: Ref<TicketEstado> = ref(TicketEstado.ATENDIDO);
-    
-    const tramites = Object.values(TramiteType);
-    
-    const fechaInicio: Ref<Date> = route.query.fechaInicio
-      ? ref(new Date(route.query.fechaInicio as string))
-      : ref(new Date(Date.now() - 1000 * 60 * 60 * 24 * 7 ));
-    const fechaFin: Ref<Date> = route.query.fechaInicio
-      ? ref(new Date(route.query.fechaInicio as string))
-      : ref(new Date(Date.now()));
-      const numeroDeControl: Ref<number | undefined> = ref<number|undefined>(route.query.numeroDeControl as unknown as number | undefined);
-      const tipoTramite: Ref<TramiteType | undefined> = ref<TramiteType | undefined>(route.query.tipoTramite as TramiteType | undefined);
 
+    const tramites = ["Todos", ...Object.values(TramiteType)];
+    const fechaInicio: Ref<string> = route.query.fechaInicio
+      ? ref(route.query.fechaInicio as string)
+      : ref(
+          new Date(Date.now() - 1000 * 60 * 60 * 24 * 7)
+            .toISOString()
+            .slice(0, 16)
+        );
+    const fechaFin: Ref<string> = route.query.fechaFin
+      ? ref(route.query.fechaFin as string)
+      : ref(new Date(Date.now()).toISOString().slice(0, 16));
+    const numeroDeControl: Ref<number | undefined> = ref<number | undefined>(
+      route.query.numeroDeControl as unknown as number | undefined
+    );
+    const tipoTramite: Ref<TramiteType | undefined> = ref<
+      TramiteType | undefined
+    >(route.query.tipoTramite as TramiteType | undefined);
+    console.log(fechaInicio.value, fechaFin.value);
     obtenerTramites().then((tramites) => {
       tramites.forEach((tramite) => {
         tramites.push(tramite);
       });
     });
 
-    const filtro: Partial<StatsFilter> = {
-      fechaInicio: fechaInicio.value.getTime(),
-      fechaFin: fechaFin.value.getTime(),
+
+    // @ts-expect-error No se puede asignar un valor en la inicialización
+    const ticketsPorTipoTramite = reactive<Record<TramiteType, number>>({});
+
+    // Función para cargar los datos
+    const loadData = async () => {
+      const filtro: Partial<StatsFilter> = {
+      fechaInicio: new Date(fechaInicio.value).getTime(),
+      fechaFin: new Date(fechaFin.value).getTime(),
       numeroDeControl: numeroDeControl.value,
       tipoTramite: tipoTramite.value,
     };
-    // @ts-expect-error No se puede asignar un valor en la inicialización
-    const ticketsPorTipoTramite = reactive<Record<TramiteType, number>>({});
-    // Función para cargar los datos
-    const loadData = async () => {
       try {
         const data: StatResults = await obtenerEstadisticas(filtro);
         const {
           total,
           atendidos: atendidosData,
           tickets: ticketsData,
-          expirados:expiradosData,
-          cancelados:canceladosData,
+          expirados: expiradosData,
+          cancelados: canceladosData,
           porTipoTramite,
         } = data;
 
@@ -299,9 +332,17 @@ export default defineComponent({
       }
     };
 
+    const hacerBusqueda= async (filtros: Partial<StatsFilter>) => {
+      await router.replace({
+        query: {
+          ...filtros,
+        },
+      });
+      await loadData();
+    }
+
     // Llama a loadData cuando el componente se monta
     onMounted(loadData);
-
     const chartData = computed(() => ({
       labels: Object.keys(ticketsPorTipoTramite),
       datasets: [
@@ -348,7 +389,8 @@ export default defineComponent({
       numeroDeControl,
       tipoTramite,
       cancelados,
-      expirados
+      expirados,
+      hacerBusqueda,
     };
   },
 });

@@ -40,14 +40,13 @@ export class TicketStatsService {
 
                 if (filtros.numeroDeControl) {
                     cumpleFiltros = cumpleFiltros && 
-                        ticket.numeroDeControl === filtros.numeroDeControl;
+                        ticket.numeroDeControl == filtros.numeroDeControl;
                 }
 
                 if (filtros.tipoTramite) {
                     cumpleFiltros = cumpleFiltros && 
-                        ticket.tipoTramite === filtros.tipoTramite;
+                        ticket.tipoTramite == filtros.tipoTramite;
                 }
-
                 return cumpleFiltros;
             });
         }
