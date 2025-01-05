@@ -258,7 +258,7 @@ import { obtenerEstadisticas } from "@/services/stats";
 import { useRoute, useRouter } from "vue-router";
 import { obtenerTramites } from "@/services/tramite";
 import router from "@/router";
-
+import { toIsoStringInLocalTZ } from "@/utils/date";
 export default defineComponent({
   name: "ReportesTickets",
   components: { BarChart },
@@ -275,23 +275,36 @@ export default defineComponent({
     const ticketAtendido: Ref<TicketEstado> = ref(TicketEstado.ATENDIDO);
 
     const tramites = ["Todos", ...Object.values(TramiteType)];
+
+
+
+
+
+    
     const fechaInicio: Ref<string> = route.query.fechaInicio
-      ? ref(route.query.fechaInicio as string)
+      ? ref(toIsoStringInLocalTZ(new Date(route.query.fechaInicio as string)))
       : ref(
           new Date(Date.now() - 1000 * 60 * 60 * 24 * 7)
             .toISOString()
             .slice(0, 16)
         );
+
     const fechaFin: Ref<string> = route.query.fechaFin
-      ? ref(route.query.fechaFin as string)
+      ? ref(toIsoStringInLocalTZ(new Date(route.query.fechaFin as string)))
       : ref(new Date(Date.now()).toISOString().slice(0, 16));
+
+
+
+
+
+
+
     const numeroDeControl: Ref<number | undefined> = ref<number | undefined>(
       route.query.numeroDeControl as unknown as number | undefined
     );
     const tipoTramite: Ref<TramiteType | undefined> = ref<
       TramiteType | undefined
     >(route.query.tipoTramite as TramiteType | undefined);
-    console.log(fechaInicio.value, fechaFin.value);
     obtenerTramites().then((tramites) => {
       tramites.forEach((tramite) => {
         tramites.push(tramite);
@@ -331,6 +344,8 @@ export default defineComponent({
         console.error("Error al cargar los datos:", error);
       }
     };
+
+    
 
     const hacerBusqueda= async (filtros: Partial<StatsFilter>) => {
       await router.replace({
