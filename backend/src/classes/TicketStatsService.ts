@@ -31,10 +31,13 @@ export class TicketStatsService {
         if (filtros) {
             ticketsFiltrados = historial.filter(ticket => {
                 let cumpleFiltros = true;
+                if  (filtros.fechaInicio){
 
-                if (filtros.fechaInicio && filtros.fechaFin) {
                     cumpleFiltros = cumpleFiltros && 
-                    new Date(ticket.fechaProgramada).getTime() >= filtros.fechaInicio &&
+                    new Date(ticket.fechaProgramada).getTime() >= filtros.fechaInicio
+                }
+                if (filtros.fechaFin) {
+                    cumpleFiltros = cumpleFiltros && 
                     new Date(ticket.fechaProgramada).getTime() <= filtros.fechaFin;
                 }
 

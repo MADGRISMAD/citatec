@@ -84,11 +84,13 @@
               name="tipo-tramite"
               class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-[#1B396A] focus:border-[#1B396A] sm:text-sm"
               v-model="tipoTramite"
+              
             >
               <option
                 v-for="tramite in tramites"
                 :key="tramite"
                 :value="tramite"
+                
               >
                 {{ tramite }}
               </option>
@@ -98,8 +100,8 @@
         <button
           @click="
             hacerBusqueda({
-              fechaInicio: new Date(fechaInicio).toISOString().slice(0, 16),
-              fechaFin: new Date(fechaFin).toISOString().slice(0, 16),
+              fechaInicio: new Date(fechaInicio).getTime() - 1000 * 60 * 60 * new Date(fechaInicio).getTimezoneOffset() / 60,
+              fechaFin: new Date(fechaFin).getTime() - 1000 * 60 * 60 * new Date(fechaFin).getTimezoneOffset() / 60,
               numeroDeControl,
               tipoTramite,
             } as unknown as Partial<StatsFilter>)
@@ -217,7 +219,7 @@
                   {{ ticket.numeroDeControl }}
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  {{ ticket.fechaProgramada }}
+                  {{ new Date(ticket.fechaProgramada).toLocaleString()}}
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                   {{ ticket.tipoTramite }}
@@ -318,6 +320,7 @@ export default defineComponent({
     // Función para cargar los datos
     const loadData = async () => {
       const filtro: Partial<StatsFilter> = {
+        
       fechaInicio: new Date(fechaInicio.value).getTime(),
       fechaFin: new Date(fechaFin.value).getTime(),
       numeroDeControl: numeroDeControl.value,
@@ -347,10 +350,16 @@ export default defineComponent({
 
     
 
-    const hacerBusqueda= async (filtros: Partial<StatsFilter>) => {
+    const hacerBusqueda= async (filtros:Partial<StatsFilter>) => {
+      const queryFechaInicio = !Number.isNaN(filtros.fechaInicio) ? new Date(filtros.fechaInicio as number).toISOString().slice(0, 16): undefined;
+      const queryFechaFin =  !Number.isNaN(filtros.fechaFin) ? new Date(filtros.fechaFin as number).toISOString().slice(0, 16): undefined  ;
       await router.replace({
         query: {
-          ...filtros,
+          fechaInicio: queryFechaInicio,
+          fechaFin: queryFechaFin,
+          numeroDeControl: filtros.numeroDeControl?.toString().length as number > 0 ? filtros.numeroDeControl : undefined,
+          // @ts-expect-error El valor todos se usa para todos los tipos de trámites pero no está implementado en el enum
+          tipoTramite: filtros.tipoTramite != "Todos" ? filtros.tipoTramite : undefined,
         },
       });
       await loadData();
