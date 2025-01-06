@@ -4,7 +4,7 @@ import { Colas } from './classes/Colas';
 import { Ticket, TramiteType } from 'shared-types';
 import { v4 as uuidv4 } from 'uuid';
 import ConfigManager from './classes/ConfigManager';
-
+import dgram from 'dgram';
 const cors = require('cors');
 
 
@@ -48,7 +48,17 @@ app.use('/stats', statsRouter)
 app.get('/health', (req: Request, res: Response) => {
   res.send('Healthy');
 });
+const server = dgram.createSocket('udp4');
 
+server.bind(() => {
+  server.setBroadcast(true);
+  setInterval(() => {
+    server.send(JSON.stringify({
+      type: 'backend-discovery',
+      port: port // puerto donde corre tu API
+    }), 45678, '255.255.255.255');
+  }, 5000);
+});
 
 app.listen(port, () => {
   console.log(`[server]: Server is running at http://localhost:${port}`);

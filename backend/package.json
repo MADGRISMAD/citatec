@@ -26,6 +26,7 @@
         "@opentelemetry/semantic-conventions": "^1.28.0",
         "@opentelemetry/types": "^0.3.3",
         "cors": "^2.8.5",
+        "dgram": "^1.0.1",
         "dotenv": "^16.4.5",
         "express": "^4.19.2",
         "shared-types": "file:../shared",
