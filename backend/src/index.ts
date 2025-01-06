@@ -5,6 +5,7 @@ import { Ticket, TramiteType } from 'shared-types';
 import { v4 as uuidv4 } from 'uuid';
 import ConfigManager from './classes/ConfigManager';
 import dgram from 'dgram';
+import multer from 'multer';
 const cors = require('cors');
 
 
@@ -40,10 +41,11 @@ app.locals.colas = colas;
 import { router as ticketsRouter } from './routes/tickets';
 import { router as tramitesRouter } from './routes/tramites';
 import { router as statsRouter } from './routes/stats';
-
+import { router as materiasRouter } from './routes/materias';
 app.use('/tickets', ticketsRouter);
 app.use('/tramites', tramitesRouter);
 app.use('/stats', statsRouter)
+app.use('/materias', materiasRouter)
 // HEALTH CHECK
 app.get('/health', (req: Request, res: Response) => {
   res.send('Healthy');
@@ -59,6 +61,8 @@ server.bind(() => {
     }), 45678, '255.255.255.255');
   }, 5000);
 });
+
+
 
 app.listen(port, () => {
   console.log(`[server]: Server is running at http://localhost:${port}`);

@@ -1,39 +1,40 @@
 import { Ticket, TicketEstado, TramiteType} from "shared-types";
 import { BACKEND_URL } from "../constants/url";
-import axios, { AxiosResponse } from "axios";
+import customAxios from "../utils/axios";
+import { AxiosResponse } from "axios";
 export async function crearTicket(tramiteType: TramiteType, numeroDeControl:number) {
-    const url = `${BACKEND_URL}/tickets/${tramiteType}/${numeroDeControl}`;
-    const res:AxiosResponse<Ticket> = await axios.post(url);
+    const url = `/tickets/${tramiteType}/${numeroDeControl}`;
+    const res:AxiosResponse<Ticket> = await customAxios.post(url);
     return res.data as Ticket;
 }
 
 export async function obtenerSiguienteTicket() {
-    const url = BACKEND_URL + "/tickets/siguiente";
-    const res:AxiosResponse<Ticket> = await axios.get(url);
+    const url = "/tickets/siguiente";
+    const res:AxiosResponse<Ticket> = await customAxios.get(url);
     return res.data as Ticket;
 }
 
 export async function buscarTicket(tramiteType:TramiteType, ticketId:string){
-    const url = BACKEND_URL + `/tickets/${tramiteType}/${ticketId}`;
-    const res:AxiosResponse<Ticket> = await axios.get(url);
+    const url = `/tickets/${tramiteType}/${ticketId}`;
+    const res:AxiosResponse<Ticket> = await customAxios.get(url);
     return res.data as Ticket;
 }
 
 export async function eliminarTicket(tramiteType:TramiteType, ticketId:string, unschedulable =  false, estado: TicketEstado){
-    const url = BACKEND_URL + `/tickets/${tramiteType}/${ticketId}/${unschedulable}/${estado}`;
-    const res:AxiosResponse<Ticket> = await axios.delete(url);
+    const url = `/tickets/${tramiteType}/${ticketId}/${unschedulable}/${estado}`;
+    const res:AxiosResponse<Ticket> = await customAxios.delete(url);
     return res.data as Ticket;
 }
 
 export async function obtenerTodosLosTickets(){
-    const url = BACKEND_URL + "/tickets/todos";
-    const res:AxiosResponse<Record<TramiteType, Ticket[]>> = await axios.get(url);
+    const url = "/tickets/todos";
+    const res:AxiosResponse<Record<TramiteType, Ticket[]>> = await customAxios.get(url);
     return res.data as Record<TramiteType, Ticket[]>;
 }
 
 export async function obtenerTicketsDelDia(dia:Date = new Date()){
     const diaToDateString :string = dia.toLocaleDateString('es-MX').replace(/\//g, "-");
-    const url = BACKEND_URL + "/tickets/" + diaToDateString;
-    const res:AxiosResponse<Ticket[]> = await axios.get(url);
+    const url = "/tickets/" + diaToDateString;
+    const res:AxiosResponse<Ticket[]> = await customAxios.get(url);
     return res.data as Ticket[];
 }

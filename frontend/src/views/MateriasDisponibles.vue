@@ -45,40 +45,49 @@
   </div>
 </template>
   
-  <script lang="ts">
-  import { defineComponent, ref } from 'vue';
-  import { outputLog } from 'shared-types';
-  export default defineComponent({
-    name: 'PlanDeEstudios',
-    setup() {
-      const isTeacher = ref(true); // Esto debería venir de tu sistema de autenticación
-      const selectedFile = ref<File | null>(null);
-      const pdfUrl = ref<string | null>(null);
-  
-      const handleFileUpload = (event: Event) => {
-        const target = event.target as HTMLInputElement;
-        if (target.files && target.files.length > 0) {
-          selectedFile.value = target.files[0];
-        }
-      };
-  
-      const uploadPDF = () => {
-        if (selectedFile.value) {
-          // En una aplicación real, aquí subirías el archivo a un servidor
-          // y obtendrías la URL del archivo subido
-          const fakeUploadedUrl = URL.createObjectURL(selectedFile.value);
-          pdfUrl.value = fakeUploadedUrl;
-          outputLog('PDF subido:', selectedFile.value.name);
-        }
-      };
-  
-      return {
-        isTeacher,
-        selectedFile,
-        pdfUrl,
-        handleFileUpload,
-        uploadPDF,
-      };
-    },
-  });
-  </script>
+<script lang="ts">
+import { defineComponent, ref, onMounted } from 'vue';
+import * as materiasService from '@/services/materias';
+export default defineComponent({
+  name: 'PlanDeEstudios',
+  setup() {
+    const isTeacher = ref(true);
+    const selectedFile = ref<File | null>(null);
+    const pdfUrl = ref<string | undefined>(undefined);
+
+    // Función para cargar el PDF al montar el componente
+
+    const uploadPDF = async () => {
+      if (!selectedFile.value) return;
+      try {
+        await materiasService.uploadPDF(selectedFile.value);
+        const url = await materiasService.loadPDF();
+        pdfUrl.value = url
+      } catch (error) {
+        console.error('Error al subir el PDF:', error);
+      }
+    };
+    const handleFileUpload = (event: Event) => {
+      const target = event.target as HTMLInputElement;
+      if (target.files && target.files.length > 0) {
+        selectedFile.value = target.files[0];
+      }
+    };
+
+    
+
+    // Cargar el PDF cuando se monta el componente
+    onMounted(async () => {
+      pdfUrl.value = await materiasService.loadPDF();
+    });
+
+    return {
+      isTeacher,
+      selectedFile,
+      pdfUrl,
+      handleFileUpload,
+      uploadPDF,
+    };
+  },
+});
+</script>
