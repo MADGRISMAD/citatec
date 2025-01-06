@@ -34,8 +34,7 @@ export class Cola {
         this.tickets.splice(index, 1);
         const ticketHistorial: TicketHistorial = {
             ...ticket,
-            estado
-        }
+            estado        }
         ticketStatsService.guardarEnHistorial(ticketHistorial);
     }
 }

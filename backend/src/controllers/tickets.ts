@@ -69,16 +69,30 @@ export function eliminarTicket(req: Request, res: Response) {
 
 export function crearTicket(req: Request, res: Response) {
     try {
-        const {numeroDeControl, tramiteType} = req.params as unknown as {numeroDeControl: number, tramiteType: TramiteType};
+        const {numeroDeControl, tramiteType} = req.params as unknown as {numeroDeControl: number, tramiteType: TramiteType, letra?: string};
+        const {descripcion} = req.body as {descripcion: string};
         if (!isTramiteType(tramiteType)) {
             return res.status(400).json({ message: "Invalid tramite type" });
         }
-        const ticket = {
+        // Validar numero de control
+        const validateControlNumber = (number: string) => {
+            const regex = /^[A-Za-z]\d{8}$|^\d{8}$/;
+            return regex.test(number);
+          };
+        if (!validateControlNumber(numeroDeControl.toString())) 
+            return res.status(400).json({ message: "Invalid control number" });
+
+        let letra, numeroDeControlSinLetra;
+
+
+        const ticket:Ticket = {
             id: uuidv4(),
-            letra: tramiteLetter[tramiteType],
-            numeroDeControl: numeroDeControl,
+            letra: numeroDeControl.toString().length == 9 ? numeroDeControl.toString().charAt(0) : "",
+            numeroDeControl: numeroDeControl.toString().length == 9 ? numeroDeControl.toString().slice(1)  : numeroDeControl,
             tipoTramite: tramiteType,
-        } as Ticket;
+            descripcion: descripcion ? descripcion : "",
+        } as unknown as Ticket;
+        console.log(ticket);
         if (!ticket.tipoTramite || !ticket) {
             return res.status(400).json({ message: "Missing parameters" });
         }

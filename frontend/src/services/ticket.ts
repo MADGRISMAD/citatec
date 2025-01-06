@@ -1,10 +1,11 @@
 import { Ticket, TicketEstado, TramiteType} from "shared-types";
-import { BACKEND_URL } from "../constants/url";
 import customAxios from "../utils/axios";
 import { AxiosResponse } from "axios";
-export async function crearTicket(tramiteType: TramiteType, numeroDeControl:number) {
+export async function crearTicket(body: object, tramiteType: TramiteType, numeroDeControl:string) {
     const url = `/tickets/${tramiteType}/${numeroDeControl}`;
-    const res:AxiosResponse<Ticket> = await customAxios.post(url);
+    console.log(url);
+    const res:AxiosResponse<Ticket> = await customAxios.post(url, body);
+    console.log(res.data);
     return res.data as Ticket;
 }
 

@@ -72,6 +72,20 @@
           />
         </div>
 
+        <!-- Input for Descripcion -->
+        <div>
+          <label for="descripcion" class="block text-sm font-medium text-gray-600 mb-2">
+            Descripción
+          </label>
+          <input
+            id="descripcion"
+            v-model="descripcion"
+            type="text"
+            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1B396A]"
+            placeholder="Ingresa una descripción"
+          />
+        </div>
+
         <!-- Error Message -->
         <div v-if="errorMessage" class="text-center text-red-600 font-medium">
           {{ errorMessage }}
@@ -139,7 +153,7 @@ export default defineComponent({
     const ticket = ref<Ticket | null>(null);
     const controlNumber = ref('');
     const errorMessage = ref('');
-
+    const descripcion = ref('');
     const ticketFromLS = localStorage.getItem("ticket");
     if(ticketFromLS) {
       const tempTicket = JSON.parse(ticketFromLS as string);
@@ -174,11 +188,11 @@ export default defineComponent({
         return;
       }
       try {
-        // Llamada a la api
-        ticket.value = (await crearTicket(
-          selectedService.value.tramite,
-          Number(numeroDeControl.value)
-        )) as unknown as Ticket;
+          ticket.value = (await crearTicket( {descripcion: descripcion.value},
+            selectedService.value.tramite,
+            numeroDeControl.value
+          )) as unknown as Ticket;
+        
 
         if (ticket.value) {
           ticket.value.fechaProgramada = new Date(ticket.value.fechaProgramada);
@@ -244,6 +258,7 @@ export default defineComponent({
       createCita,
       errorMessage,
       goToTicket,
+      descripcion
     };
   },
 });
