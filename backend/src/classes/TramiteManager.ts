@@ -3,82 +3,94 @@ import ConfigManager from './ConfigManager';
 import { TramiteConfig } from 'shared-types';
 
 export class TramiteManager {
-    private tramites: Map<string, TramiteConfig> = new Map();
-
     constructor() {
         // Inicializar con los trámites por defecto
         this.loadTramitesConfig();
     }
 
     public validateTramiteType(tramite: string): 'valid' | 'inactive' | 'not_found' {
-        if (!this.tramites.has(tramite)) {
+        const tramites = this.loadTramitesConfig();
+        const foundTramite = tramites.find(t => t.nombre === tramite);
+        if (!foundTramite) {
             return 'not_found';
         }
-        return this.tramites.get(tramite)!.active ? 'valid' : 'inactive';
+        return foundTramite.active ? 'valid' : 'inactive';
     }
 
-    private loadTramitesConfig(): void {
+    private loadTramitesConfig(): TramiteConfig[] {
         try {
-            const configPath:string = ConfigManager.get("TRAMITES_PATH");
+            const configPath: string = ConfigManager.get("TRAMITES_PATH");
             const configFile = fs.readFileSync(configPath, 'utf8');
             const config = JSON.parse(configFile);
-            
-            config.tramites.forEach((tramite: TramiteConfig) => {
-                this.tramites.set(tramite.nombre, tramite);
-            });
+            return config.tramites;
         } catch (error) {
             console.error('Error loading tramites config:', error);
             // Cargar configuración por defecto si hay error
-            this.loadDefaultConfig();
+            return this.loadDefaultConfig();
         }
     }
 
     public addTramite(nombre: string, duration: number): void {
-        this.tramites.set(nombre, {
+        const tramites = this.loadTramitesConfig();
+        tramites.push({
             nombre: nombre,
             duration,
             active: true
         });
+        this.saveTramitesConfig(tramites);
     }
 
     public removeTramite(name: string): void {
-        this.tramites.get(name)!.active = false;
+        const tramites = this.loadTramitesConfig();
+        const tramite = tramites.find(t => t.nombre === name);
+        if (tramite) {
+            tramite.active = false;
+            this.saveTramitesConfig(tramites);
+        }
     }
 
     public updateTramiteDuration(name: string, duration: number): void {
-        const tramite = this.tramites.get(name);
+        const tramites = this.loadTramitesConfig();
+        const tramite = tramites.find(t => t.nombre === name);
         if (tramite) {
             tramite.duration = duration;
+            this.saveTramitesConfig(tramites);
         }
     }
 
     public getTramiteDuration(name: string): number {
-        return this.tramites.get(name)?.duration || 0;
+        const tramites = this.loadTramitesConfig();
+        const tramite = tramites.find(t => t.nombre === name);
+        return tramite ? tramite.duration : 0;
     }
 
     public getActiveTramites(): TramiteConfig[] {
-        return Array.from(this.tramites.entries())
-            .filter(([_, config]) => config.active)
-            .map(([_, tramite]) => tramite);
-    }
-    public getTramites(): TramiteConfig[] {
-        return Array.from(this.tramites.entries()).map(([_, tramite]) => tramite);
-    }
-    public getTramite(name: string): TramiteConfig | undefined {
-        return this.tramites.get(name);
+        const tramites = this.loadTramitesConfig();
+        return tramites.filter(t => t.active);
     }
 
-    private saveTramitesConfig(): void {
+    public getTramites(): TramiteConfig[] {
+        return this.loadTramitesConfig();
+    }
+
+    public getTramite(name: string): TramiteConfig | undefined {
+        const tramites = this.loadTramitesConfig();
+        return tramites.find(t => t.nombre === name);
+    }
+
+    private saveTramitesConfig(tramites: TramiteConfig[]): void {
         fs.writeFileSync(
-            ConfigManager.get("TRAMITES_PATH"), 
-            JSON.stringify(Array.from(this.tramites.entries()))
+            ConfigManager.get("TRAMITES_PATH"),
+            JSON.stringify({ tramites })
         );
     }
 
-    private loadDefaultConfig(): void {
-        this.addTramite("Inscripcion", 10);
-        this.addTramite("Beca", 5);
-        this.addTramite("Certificado", 5);
-        this.addTramite("Constancia", 60);
+    private loadDefaultConfig(): TramiteConfig[] {
+        return [
+            { nombre: "Inscripcion", duration: 10, active: true },
+            { nombre: "Beca", duration: 5, active: true },
+            { nombre: "Certificado", duration: 5, active: true },
+            { nombre: "Constancia", duration: 60, active: true }
+        ];
     }
 }
