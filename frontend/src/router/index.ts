@@ -7,6 +7,7 @@ import Login from '../views/LoginView.vue'
 import Reporte from '../views/ReportesCitas.vue'
 import user from '../views/UserProfile.vue'
 import materias from '../views/MateriasDisponibles.vue'
+import TramitesView from '@/views/TramitesView.vue'
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -46,6 +47,11 @@ const routes: Array<RouteRecordRaw> = [
     path : '/reporte',
     name : 'Reporte',
     component : Reporte
+  },
+  {
+    path: '/tramites',
+    name: 'Tramites',
+    component: TramitesView
   },
   {
     path : '/user',

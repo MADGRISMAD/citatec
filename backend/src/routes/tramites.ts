@@ -13,4 +13,4 @@ router.put('/activar', activarTramite);
 
 router.put('/desactivar', desactivarTramite);
 
-router.put('/duracion/', modificarDuracionTramite);
+router.put('/duracion', modificarDuracionTramite);
