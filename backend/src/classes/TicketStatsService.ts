@@ -1,15 +1,12 @@
 // TicketStatsService.ts
 import fs from 'fs';
 import path from 'path';
-import { createEmptyStats, createEmptyStatsBase, Ticket } from 'shared-types';
+import { createEmptyStats } from 'shared-types';
 import { 
     TicketEstado, 
     TicketHistorial, 
     Stats, 
-    StatsBase,
     addTramiteToStats,
-    removeTramiteFromStats,
-    getTramiteStats
 } from 'shared-types/src/types/TicketArchive';
 import { StatsFilter } from 'shared-types';
 

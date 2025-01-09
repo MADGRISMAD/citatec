@@ -36,7 +36,7 @@ export class TramiteManager {
             nombre: nombre,
             duration,
             active: true
-        });
+        } as TramiteConfig);
         this.saveTramitesConfig(tramites);
     }
 

@@ -1,11 +1,15 @@
+import { TramiteConfig } from "shared-types";
+import { colas } from "..";
 import { Colas } from "../classes/Colas";
+import { TramiteManager } from "../classes/TramiteManager";
 
 // TramiteService.ts
+const tramiteManager = new TramiteManager();
 export class TramiteService {
     private colas: Colas;
 
     constructor() {
-        this.colas = new Colas();
+        this.colas = colas;
     }
 
     public agregarTramite(nombre: string, duracion: number): void {
@@ -18,5 +22,15 @@ export class TramiteService {
 
     public modificarDuracionTramite(nombre: string, nuevaDuracion: number): void {
         this.colas.modificarDuracionTramite(nombre, nuevaDuracion);
+    }
+
+    public getTramites(): TramiteConfig[] {
+        return tramiteManager.getTramites();
+    }
+    public getActiveTramites(): TramiteConfig[] {
+        return tramiteManager.getActiveTramites();
+    }
+    public getTramite(nombre: string): TramiteConfig | undefined {
+        return tramiteManager.getTramite(nombre);
     }
 }

@@ -118,7 +118,7 @@ export class Colas {
             const fecha = new Date(huecoDisponible);
             outputLog(
                 "Se creó un ticket en un HUECO para el trámite ",
-                tramite,
+                tramite.nombre,
                 " con fecha ",
                 fecha
             );
@@ -178,6 +178,7 @@ export class Colas {
             " con fecha ",
             fecha
         );
+        this.guardarColas()
         return fecha;
     }
 
