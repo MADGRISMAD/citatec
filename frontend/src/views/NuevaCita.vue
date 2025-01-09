@@ -52,8 +52,8 @@
             class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1B396A]"
           >
             <option disabled selected value="">Selecciona un servicio</option>
-            <option v-for="service in services" :key="service.tramite" :value="service">
-              {{ service.tramite }} - {{ service.duration }} minutos
+            <option v-for="service in services" :key="service.nombre" :value="service">
+              {{ service.nombre }} - {{ service.duration }} minutos
             </option>
           </select>
         </div>
@@ -136,18 +136,18 @@
 
 
 <script lang="ts">
-import { defineComponent, onMounted, ref } from "vue";
-import {SetTramiteDuration, Ticket, TicketEstado, outputLog} from "shared-types";
+import { defineComponent, onMounted, reactive, ref } from "vue";
+import {Ticket, TicketEstado, TramiteConfig, outputLog} from "shared-types";
 import { obtenerTramites } from "@/services/tramite";
 import { crearTicket, eliminarTicket } from "@/services/ticket";
 
 export default defineComponent({
   name: "RequestAppointment",
   setup() {
-    const services = ref<SetTramiteDuration[]>([]);
+    const services = reactive<TramiteConfig[]>([]);
     const loading = ref(true);
     const error = ref<string | null>(null);
-    const selectedService = ref<SetTramiteDuration | null>(null);
+    const selectedService = ref<TramiteConfig | null>(null);
     const appointmentAssigned = ref(false);
     const numeroDeControl = ref('');
     const ticket = ref<Ticket | null>(null);
@@ -166,17 +166,19 @@ export default defineComponent({
 };
 
     onMounted(async () => {
+      console.log("Entra");
+
       try {
-        services.value = await obtenerTramites();
+        Object.assign(services, await obtenerTramites());
       } catch (e) {
         console.error("Error al obtener los trámites:", e);
         error.value = "No se pudieron obtener los trámites";
       } finally {
         loading.value = false;
+        console.log(services);
       }
     });
-
-    const selectService = (service: SetTramiteDuration) => {
+    const selectService = (service: TramiteConfig) => {
       selectedService.value = service;
     };
 
@@ -189,7 +191,7 @@ export default defineComponent({
       }
       try {
           ticket.value = (await crearTicket( {descripcion: descripcion.value},
-            selectedService.value.tramite,
+            selectedService.value.nombre,
             numeroDeControl.value
           )) as unknown as Ticket;
         
@@ -222,7 +224,7 @@ export default defineComponent({
     const deleteTicket = async () => {
       try {
         if(!ticket.value) return;
-        await eliminarTicket(ticket.value.tipoTramite, ticket.value.id, false, TicketEstado.CANCELADO);
+        await eliminarTicket(ticket.value.tipoTramite.nombre, ticket.value.id, false, TicketEstado.CANCELADO);
       } catch (error) {
         console.error("Error al eliminar el ticket:", error);
       }

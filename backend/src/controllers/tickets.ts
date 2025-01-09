@@ -1,22 +1,22 @@
 import { Request, Response } from "express";
-import { Ticket, TicketEstado, TramiteType, outputLog } from "shared-types";
+import { Ticket, TicketEstado, outputLog } from "shared-types";
 import { colas } from "..";
-import { isTramiteType } from "../utils/tramites";
 import {
     NotAnymoreTicketsError,
     TicketNotFoundError,
 } from "../classes/Errores";
 import { v4 as uuidv4 } from "uuid";
-import { tramiteLetter } from "../constants/tramite";
+import { TramiteManager } from "../classes/TramiteManager";
+const tramiteManager = new TramiteManager();
 export function buscarTicket(req: Request, res: Response) {
     const { tramiteType, ticketId } = req.params as unknown as {
-        tramiteType: TramiteType;
+        tramiteType: string;
         ticketId: string;
     };
     if (!tramiteType || !ticketId) {
         return res.status(400).json({ message: "Missing parameters" });
     }
-    if (!isTramiteType(tramiteType)) {
+    if (tramiteManager.validateTramiteType(tramiteType) != "valid") {
         return res.status(400).json({ message: "Invalid tramite type" });
     }
     const ticket = colas.buscarTicket(tramiteType, ticketId);
@@ -44,7 +44,7 @@ export function buscarTicket(req: Request, res: Response) {
 
 export function eliminarTicket(req: Request, res: Response) {
     const { tramiteType, ticketId, unschedulable, estado } = req.params as unknown as {
-        tramiteType: TramiteType;
+        tramiteType: string;
         ticketId: string;
         unschedulable: boolean;
         estado: TicketEstado;
@@ -52,7 +52,7 @@ export function eliminarTicket(req: Request, res: Response) {
     if (!tramiteType || !ticketId) {
         return res.status(400).json({ message: "Missing parameters" });
     }
-    if (!isTramiteType(tramiteType)) {
+    if (tramiteManager.validateTramiteType(tramiteType) != "valid") {
         return res.status(400).json({ message: "Invalid tramite type" });
     }
     try {
@@ -69,9 +69,9 @@ export function eliminarTicket(req: Request, res: Response) {
 
 export function crearTicket(req: Request, res: Response) {
     try {
-        const {numeroDeControl, tramiteType} = req.params as unknown as {numeroDeControl: number, tramiteType: TramiteType, letra?: string};
+        const {numeroDeControl, tramiteType} = req.params as unknown as {numeroDeControl: number, tramiteType: string, letra?: string};
         const {descripcion} = req.body as {descripcion: string};
-        if (!isTramiteType(tramiteType)) {
+        if (tramiteManager.validateTramiteType(tramiteType) != "valid") {
             return res.status(400).json({ message: "Invalid tramite type" });
         }
         // Validar numero de control
@@ -82,14 +82,12 @@ export function crearTicket(req: Request, res: Response) {
         if (!validateControlNumber(numeroDeControl.toString())) 
             return res.status(400).json({ message: "Invalid control number" });
 
-        let letra, numeroDeControlSinLetra;
-
 
         const ticket:Ticket = {
             id: uuidv4(),
             letra: numeroDeControl.toString().length == 9 ? numeroDeControl.toString().charAt(0) : "",
             numeroDeControl: numeroDeControl.toString().length == 9 ? numeroDeControl.toString().slice(1)  : numeroDeControl,
-            tipoTramite: tramiteType,
+            tipoTramite: tramiteManager.getTramite(tramiteType),
             descripcion: descripcion ? descripcion : "",
         } as unknown as Ticket;
         console.log(ticket);
@@ -122,7 +120,7 @@ export function crearTicket(req: Request, res: Response) {
 export function obtenerTodosLosTickets(req: Request, res: Response) {
     try {
         
-        const tickets: Record<TramiteType, Ticket[]> = colas.obtenerTodosLosTickets();
+        const tickets: Map<string, Ticket[]> = colas.obtenerTodosLosTickets();
         return res.status(200).send(tickets);
     } catch (e: any) {
         if (e instanceof NotAnymoreTicketsError)

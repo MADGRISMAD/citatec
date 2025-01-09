@@ -1,5 +1,5 @@
-import { TIEMPOEXTRA, tramiteDuration } from "../constants/tramite";
-import { TramiteType, Ticket, outputLog } from "shared-types";
+import { TIEMPOEXTRA } from "../constants/tramite";
+import { Ticket, TramiteConfig, outputLog } from "shared-types";
 import { compararRangosDeFechas } from "../utils/Fecha";
 export class ManejadorHuecos {
 
@@ -11,7 +11,6 @@ export class ManejadorHuecos {
         const nuevoHueco: [Date, Date] = [fechaInicio, fechaFinal];
 
         const index = this.huecos.findIndex(rango => compararRangosDeFechas(rango, nuevoHueco) > 0);
-
         if (index === -1) {
             this.huecos.push(nuevoHueco);
         } else {
@@ -19,8 +18,8 @@ export class ManejadorHuecos {
         }
     }
 
-    buscarHuecoDisponible(tramite: TramiteType): Date | undefined {
-        const duracionTramiteMilisegundos: number = (tramiteDuration[tramite] + TIEMPOEXTRA) * 60000;
+    buscarHuecoDisponible(tramite: TramiteConfig): Date | undefined {
+        const duracionTramiteMilisegundos: number = (tramite.duration + TIEMPOEXTRA) * 60000;
         for (let i = 0; i < this.huecos.length; i++) {
             const inicioHueco: Date = new Date(this.huecos[i][0]);
             // Comprueba si el hueco es en el pasado, lo borra
@@ -59,9 +58,10 @@ export class ManejadorHuecos {
 
     cancelarTicket(ticket: Ticket): void {
         // Crea un hueco en un ticket cancelado
+        console.log("Cancelando ticket");
         const fechaInicio:Date = new Date(ticket.fechaProgramada);
         const duracion :number =
-            tramiteDuration[ticket.tipoTramite as TramiteType] + TIEMPOEXTRA;
+            ticket.tipoTramite.duration + TIEMPOEXTRA;
 
         const fechaFinal = new Date(fechaInicio.getTime() + duracion * 60000);
         this.agregarHueco(fechaInicio, fechaFinal);

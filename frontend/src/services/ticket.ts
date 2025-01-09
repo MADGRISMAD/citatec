@@ -1,7 +1,7 @@
-import { Ticket, TicketEstado, TramiteType} from "shared-types";
+import { Ticket, TicketEstado} from "shared-types";
 import customAxios from "../utils/axios";
 import { AxiosResponse } from "axios";
-export async function crearTicket(body: object, tramiteType: TramiteType, numeroDeControl:string) {
+export async function crearTicket(body: object, tramiteType: string, numeroDeControl:string) {
     const url = `/tickets/${tramiteType}/${numeroDeControl}`;
     console.log(url);
     const res:AxiosResponse<Ticket> = await customAxios.post(url, body);
@@ -15,13 +15,13 @@ export async function obtenerSiguienteTicket() {
     return res.data as Ticket;
 }
 
-export async function buscarTicket(tramiteType:TramiteType, ticketId:string){
+export async function buscarTicket(tramiteType:string, ticketId:string){
     const url = `/tickets/${tramiteType}/${ticketId}`;
     const res:AxiosResponse<Ticket> = await customAxios.get(url);
     return res.data as Ticket;
 }
 
-export async function eliminarTicket(tramiteType:TramiteType, ticketId:string, unschedulable =  false, estado: TicketEstado){
+export async function eliminarTicket(tramiteType:string, ticketId:string, unschedulable =  false, estado: TicketEstado){
     const url = `/tickets/${tramiteType}/${ticketId}/${unschedulable}/${estado}`;
     const res:AxiosResponse<Ticket> = await customAxios.delete(url);
     return res.data as Ticket;
@@ -29,8 +29,8 @@ export async function eliminarTicket(tramiteType:TramiteType, ticketId:string, u
 
 export async function obtenerTodosLosTickets(){
     const url = "/tickets/todos";
-    const res:AxiosResponse<Record<TramiteType, Ticket[]>> = await customAxios.get(url);
-    return res.data as Record<TramiteType, Ticket[]>;
+    const res:AxiosResponse<Record<string, Ticket[]>> = await customAxios.get(url);
+    return res.data as Record<string, Ticket[]>;
 }
 
 export async function obtenerTicketsDelDia(dia:Date = new Date()){

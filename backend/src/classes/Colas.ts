@@ -1,33 +1,43 @@
-import { DATA_DIR, DATA_FOLDER } from "../constants/paths";
-import { Ticket, TramiteType, outputLog } from "shared-types";
+import { outputLog, Ticket, TramiteConfig } from "shared-types";
 import { Cola } from "./Cola";
 import fs from "fs";
 import { TicketNotFoundError } from "./Errores";
 import { HOY, HORARIO } from "../constants/horario";
-import { TIEMPOEXTRA, tramiteDuration } from "../constants/tramite";
+import { TIEMPOEXTRA } from "../constants/tramite";
 import { ManejadorHuecos } from "./ManejadorHuecos";
 import { esDiaDisponible, setSiguienteDiaDisponible } from "../utils/Fecha";
 import { redondearAMultiploDe5 } from "../utils/tramites";
 import { TicketEstado } from "shared-types/src/types/TicketArchive";
+import { TramiteManager } from "./TramiteManager";
+import { DATA_DIR, DATA_FOLDER } from "../constants/paths";
 export class Colas {
-    // Fecha hasta la cual se está disponible para sacar tickets
     public fechaAnterior: Date | undefined = undefined;
     public fechaDisponible: Date = new Date(HOY());
     private manejadorHuecos: ManejadorHuecos = new ManejadorHuecos();
-
+    private tramiteManager: TramiteManager;
     // Las colas son un objeto que contiene un conjunto de colas,
     // una por cada tipo de trámite.
-    private colas: Record<TramiteType, Cola> = {} as Record<TramiteType, Cola>;
+    private colas: Map<string, Cola> = new Map();
+
     // Inicializa las colas
     constructor() {
-        Object.values(TramiteType).forEach((tramite: TramiteType) => {
-            this.colas[tramite] = new Cola([]);
+        this.tramiteManager = new TramiteManager();
+        this.initializeColas();
+    }
+
+        private initializeColas(): void {
+        this.tramiteManager.getActiveTramites().forEach(tramite => {
+            this.colas.set(tramite.nombre, new Cola([]));
         });
     }
 
     // Guarda las colas en el archivo temporal
     private guardarColas() {
-        fs.writeFileSync(DATA_DIR, JSON.stringify(this));
+        const dataToSave = {
+            ...this,
+            colas: Object.fromEntries(this.colas)  // Convierte el Map a objeto
+        };
+        fs.writeFileSync(DATA_DIR, JSON.stringify(dataToSave));
     }
 
     // Obtiene las colas del archivo temporal
@@ -35,61 +45,72 @@ export class Colas {
         if (
             !fs.existsSync(DATA_DIR) ||
             fs.readFileSync(DATA_DIR).toString() == "" ||
-            Object.keys(JSON.parse(fs.readFileSync(DATA_DIR).toString()))
-                .length == 0
+            Object.keys(JSON.parse(fs.readFileSync(DATA_DIR).toString())).length == 0
         ) {
             if (!fs.existsSync(DATA_FOLDER)) {
                 fs.mkdirSync(DATA_FOLDER);
             }
             fs.writeFileSync(DATA_DIR, JSON.stringify({}));
-            Object.values(TramiteType).forEach((tramite: TramiteType) => {
-                // Previene que crashee si se agrega un nuevo trámite
-                this.colas[tramite] = new Cola([]);
-            });
+            this.initializeColas();
             return;
         }
-        const data: Colas = JSON.parse(fs.readFileSync(DATA_DIR).toString());
-        // Carga las colas
-        Object.values(TramiteType).forEach((tramite: TramiteType) => {
-            // Previene que crashee si se agrega un nuevo trámite
-            if (!data.colas[tramite]) {
-                data.colas[tramite] = new Cola([]);
+    
+        const data: any = JSON.parse(fs.readFileSync(DATA_DIR).toString());
+        
+        // Convertir el objeto colas a Map si existe
+        if (data.colas) {
+            this.colas = new Map(Object.entries(data.colas));
+        }
+    
+        this.tramiteManager.getActiveTramites().forEach(tramite => {
+            if (!this.colas.has(tramite.nombre)) {
+                this.colas.set(tramite.nombre, new Cola([]));
             } else {
-                this.colas[tramite] = Object.setPrototypeOf(
-                    data.colas[tramite],
-                    Cola.prototype
-                ) as Cola;
+                const colaData = this.colas.get(tramite.nombre);
+                this.colas.set(
+                    tramite.nombre,
+                    Object.setPrototypeOf(colaData, Cola.prototype) as Cola
+                );
             }
         });
+        
         this.fechaDisponible = new Date(data.fechaDisponible);
         this.manejadorHuecos = new ManejadorHuecos(data.manejadorHuecos.huecos);
+    }
+
+    public agregarNuevoTramite(nombre: string, duracion: number): void {
+        this.tramiteManager.addTramite(nombre, duracion);
+        this.colas.set(nombre, new Cola([]));
+        this.guardarColas();
+    }
+
+    public desactivarTramite(nombre: string): void {
+        this.tramiteManager.removeTramite(nombre);
+        this.guardarColas();
+    }
+
+    public modificarDuracionTramite(nombre: string, nuevaDuracion: number): void {
+        this.tramiteManager.updateTramiteDuration(nombre, nuevaDuracion);
+        this.guardarColas();
     }
 
     // Agrega un ticket a la cola correspondiente
     public agregarTicket(ticket: Ticket): void {
         this.verificarFechaDisponible();
-        const fechaHueco: Date | undefined = this.buscarHuecoDisponible(
-            ticket.tipoTramite
-        );
-        // Si hay un hueco disponible, se agrega el ticket ahí
+        const fechaHueco: Date | undefined = this.buscarHuecoDisponible(ticket.tipoTramite);
+
         if (fechaHueco) {
             ticket.fechaProgramada = new Date(fechaHueco);
-            this.colas[ticket.tipoTramite].agregarTicket(ticket, true);
+            this.colas.get(ticket.tipoTramite.nombre)?.agregarTicket(ticket, true);
         } else {
-            // Si no hay hueco disponible, se calcula la fecha para el ticket
-            ticket.fechaProgramada = this.calcularFechaParaTicket(
-                ticket.tipoTramite
-            );
-            this.colas[ticket.tipoTramite].agregarTicket(ticket, false);
-            this.calcularProximaFechaDisponible(
-                ticket.tipoTramite,
-                ticket.fechaProgramada
-            );
+            ticket.fechaProgramada = this.calcularFechaParaTicket(ticket.tipoTramite);
+            this.colas.get(ticket.tipoTramite.nombre)?.agregarTicket(ticket, false);
+            this.calcularProximaFechaDisponible(ticket.tipoTramite, ticket.fechaProgramada);
         }
         this.guardarColas();
     }
 
-    private buscarHuecoDisponible(tramite: TramiteType): Date | undefined {
+    private buscarHuecoDisponible(tramite: TramiteConfig): Date | undefined {
         const huecoDisponible =
             this.manejadorHuecos.buscarHuecoDisponible(tramite);
         // Si hay un hueco disponible y no es en el pasado, se devuelve
@@ -107,9 +128,9 @@ export class Colas {
     }
 
     // Calcula la fecha para el ticket creado
-    private calcularFechaParaTicket(tramite: TramiteType): Date {
+    private calcularFechaParaTicket(tramite: TramiteConfig): Date {
         // Sin tiempo extra porque al final del día no se atienden más trámites
-        const minutosTramite = tramiteDuration[tramite];
+        const minutosTramite = tramite.duration;
 
         let fecha = new Date(this.fechaDisponible);
 
@@ -153,7 +174,7 @@ export class Colas {
         }
         outputLog(
             "Se creó un ticket al FINAL para el trámite ",
-            tramite,
+            tramite.nombre,
             " con fecha ",
             fecha
         );
@@ -162,12 +183,12 @@ export class Colas {
 
     // Calcula la próxima fecha disponible para sacar un ticket
     private calcularProximaFechaDisponible(
-        tramite: TramiteType,
+        tramite: TramiteConfig,
         fechaUltimoTicket: Date
     ): void {
         const nuevaFecha = new Date(fechaUltimoTicket);
         // Suma el tiempo del trámite
-        const minutos = tramiteDuration[tramite] + TIEMPOEXTRA;
+        const minutos = tramite.duration + TIEMPOEXTRA;
 
         //Suma el tiempo extra (ya se sumó el tiempo de trámite)
         redondearAMultiploDe5(nuevaFecha, nuevaFecha.getMinutes() + minutos);
@@ -214,42 +235,35 @@ export class Colas {
     // }
 
     // Obtiene todos los tickets de una cola
-    public obtenerTicketsDeCola(tramite: TramiteType): Ticket[] {
-        const tickets: Ticket[] = this.colas[tramite].obtenerTickets();
-        return tickets;
+    public obtenerTicketsDeCola(tramite: string): Ticket[] {
+        return this.colas.get(tramite)?.obtenerTickets() || [];
     }
 
     // Obtiene todos los tickets de todas las colas
-    public obtenerTickets(): Record<TramiteType, Ticket[]> {
-        const tickets: Record<TramiteType, Ticket[]> = {} as Record<
-            TramiteType,
-            Ticket[]
-        >;
-        Object.values(TramiteType).forEach((tramite: TramiteType) => {
-            tickets[tramite] = this.colas[tramite].obtenerTickets();
+    public obtenerTickets(): Record<string, Ticket[]> {
+        const tickets: Record<string, Ticket[]> = {};
+        this.tramiteManager.getActiveTramites().forEach(tramite => {
+            tickets[tramite.nombre] = this.obtenerTicketsDeCola(tramite.nombre);
         });
-
         return tickets;
     }
 
     // Busca un ticket en una cola
-    public buscarTicket(tramite: TramiteType, ticketId: string): Ticket {
-        const tickets: Ticket[] = this.obtenerTicketsDeCola(tramite);
-
-        const ticket: Ticket | undefined = tickets.find(
-            ({ id }: Ticket) => id == ticketId
-        );
-        if (ticket) {
-            return ticket;
+    public buscarTicket(tramite: string, ticketId: string): Ticket {
+        const tickets = this.obtenerTicketsDeCola(tramite);
+        const ticket = tickets.find(({ id }) => id == ticketId);
+        
+        if (!ticket) {
+            throw new TicketNotFoundError(
+                `No se encontró el ticket ${ticketId} en la cola de ${tramite}`
+            );
         }
-
-        throw new TicketNotFoundError(
-            "No se encontró el ticket " + ticketId + " en la cola de " + tramite
-        );
+        
+        return ticket;
     }
 
     public buscarTicketPorNumControl(
-        tramite: TramiteType,
+        tramite: string,
         numControl: number
     ): Ticket {
         const tickets: Ticket[] = this.obtenerTicketsDeCola(tramite);
@@ -271,16 +285,20 @@ export class Colas {
     }
 
     // Cancela la cita de un ticket
-    public cancelarTicket(tramiteType: TramiteType, ticketId: string, unschedulable: boolean = false, estado: TicketEstado = TicketEstado.EXPIRADO): void {
+    public cancelarTicket(tramite: string, ticketId: string, unschedulable: boolean = false, estado: TicketEstado = TicketEstado.EXPIRADO): void {
         try {
-            const ticket: Ticket = this.buscarTicket(tramiteType, ticketId);
+            const ticket: Ticket = this.buscarTicket(tramite, ticketId);
 
-            this.colas[tramiteType].eliminarTicket(ticket,estado);
-            outputLog("Eliminando ticket", tramiteType, ticketId, unschedulable, estado);
-
+            const cola = this.colas.get(tramite);
+            if (cola) {
+                cola.eliminarTicket(ticket, estado);
+            }
+            outputLog("Eliminando ticket", tramite, ticketId, unschedulable, estado);
+            
             // Si el ticket no es reprogramable, se cancela sin crear hueco
-            if(!unschedulable)
+            if(unschedulable != true){
                 this.manejadorHuecos.cancelarTicket(ticket);
+            }
 
 
             this.guardarColas();
@@ -290,16 +308,19 @@ export class Colas {
                 "No se encontró el ticket " +
                     ticketId +
                     " en la cola de " +
-                    tramiteType
+                    tramite
             );
         }
     }
     // Obten los tickets de todas las colas
-    public obtenerTodosLosTickets(): Record<TramiteType, Ticket[]> {
-        const tickets: Record<TramiteType, Ticket[]> = {} as Record<TramiteType, Ticket[]>;
-        const tramites: TramiteType[] = Object.values(TramiteType);
+    public obtenerTodosLosTickets(): Map<string, Ticket[]> {
+        const tickets: Map<string, Ticket[]> = {} as Map<string, Ticket[]>;
+        const tramites: string[] = this.tramiteManager.getActiveTramites().map(tramite => tramite.nombre);
         for (const tramite of tramites) {
-            tickets[tramite] = this.colas[tramite].obtenerTickets();
+            const cola = this.colas.get(tramite);
+            if (cola) {
+                tickets.set(tramite, cola.obtenerTickets());
+            }
         }
 
         return tickets;
@@ -308,15 +329,18 @@ export class Colas {
 
     public obtenerTicketsDelDia(diaToDateString:string): Ticket[] {
         let tickets: Ticket[] = [];
-        const tramites: TramiteType[] = Object.values(TramiteType);
+        const tramites: string[] = this.tramiteManager.getActiveTramites().map(tramite => tramite.nombre);
         for (const tramite of tramites) {
             tickets.push(...this.obtenerTicketsDeCola(tramite));
         }
         // Filtrar los tickets que no son del día o que ya pasaron, los pasados se cancelan
         tickets = tickets.filter((ticket: Ticket) => {
-            const fechaFinalizacion = new Date(ticket.fechaProgramada).getTime() + tramiteDuration[ticket.tipoTramite] * 60 * 1000;
+            const fechaFinalizacion = new Date(ticket.fechaProgramada).getTime() + this.tramiteManager.getTramiteDuration(ticket.tipoTramite.nombre) * 60 * 1000;
             if(fechaFinalizacion < HOY().getTime()){
-                this.colas[ticket.tipoTramite].eliminarTicket(ticket, TicketEstado.EXPIRADO);
+                const cola = this.colas.get(ticket.tipoTramite.nombre);
+                if (cola) {
+                    cola.eliminarTicket(ticket, TicketEstado.EXPIRADO);
+                }
                 return false;
             }
             const ticketToDateString = new Date(ticket.fechaProgramada).toLocaleDateString('es-MX').replace(/\//g, "-");

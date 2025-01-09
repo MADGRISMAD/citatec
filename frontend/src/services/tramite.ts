@@ -1,12 +1,12 @@
 import { AxiosResponse } from 'axios';
 import { BACKEND_URL } from '../constants/url';
-import { SetTramiteDuration } from 'shared-types';
 import customAxios from '@/utils/axios';
+import { TramiteConfig } from 'shared-types';
 
 
-export async function obtenerTramites() : Promise<SetTramiteDuration[]> {
+export async function obtenerTramites() {
     const url =  "/tramites";
-    const res:AxiosResponse<SetTramiteDuration[]> =  await customAxios.get(url);
-    const tramites:SetTramiteDuration[]= res.data;  
+    const res:AxiosResponse<TramiteConfig[]> =  await customAxios.get(url);
+    const tramites:TramiteConfig[]= res.data;  
     return tramites;
 }

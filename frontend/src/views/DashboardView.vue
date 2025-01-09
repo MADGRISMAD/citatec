@@ -53,10 +53,10 @@
             <div>
               <p class="text-lg font-medium text-[#1B396A]">Ticket Num. Control {{ ticketEnAtencion.numeroDeControl }}</p>
               <p class="text-lg font-medium text-[#1B396A]">Hora de inicio: {{ new Date(ticketEnAtencion.fechaProgramada).toLocaleTimeString("es-MX") }}</p>
-              <p class="text-lg font-medium text-[#1B396A]">Duracion: {{ tramites.filter(t => t.tramite === ticketEnAtencion?.tipoTramite)[0].duration }} min</p>
+              <!-- <p class="text-lg font-medium text-[#1B396A]">Duracion: {{ tramites.filter(t => t.tramite === ticketEnAtencion?.tipoTramite)[0].duration }} min</p> -->
               <p class="text-sm text-gray-500">{{ ticketEnAtencion.tipoTramite }}</p>
             </div>
-            <button @click="cerrarTicket(ticketEnAtencion.tipoTramite, ticketEnAtencion.id)" 
+            <button @click="cerrarTicket(ticketEnAtencion.tipoTramite.nombre, ticketEnAtencion.id)" 
                     class="px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-[#1B396A] hover:bg-[#294d8e] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#1B396A]">
               Cerrar Ticket
             </button>
@@ -86,7 +86,7 @@
             <div>
               <p class="text-lg font-medium text-[#1B396A]">Ticket Num. Control {{ ticket.numeroDeControl }}</p>
               <p class="text-lg font-medium text-[#1B396A]">Hora de inicio: {{ new Date(ticket.fechaProgramada).toLocaleTimeString("es-MX") }}</p>
-              <p class="text-lg font-medium text-[#1B396A]">Duracion: {{ tramites.filter(t => t.tramite === ticket.tipoTramite)[0].duration }} min</p>
+              <!-- <p class="text-lg font-medium text-[#1B396A]">Duracion: {{ tramites.filter(t => t.tramite === ticket.tipoTramite)[0].duration }} min</p> -->
               <p class="text-sm text-gray-500">{{ ticket.tipoTramite }}</p>
             </div>
             <!-- <button @click="focusTicket(ticket.id)" 
@@ -116,7 +116,7 @@
   
   <script lang="ts">
   import { defineComponent, ref, computed, onMounted } from 'vue';
-  import { outputLog, SetTramiteDuration, Ticket, TicketEstado, TramiteType } from 'shared-types';
+  import { outputLog, Ticket, TicketEstado } from 'shared-types';
 import { eliminarTicket, obtenerSiguienteTicket, obtenerTicketsDelDia } from '@/services/ticket';
 import { obtenerTramites } from '@/services/tramite';
 import { REFRESH_RATE } from '@/constants/refresh';
@@ -141,14 +141,13 @@ import { REFRESH_RATE } from '@/constants/refresh';
     name: 'DashboardView',
     setup() {  
       let timer = ref<number>(REFRESH_RATE);
-      const tramites = ref<SetTramiteDuration[]>([]);
 
       const view = ref<"main"|"all">("main");
       const ticketEnAtencion = ref<Ticket | null>(null);
       const tickets = ref<Ticket[]>([]);
 
       obtenerTramites().then(array => {
-        tramites.value = array;
+        // tramites.value = array;
       });
 
       obtenerTicketsDelDia().then(array => {
@@ -194,7 +193,7 @@ import { REFRESH_RATE } from '@/constants/refresh';
       //   }
       // };
 
-      const cerrarTicket = async (tramite: TramiteType, id: string) => {
+      const cerrarTicket = async (tramite: string, id: string) => {
         await eliminarTicket(tramite, id, true, TicketEstado.ATENDIDO);
         ticketEnAtencion.value = tickets.value.splice(0, 1)[0];
         // Actualizar estadísticas
@@ -226,7 +225,7 @@ import { REFRESH_RATE } from '@/constants/refresh';
 
       return {
         // focusTicket,
-        tramites,
+        // tramites,
         timer,
         view,
         tickets,

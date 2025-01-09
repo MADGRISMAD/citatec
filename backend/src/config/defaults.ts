@@ -10,4 +10,5 @@ export const defaults: Record<string, any> = {
     STATISTICS_PATH: path.resolve(__dirname, '../data/statistics.json'),
     TICKET_ARCHIVE_PATH: path.resolve(__dirname, '../data/archive.json'),
     MATERIAS_PATH: path.resolve(__dirname, '../data/materias.pdf'),
+    TRAMITES_PATH: path.resolve(__dirname, '../data/tramites.json'),
 }

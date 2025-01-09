@@ -87,7 +87,7 @@
               
             >
               <option
-                v-for="tramite in tramites"
+                v-for="tramite in tramitesSelect"
                 :key="tramite"
                 :value="tramite"
                 
@@ -222,21 +222,24 @@
                   {{ new Date(ticket.fechaProgramada).toLocaleString()}}
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                  {{ ticket.tipoTramite }}
+                  {{ ticket.tipoTramite.nombre }}
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
                   <span
-                    :class="[
-                      'px-2 inline-flex text-xs leading-5 font-semibold rounded-full',
-                      ticket.estado === ticketAtendido
-                        ? 'bg-green-100 text-green-800'
-                        : 'bg-red-100 text-red-800',
-                    ]"
+                  :class="[
+                    'px-2 inline-flex text-xs leading-5 font-semibold rounded-full',
+                    ticket.estado === ticketAtendido
+                    ? 'bg-green-100 text-green-800'
+                    : 'bg-red-100 text-red-800',
+                  ]"
                   >
-                    {{ ticket.estado }}
-                  </span>
-                </td>
-                <!-- <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ ticket. }} min</td> -->
+                  {{ ticket.estado }}
+                </span>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                {{ ticket.tipoTramite.duration }} min
+              </td>
+              <!-- <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ ticket. }} min</td> -->
               </tr>
             </tbody>
           </table>
@@ -250,11 +253,11 @@
 import { defineComponent, ref, computed, Ref, reactive, onMounted } from "vue";
 import BarChart from "./BarChart.vue";
 import {
-  StatResults,
+  Stats,
   StatsFilter,
   TicketEstado,
   TicketHistorial,
-  TramiteType,
+  TramiteConfig,
 } from "shared-types";
 import { obtenerEstadisticas } from "@/services/stats";
 import { useRoute, useRouter } from "vue-router";
@@ -276,7 +279,13 @@ export default defineComponent({
     const tickets: Ref<TicketHistorial[]> = ref<TicketHistorial[]>([]);
     const ticketAtendido: Ref<TicketEstado> = ref(TicketEstado.ATENDIDO);
 
-    const tramites = ["Todos", ...Object.values(TramiteType)];
+    let tramitesSelect = ["Todos"];
+    obtenerTramites().then((tramites) => {
+      tramites.forEach((tramite) => {
+        tramitesSelect.push(tramite.nombre);
+      });
+    });
+
 
 
 
@@ -304,9 +313,9 @@ export default defineComponent({
     const numeroDeControl: Ref<number | undefined> = ref<number | undefined>(
       route.query.numeroDeControl as unknown as number | undefined
     );
-    const tipoTramite: Ref<TramiteType | undefined> = ref<
-      TramiteType | undefined
-    >(route.query.tipoTramite as TramiteType | undefined);
+    const tipoTramite: Ref<string | undefined> = ref<
+      string | undefined
+    >(route.query.tipoTramite as string | undefined);
     obtenerTramites().then((tramites) => {
       tramites.forEach((tramite) => {
         tramites.push(tramite);
@@ -314,8 +323,7 @@ export default defineComponent({
     });
 
 
-    // @ts-expect-error No se puede asignar un valor en la inicialización
-    const ticketsPorTipoTramite = reactive<Record<TramiteType, number>>({});
+    const ticketsPorTipoTramite = ref<Record<string, number>>({});
 
     // Función para cargar los datos
     const loadData = async () => {
@@ -327,7 +335,7 @@ export default defineComponent({
       tipoTramite: tipoTramite.value,
     };
       try {
-        const data: StatResults = await obtenerEstadisticas(filtro);
+        const data: Stats = await obtenerEstadisticas(filtro);
         const {
           total,
           atendidos: atendidosData,
@@ -342,7 +350,7 @@ export default defineComponent({
         tickets.value = ticketsData;
         expirados.value = expiradosData;
         cancelados.value = canceladosData;
-        Object.assign(ticketsPorTipoTramite, porTipoTramite);
+        ticketsPorTipoTramite.value = porTipoTramite;
       } catch (error) {
         console.error("Error al cargar los datos:", error);
       }
@@ -358,21 +366,19 @@ export default defineComponent({
           fechaInicio: queryFechaInicio,
           fechaFin: queryFechaFin,
           numeroDeControl: filtros.numeroDeControl?.toString().length as number > 0 ? filtros.numeroDeControl : undefined,
-          // @ts-expect-error El valor todos se usa para todos los tipos de trámites pero no está implementado en el enum
           tipoTramite: filtros.tipoTramite != "Todos" ? filtros.tipoTramite : undefined,
         },
       });
       await loadData();
     }
-
     // Llama a loadData cuando el componente se monta
     onMounted(loadData);
     const chartData = computed(() => ({
-      labels: Object.keys(ticketsPorTipoTramite),
+      labels: Object.keys(ticketsPorTipoTramite.value),
       datasets: [
         {
           label: "Número de tickets",
-          data: Object.values(ticketsPorTipoTramite),
+          data: Object.values(ticketsPorTipoTramite.value),
           backgroundColor: "rgba(79, 70, 229, 0.6)",
           borderColor: "rgba(79, 70, 229, 1)",
           borderWidth: 1,
@@ -409,7 +415,7 @@ export default defineComponent({
       chartOptions,
       ticketAtendido,
       atendidos,
-      tramites,
+      tramitesSelect,
       numeroDeControl,
       tipoTramite,
       cancelados,
