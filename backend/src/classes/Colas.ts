@@ -62,7 +62,7 @@ export class Colas {
             this.colas = new Map(Object.entries(data.colas));
         }
     
-        this.tramiteManager.getActiveTramites().forEach(tramite => {
+        this.tramiteManager.getTramites().forEach(tramite => {
             if (!this.colas.has(tramite.nombre)) {
                 this.colas.set(tramite.nombre, new Cola([]));
             } else {
@@ -84,6 +84,12 @@ export class Colas {
         this.guardarColas();
     }
 
+    public activarTramite(nombre: string): void {
+        this.tramiteManager.activateTramite(nombre);
+        this.colas.set(nombre, new Cola([]));
+        this.guardarColas();
+    }
+
     public desactivarTramite(nombre: string): void {
         this.tramiteManager.removeTramite(nombre);
         this.guardarColas();
@@ -101,7 +107,10 @@ export class Colas {
 
         if (fechaHueco) {
             ticket.fechaProgramada = new Date(fechaHueco);
-            this.colas.get(ticket.tipoTramite.nombre)?.agregarTicket(ticket, true);
+            const cola:Cola = this.colas.get(ticket.tipoTramite.nombre) as Cola;
+            if (cola) {
+                cola.agregarTicket(ticket, true);
+            }
         } else {
             ticket.fechaProgramada = this.calcularFechaParaTicket(ticket.tipoTramite);
             this.colas.get(ticket.tipoTramite.nombre)?.agregarTicket(ticket, false);

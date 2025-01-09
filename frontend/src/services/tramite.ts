@@ -10,3 +10,9 @@ export async function obtenerTramites() {
     const tramites:TramiteConfig[]= res.data;  
     return tramites;
 }
+export async function obtenerTramitesActivos() {
+    const url =  "/tramites/activos";
+    const res:AxiosResponse<TramiteConfig[]> =  await customAxios.get(url);
+    const tramites:TramiteConfig[]= res.data;  
+    return tramites;
+}

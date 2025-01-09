@@ -6,8 +6,8 @@ import {
     TicketNotFoundError,
 } from "../classes/Errores";
 import { v4 as uuidv4 } from "uuid";
-import { TramiteManager } from "../classes/TramiteManager";
-const tramiteManager = new TramiteManager();
+import { TramiteService } from "../services/TramiteService";
+const tramiteService = new TramiteService();
 export function buscarTicket(req: Request, res: Response) {
     const { tramiteType, ticketId } = req.params as unknown as {
         tramiteType: string;
@@ -16,7 +16,7 @@ export function buscarTicket(req: Request, res: Response) {
     if (!tramiteType || !ticketId) {
         return res.status(400).json({ message: "Missing parameters" });
     }
-    if (tramiteManager.validateTramiteType(tramiteType) != "valid") {
+    if (tramiteService.validateTramiteType(tramiteType)) {
         return res.status(400).json({ message: "Invalid tramite type" });
     }
     const ticket = colas.buscarTicket(tramiteType, ticketId);
@@ -52,9 +52,6 @@ export function eliminarTicket(req: Request, res: Response) {
     if (!tramiteType || !ticketId) {
         return res.status(400).json({ message: "Missing parameters" });
     }
-    if (tramiteManager.validateTramiteType(tramiteType) != "valid") {
-        return res.status(400).json({ message: "Invalid tramite type" });
-    }
     try {
         colas.cancelarTicket(tramiteType, ticketId, unschedulable, estado );
 
@@ -71,9 +68,7 @@ export function crearTicket(req: Request, res: Response) {
     try {
         const {numeroDeControl, tramiteType} = req.params as unknown as {numeroDeControl: number, tramiteType: string, letra?: string};
         const {descripcion} = req.body as {descripcion: string};
-        if (tramiteManager.validateTramiteType(tramiteType) != "valid") {
-            return res.status(400).json({ message: "Invalid tramite type" });
-        }
+
         // Validar numero de control
         const validateControlNumber = (number: string) => {
             const regex = /^[A-Za-z]\d{8}$|^\d{8}$/;
@@ -87,12 +82,17 @@ export function crearTicket(req: Request, res: Response) {
             id: uuidv4(),
             letra: numeroDeControl.toString().length == 9 ? numeroDeControl.toString().charAt(0) : "",
             numeroDeControl: numeroDeControl.toString().length == 9 ? numeroDeControl.toString().slice(1)  : numeroDeControl,
-            tipoTramite: tramiteManager.getTramite(tramiteType),
+            tipoTramite: tramiteService.getTramite(tramiteType),
             descripcion: descripcion ? descripcion : "",
         } as unknown as Ticket;
-        console.log(ticket);
         if (!ticket.tipoTramite || !ticket) {
             return res.status(400).json({ message: "Missing parameters" });
+        }
+        
+        console.log(tramiteService.validateTramiteType(tramiteType));
+
+        if (tramiteService.validateTramiteType(tramiteType) == false) {
+            return res.status(400).json({ message: "Invalid tramite type" });
         }
 
         try {
@@ -113,6 +113,7 @@ export function crearTicket(req: Request, res: Response) {
         return res.status(201).send(ticket);
     } catch (e: any) {
         outputLog(e);
+        console.log(e.stack);
         return res.status(500).json({ message: e.message });
     }
 }

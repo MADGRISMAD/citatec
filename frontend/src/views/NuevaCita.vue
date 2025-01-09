@@ -138,7 +138,7 @@
 <script lang="ts">
 import { defineComponent, onMounted, reactive, ref } from "vue";
 import {Ticket, TicketEstado, TramiteConfig, outputLog} from "shared-types";
-import { obtenerTramites } from "@/services/tramite";
+import { obtenerTramites, obtenerTramitesActivos } from "@/services/tramite";
 import { crearTicket, eliminarTicket } from "@/services/ticket";
 
 export default defineComponent({
@@ -169,7 +169,7 @@ export default defineComponent({
       console.log("Entra");
 
       try {
-        Object.assign(services, await obtenerTramites());
+        Object.assign(services, await obtenerTramitesActivos());
       } catch (e) {
         console.error("Error al obtener los trámites:", e);
         error.value = "No se pudieron obtener los trámites";

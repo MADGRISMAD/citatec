@@ -93,4 +93,13 @@ export class TramiteManager {
             { nombre: "Constancia", duration: 60, active: true }
         ];
     }
+
+    public activateTramite(name: string): void {
+        const tramites = this.loadTramitesConfig();
+        const tramite = tramites.find(t => t.nombre === name);
+        if (tramite) {
+            tramite.active = true;
+            this.saveTramitesConfig(tramites);
+        }
+    }
 }

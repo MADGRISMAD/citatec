@@ -52,6 +52,23 @@ export const desactivarTramite = (req: Request, res: Response) => {
     res.send('Tramite desactivado');
 }
 
+export const activarTramite = (req: Request, res: Response) => {
+    const { nombre } = req.body;
+
+    if (!tramiteService.getTramite(nombre)) {
+        res.status(404).send('Tramite no existe');
+        return
+    }
+
+    if (!nombre) {
+        res.status(400).send('Faltan datos');
+        return
+    }
+
+    tramiteService.activarTramite(nombre);
+    res.send('Tramite activado');
+}
+
 export const modificarDuracionTramite = (req: Request, res: Response) => {
     const { nombre, nuevaDuracion } = req.body;
 
