@@ -339,7 +339,7 @@ export class Colas {
 
     public obtenerTicketsDelDia(diaToDateString:string): Ticket[] {
         let tickets: Ticket[] = [];
-        const tramites: string[] = this.tramiteManager.getActiveTramites().map(tramite => tramite.nombre);
+        const tramites: string[] = this.tramiteManager.getTramites().map(tramite => tramite.nombre);
         for (const tramite of tramites) {
             tickets.push(...this.obtenerTicketsDeCola(tramite));
         }
