@@ -140,6 +140,7 @@ import { defineComponent, onMounted, ref } from "vue";
 import {SetTramiteDuration, Ticket, TicketEstado, outputLog} from "shared-types";
 import { obtenerTramites } from "@/services/tramite";
 import { crearTicket, eliminarTicket } from "@/services/ticket";
+import { loadPDF } from "@/services/materias";
 
 export default defineComponent({
   name: "RequestAppointment",
@@ -164,6 +165,7 @@ export default defineComponent({
     const goToTicket = () => {
   window.location.href = '/ticket';
 };
+
 
     onMounted(async () => {
       try {
