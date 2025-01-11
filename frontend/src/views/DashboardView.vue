@@ -52,7 +52,7 @@
                 <p class="text-sm opacity-90">Alumno en atención actualmente</p>
               </div>
               <button 
-                @click="cerrarTicket(ticketEnAtencion.tipoTramite, ticketEnAtencion.id)" 
+                @click="cerrarTicket(ticketEnAtencion.tipoTramite.nombre, ticketEnAtencion.id)" 
                 class="bg-white text-[#1B396A] px-6 py-2 rounded-lg font-medium hover:bg-gray-200 transition">
                 Cerrar Ticket
               </button>
@@ -65,11 +65,11 @@
             </div>
             <div class="bg-gray-50 p-4 rounded-lg shadow-sm hover:shadow-md transition">
               <p class="text-sm text-gray-600">⏳ Duración</p>
-              <p class="text-lg font-semibold text-[#1B396A]">{{ tramites.filter(t => t.tramite === ticketEnAtencion?.tipoTramite)[0].duration }} min</p>
+              <p class="text-lg font-semibold text-[#1B396A]">{{ ticketEnAtencion.tipoTramite.duration }} min</p>
             </div>
             <div class="bg-gray-50 p-4 rounded-lg shadow-sm hover:shadow-md transition">
               <p class="text-sm text-gray-600">📝 Trámite</p>
-              <p class="text-lg font-semibold text-[#1B396A]">{{ ticketEnAtencion.tipoTramite }}</p>
+              <p class="text-lg font-semibold text-[#1B396A]">{{ ticketEnAtencion.tipoTramite.nombre }}</p>
             </div>
             <div class="bg-gray-50 p-4 rounded-lg shadow-sm hover:shadow-md transition">
               <p class="text-sm text-gray-600">💬 Descripción</p>
@@ -77,8 +77,7 @@
             </div>
           </div>
         </div>
-      </div>
-
+      </section>
       <div v-else class="mb-8">
         <h2 class="text-2xl font-semibold mb-4 text-[#1B396A]">No hay tickets en atención</h2>
         <div class="bg-white shadow overflow-hidden sm:rounded-lg p-6">
@@ -103,6 +102,7 @@
           </ul>
         </div>
       </div>
+      
     </main>
   </div>
 </template>
@@ -138,7 +138,6 @@ import { REFRESH_RATE } from '@/constants/refresh';
       const view = ref<"main"|"all">("main");
       const ticketEnAtencion = ref<Ticket | null>(null);
       const tickets = ref<Ticket[]>([]);
-
       obtenerTramites().then(array => {
         // tramites.value = array;
       });
