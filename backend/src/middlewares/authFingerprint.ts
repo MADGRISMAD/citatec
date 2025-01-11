@@ -6,6 +6,10 @@ import ConfigManager from '../classes/ConfigManager'
 
 
 const getFingerprintFile = () => {
+  if(!fs.existsSync(ConfigManager.get("ADMIN_DEVICES_PATH"))){
+    fs.writeFileSync(ConfigManager.get("ADMIN_DEVICES_PATH"), JSON.stringify([]))
+    return []
+  }
     const data= fs.readFileSync(ConfigManager.get("ADMIN_DEVICES_PATH"), 'utf8')
     return JSON.parse(data) as FingerprintRegistry[]
 }
