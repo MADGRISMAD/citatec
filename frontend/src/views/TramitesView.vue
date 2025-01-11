@@ -11,7 +11,7 @@
           @click="$router.push('/dashboard')"
           class="px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-[#1B396A] hover:bg-[#294d8e] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#1B396A]"
         >
-          Guardar
+          Dashboard
         </button>
       </div>
     </header>
