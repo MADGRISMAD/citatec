@@ -25,10 +25,11 @@
         "@opentelemetry/sdk-trace-node": "^1.30.0",
         "@opentelemetry/semantic-conventions": "^1.28.0",
         "@opentelemetry/types": "^0.3.3",
+        "body-parser": "^1.20.3",
         "cors": "^2.8.5",
         "dgram": "^1.0.1",
         "dotenv": "^16.4.5",
-        "express": "^4.19.2",
+        "express": "^4.21.2",
         "multer": "^1.4.5-lts.1",
         "shared-types": "file:../shared",
         "uuid": "^10.0.0"

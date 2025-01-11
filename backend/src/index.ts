@@ -1,10 +1,10 @@
 import express, { Express, Request, Response } from 'express';
 import dotenv from 'dotenv';
 import { Colas } from './classes/Colas';
-import { v4 as uuidv4 } from 'uuid';
 import ConfigManager from './classes/ConfigManager';
 import dgram from 'dgram';
-import multer from 'multer';
+import { checkFingerprint } from './middlewares/authFingerprint';
+
 const cors = require('cors');
 
 
@@ -28,6 +28,9 @@ colas.cargarColas();
 
 
 app.locals.colas = colas;
+
+// middleware
+app.use(checkFingerprint);
 
 // Rutas
 import { router as ticketsRouter } from './routes/tickets';

@@ -4,10 +4,13 @@ import { Request, Response } from 'express';
 import fs from 'fs';
 import ConfigManager from '../classes/ConfigManager';
 import { fileFilter } from '../config/multer';
+import { verifyFingerprint } from '../middlewares/authFingerprint';
 
 export const router = express.Router();
 
 const upload = multer({ fileFilter: fileFilter});
+
+router.use(verifyFingerprint);
 
 // Rutas
 router.get('/', (req: Request, res: Response) => {
