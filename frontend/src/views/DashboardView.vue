@@ -1,24 +1,31 @@
 <template>
   <div class="min-h-screen bg-gray-50">
     <header class="bg-white shadow">
-      <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8 flex items-center justify-between">
-        <div class="flex items-center">
-          <img class="h-10 w-auto mr-4" src="@/assets/logo.png" alt="TNM Logo">
-          <h1 class="text-3xl font-bold text-[#1B396A]">Dashboard del Coordinador</h1>
-        </div>
-        
-        <!-- <button v-if="view==='main'" @click="toggleView()" class="px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-[#808080] hover:bg-[#808080] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#1B396A]">
-          Todos los tickets
-        </button>
-        <button v-else @click="toggleView()" class="px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-[#808080] hover:bg-[#808080] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#1B396A]">
-          Vista centralizada
-        </button> -->
+  <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8 flex flex-col space-y-4 lg:space-y-0 lg:flex-row lg:items-center lg:justify-between">
+    <!-- Logo y Título -->
+    <div class="flex items-center">
+      <img class="h-10 w-auto mr-4" src="@/assets/logo.png" alt="TNM Logo">
+      <h1 class="text-3xl font-bold text-[#1B396A]">Dashboard del Coordinador</h1>
+    </div>
 
-        <button class="px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-[#1B396A] hover:bg-[#294d8e] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#1B396A]">
-          Cerrar Sesión
-        </button>
-      </div>
-    </header>
+    <!-- Navbar -->
+    <nav class="flex space-x-4">
+      <button
+        @click="$router.push('/reporte')"
+        class="px-4 py-2 text-sm font-medium rounded-md text-white bg-[#1B396A] hover:bg-[#294d8e] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#1B396A]"
+      >
+        Reportes
+      </button>
+      <button
+        @click="$router.push('/tramites')"
+        class="px-4 py-2 text-sm font-medium rounded-md text-white bg-[#1B396A] hover:bg-[#294d8e] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#1B396A]"
+      >
+        Trámites
+      </button>
+    </nav>
+  </div>
+</header>
+
 
     <!-- Dashboard Content -->
     <main class="max-w-7xl mx-auto px-6 py-8">
