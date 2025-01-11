@@ -13,12 +13,10 @@
           <h1 class="text-3xl font-bold text-[#1B396A]">Reportes de tickets</h1>
         </div>
         <button
-  @click="$router.push('/dashboard')"
-  class="px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-[#1B396A] hover:bg-[#294d8e] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#1B396A]"
->
-  Ir al Dashboard
-</button>
-
+          class="px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-[#1B396A] hover:bg-[#294d8e] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#1B396A]"
+        >
+          Cerrar Sesión
+        </button>
       </div>
     </header>
 

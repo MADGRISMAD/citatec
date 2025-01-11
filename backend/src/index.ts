@@ -13,7 +13,7 @@ const port = ConfigManager.get('PORT');
 
 
 app.use(cors({
-  origin: 'http://localhost:8080',
+  origin: ['http://localhost:8080', 'https://localhost:8080', true]
 }));
 
 // Permite JSON (application/json) en las peticiones
