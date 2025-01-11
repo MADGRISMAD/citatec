@@ -19,47 +19,62 @@
         </button>
       </div>
     </header>
-    
-    <!-- Estadísticas -->
-    <div class="bg-white shadow-sm border-b border-gray-200">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex justify-between items-center py-3 text-sm">
-          <div class="text-center">
-            <span class="text-gray-500">Tiempo espera:</span>
-            <span class="font-semibold text-[#1B396A] ml-1">{{ stats.avgWaitTime }} min</span>
-          </div>
-          <div class="text-center">
-            <span class="text-gray-500">En espera:</span>
-            <span class="font-semibold text-[#1B396A] ml-1">{{ stats.waitingPeople }} / {{ stats.totalPeople }}</span>
-          </div>
-          <div class="text-center">
-            <span class="text-gray-500">Atendidos hoy:</span>
-            <span class="font-semibold text-[#1B396A] ml-1">{{ stats.ticketsAttendedToday }}</span>
-          </div>
-          <div class="text-center">
-            <span class="text-gray-500">Eficiencia:</span>
-            <span class="font-semibold text-[#1B396A] ml-1">{{ stats.attendanceEfficiency }}%</span>
-          </div>
-        </div>
-      </div>
-    </div>
 
-    <main class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-      <!-- Ticket en atención -->
-      <div v-if="ticketEnAtencion" class="mb-8">
-        <h2 class="text-2xl font-semibold mb-4 text-[#1B396A]">Ticket en Atención</h2>
-        <div class="bg-white shadow overflow-hidden sm:rounded-lg p-6">
-          <div class="flex justify-between items-center">
-            <div>
-              <p class="text-lg font-medium text-[#1B396A]">Ticket Num. Control {{ ticketEnAtencion.numeroDeControl }}</p>
-              <p class="text-lg font-medium text-[#1B396A]">Hora de inicio: {{ new Date(ticketEnAtencion.fechaProgramada).toLocaleTimeString("es-MX") }}</p>
-              <!-- <p class="text-lg font-medium text-[#1B396A]">Duracion: {{ tramites.filter(t => t.tramite === ticketEnAtencion?.tipoTramite)[0].duration }} min</p> -->
-              <p class="text-sm text-gray-500">{{ ticketEnAtencion.tipoTramite }}</p>
+    <!-- Dashboard Content -->
+    <main class="max-w-7xl mx-auto px-6 py-8">
+      <!-- Stats -->
+      <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+        <div class="bg-white p-6 rounded-lg shadow hover:shadow-lg transition">
+          <p class="text-sm text-gray-600">⏳ Tiempo de espera promedio</p>
+          <p class="text-2xl font-bold text-[#1B396A]">{{ stats.avgWaitTime }} min</p>
+        </div>
+        <div class="bg-white p-6 rounded-lg shadow hover:shadow-lg transition">
+          <p class="text-sm text-gray-600">👥 Personas en espera</p>
+          <p class="text-2xl font-bold text-[#1B396A]">{{ stats.waitingPeople }} / {{ stats.totalPeople }}</p>
+        </div>
+        <div class="bg-white p-6 rounded-lg shadow hover:shadow-lg transition">
+          <p class="text-sm text-gray-600">✅ Atendidos hoy</p>
+          <p class="text-2xl font-bold text-[#1B396A]">{{ stats.ticketsAttendedToday }}</p>
+        </div>
+        <div class="bg-white p-6 rounded-lg shadow hover:shadow-lg transition">
+          <p class="text-sm text-gray-600">📈 Eficiencia</p>
+          <p class="text-2xl font-bold text-[#1B396A]">{{ stats.attendanceEfficiency }}%</p>
+        </div>
+      </section>
+
+      <!-- Current Ticket -->
+      <section v-if="ticketEnAtencion" class="mb-10">
+        <div class="bg-white shadow-lg rounded-lg overflow-hidden">
+          <div class="bg-[#1B396A] text-white p-6">
+            <div class="flex justify-between items-center">
+              <div>
+                <p class="text-xl font-bold">Número de Control: {{ ticketEnAtencion.numeroDeControl }}</p>
+                <p class="text-sm opacity-90">Alumno en atención actualmente</p>
+              </div>
+              <button 
+                @click="cerrarTicket(ticketEnAtencion.tipoTramite, ticketEnAtencion.id)" 
+                class="bg-white text-[#1B396A] px-6 py-2 rounded-lg font-medium hover:bg-gray-200 transition">
+                Cerrar Ticket
+              </button>
             </div>
-            <button @click="cerrarTicket(ticketEnAtencion.tipoTramite.nombre, ticketEnAtencion.id)" 
-                    class="px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-[#1B396A] hover:bg-[#294d8e] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#1B396A]">
-              Cerrar Ticket
-            </button>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 p-6">
+            <div class="bg-gray-50 p-4 rounded-lg shadow-sm hover:shadow-md transition">
+              <p class="text-sm text-gray-600">📅 Hora de inicio</p>
+              <p class="text-lg font-semibold text-[#1B396A]">{{ new Date(ticketEnAtencion.fechaProgramada).toLocaleTimeString("es-MX") }}</p>
+            </div>
+            <div class="bg-gray-50 p-4 rounded-lg shadow-sm hover:shadow-md transition">
+              <p class="text-sm text-gray-600">⏳ Duración</p>
+              <p class="text-lg font-semibold text-[#1B396A]">{{ tramites.filter(t => t.tramite === ticketEnAtencion?.tipoTramite)[0].duration }} min</p>
+            </div>
+            <div class="bg-gray-50 p-4 rounded-lg shadow-sm hover:shadow-md transition">
+              <p class="text-sm text-gray-600">📝 Trámite</p>
+              <p class="text-lg font-semibold text-[#1B396A]">{{ ticketEnAtencion.tipoTramite }}</p>
+            </div>
+            <div class="bg-gray-50 p-4 rounded-lg shadow-sm hover:shadow-md transition">
+              <p class="text-sm text-gray-600">💬 Descripción</p>
+              <p class="text-lg font-semibold text-[#1B396A]">{{ ticketEnAtencion.descripcion }}</p>
+            </div>
           </div>
         </div>
       </div>
@@ -79,32 +94,10 @@
         <h2 class="text-2xl font-semibold mb-4 text-[#1B396A]">Tickets Entrantes</h2>
         <div class="bg-white shadow overflow-hidden sm:rounded-lg">
           <ul class="divide-y divide-gray-200">
-            <li v-for="ticket in tickets" :key="ticket.id" class="px-6 py-4 hover:bg-gray-50">
-              <div class="mb-8">
-        <div class="bg-white shadow overflow-hidden sm:rounded-lg p-6">
-          <div class="flex justify-between items-center">
-            <div>
-              <p class="text-lg font-medium text-[#1B396A]">Ticket Num. Control {{ ticket.numeroDeControl }}</p>
-              <p class="text-lg font-medium text-[#1B396A]">Hora de inicio: {{ new Date(ticket.fechaProgramada).toLocaleTimeString("es-MX") }}</p>
-              <!-- <p class="text-lg font-medium text-[#1B396A]">Duracion: {{ tramites.filter(t => t.tramite === ticket.tipoTramite)[0].duration }} min</p> -->
-              <p class="text-sm text-gray-500">{{ ticket.tipoTramite }}</p>
-            </div>
-            <!-- <button @click="focusTicket(ticket.id)" 
-                    class="px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-[#1B396A] hover:bg-[#294d8e] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#1B396A]">
-              Centrarse en este Ticket
-            </button> -->
-          </div>
-           
-                 <!-- Detalles del usuario (expandible) -->
-                <!-- <div v-if="ticket.showDetails" class="mt-4 bg-gray-50 p-4 rounded-md">
-                  <h4 class="text-lg font-semibold mb-2 text-[#1B396A]">Detalles del Usuario</h4>
-                  <p><strong>Nombre:</strong> {{ ticket.userData.name }}</p>
-                  <p><strong>Matrícula:</strong> {{ ticket.userData.studentId }}</p>
-                  <p><strong>Correo:</strong> {{ ticket.userData.email }}</p>
-                  <p><strong>Carrera:</strong> {{ ticket.userData.major }}</p>
-                  <p><strong>Semestre:</strong> {{ ticket.userData.semester }}</p>
-                </div> -->
-              </div>
+            <li v-for="ticket in tickets" :key="ticket.id" class="flex justify-between items-center px-6 py-4 hover:bg-gray-50 transition">
+              <div>
+                <p class="text-lg font-medium text-[#1B396A]">Número de Control: {{ ticket.numeroDeControl }}</p>
+                <p class="text-sm text-gray-500">{{ ticket.tipoTramite }}</p>
               </div>
             </li>
           </ul>
