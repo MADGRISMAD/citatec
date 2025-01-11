@@ -283,7 +283,6 @@ export default defineComponent({
     const showModal = ref(false);
     const newCapacityHours = ref(5); // Capacidad inicial en horas
     const newCapacityMinutes = ref(0); // Capacidad inicial en minutos
-
     // Estadísticas iniciales
     const stats = ref<Stats>({
       avgWaitTime: 15,
@@ -317,6 +316,7 @@ export default defineComponent({
 
     const updateCapacity = () => {
       showModal.value = false;
+
     };
 
     // Calcular el porcentaje de tickets completados
@@ -375,6 +375,8 @@ export default defineComponent({
 
     onMounted(() => {
       cargarTickets();
+      startTimer()
+
     });
 
     return {
