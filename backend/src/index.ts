@@ -1,7 +1,6 @@
 import express, { Express, Request, Response } from 'express';
 import dotenv from 'dotenv';
 import { Colas } from './classes/Colas';
-import { Ticket, TramiteType } from 'shared-types';
 import { v4 as uuidv4 } from 'uuid';
 import ConfigManager from './classes/ConfigManager';
 import dgram from 'dgram';
@@ -26,13 +25,6 @@ export let colas: Colas = new Colas();
 colas.cargarColas();
 
 
-const ticket: Ticket = {
-  id: uuidv4(),
-  letra: 'B',
-  numeroDeControl: 1,
-  tipoTramite: TramiteType.BECA,
-  fechaProgramada: new Date()
-}
 
 
 app.locals.colas = colas;

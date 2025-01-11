@@ -110,7 +110,7 @@
   
   <script lang="ts">
   import { defineComponent, ref, computed, onMounted } from 'vue';
-  import { outputLog, SetTramiteDuration, Ticket, TicketEstado, TramiteType } from 'shared-types';
+  import { outputLog, Ticket, TicketEstado } from 'shared-types';
 import { eliminarTicket, obtenerSiguienteTicket, obtenerTicketsDelDia } from '@/services/ticket';
 import { obtenerTramites } from '@/services/tramite';
 import { REFRESH_RATE } from '@/constants/refresh';
@@ -135,14 +135,13 @@ import { REFRESH_RATE } from '@/constants/refresh';
     name: 'DashboardView',
     setup() {  
       let timer = ref<number>(REFRESH_RATE);
-      const tramites = ref<SetTramiteDuration[]>([]);
 
       const view = ref<"main"|"all">("main");
       const ticketEnAtencion = ref<Ticket | null>(null);
       const tickets = ref<Ticket[]>([]);
 
       obtenerTramites().then(array => {
-        tramites.value = array;
+        // tramites.value = array;
       });
 
       obtenerTicketsDelDia().then(array => {
@@ -188,7 +187,7 @@ import { REFRESH_RATE } from '@/constants/refresh';
       //   }
       // };
 
-      const cerrarTicket = async (tramite: TramiteType, id: string) => {
+      const cerrarTicket = async (tramite: string, id: string) => {
         await eliminarTicket(tramite, id, true, TicketEstado.ATENDIDO);
         ticketEnAtencion.value = tickets.value.splice(0, 1)[0];
         // Actualizar estadísticas
@@ -220,7 +219,7 @@ import { REFRESH_RATE } from '@/constants/refresh';
 
       return {
         // focusTicket,
-        tramites,
+        // tramites,
         timer,
         view,
         tickets,

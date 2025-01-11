@@ -1,22 +1,22 @@
 import { Request, Response } from "express";
-import { Ticket, TicketEstado, TramiteType, outputLog } from "shared-types";
+import { Ticket, TicketEstado, outputLog } from "shared-types";
 import { colas } from "..";
-import { isTramiteType } from "../utils/tramites";
 import {
     NotAnymoreTicketsError,
     TicketNotFoundError,
 } from "../classes/Errores";
 import { v4 as uuidv4 } from "uuid";
-import { tramiteLetter } from "../constants/tramite";
+import { TramiteService } from "../services/TramiteService";
+const tramiteService = new TramiteService();
 export function buscarTicket(req: Request, res: Response) {
     const { tramiteType, ticketId } = req.params as unknown as {
-        tramiteType: TramiteType;
+        tramiteType: string;
         ticketId: string;
     };
     if (!tramiteType || !ticketId) {
         return res.status(400).json({ message: "Missing parameters" });
     }
-    if (!isTramiteType(tramiteType)) {
+    if (tramiteService.validateTramiteType(tramiteType)) {
         return res.status(400).json({ message: "Invalid tramite type" });
     }
     const ticket = colas.buscarTicket(tramiteType, ticketId);
@@ -44,16 +44,13 @@ export function buscarTicket(req: Request, res: Response) {
 
 export function eliminarTicket(req: Request, res: Response) {
     const { tramiteType, ticketId, unschedulable, estado } = req.params as unknown as {
-        tramiteType: TramiteType;
+        tramiteType: string;
         ticketId: string;
         unschedulable: boolean;
         estado: TicketEstado;
     };
     if (!tramiteType || !ticketId) {
         return res.status(400).json({ message: "Missing parameters" });
-    }
-    if (!isTramiteType(tramiteType)) {
-        return res.status(400).json({ message: "Invalid tramite type" });
     }
     try {
         colas.cancelarTicket(tramiteType, ticketId, unschedulable, estado );
@@ -69,11 +66,9 @@ export function eliminarTicket(req: Request, res: Response) {
 
 export function crearTicket(req: Request, res: Response) {
     try {
-        const {numeroDeControl, tramiteType} = req.params as unknown as {numeroDeControl: number, tramiteType: TramiteType, letra?: string};
+        const {numeroDeControl, tramiteType} = req.params as unknown as {numeroDeControl: number, tramiteType: string, letra?: string};
         const {descripcion} = req.body as {descripcion: string};
-        if (!isTramiteType(tramiteType)) {
-            return res.status(400).json({ message: "Invalid tramite type" });
-        }
+
         // Validar numero de control
         const validateControlNumber = (number: string) => {
             const regex = /^[A-Za-z]\d{8}$|^\d{8}$/;
@@ -82,19 +77,22 @@ export function crearTicket(req: Request, res: Response) {
         if (!validateControlNumber(numeroDeControl.toString())) 
             return res.status(400).json({ message: "Invalid control number" });
 
-        let letra, numeroDeControlSinLetra;
-
 
         const ticket:Ticket = {
             id: uuidv4(),
             letra: numeroDeControl.toString().length == 9 ? numeroDeControl.toString().charAt(0) : "",
             numeroDeControl: numeroDeControl.toString().length == 9 ? numeroDeControl.toString().slice(1)  : numeroDeControl,
-            tipoTramite: tramiteType,
+            tipoTramite: tramiteService.getTramite(tramiteType),
             descripcion: descripcion ? descripcion : "",
         } as unknown as Ticket;
-        console.log(ticket);
         if (!ticket.tipoTramite || !ticket) {
             return res.status(400).json({ message: "Missing parameters" });
+        }
+        
+        console.log(tramiteService.validateTramiteType(tramiteType));
+
+        if (tramiteService.validateTramiteType(tramiteType) == false) {
+            return res.status(400).json({ message: "Invalid tramite type" });
         }
 
         try {
@@ -115,6 +113,7 @@ export function crearTicket(req: Request, res: Response) {
         return res.status(201).send(ticket);
     } catch (e: any) {
         outputLog(e);
+        console.log(e.stack);
         return res.status(500).json({ message: e.message });
     }
 }
@@ -122,7 +121,7 @@ export function crearTicket(req: Request, res: Response) {
 export function obtenerTodosLosTickets(req: Request, res: Response) {
     try {
         
-        const tickets: Record<TramiteType, Ticket[]> = colas.obtenerTodosLosTickets();
+        const tickets: Map<string, Ticket[]> = colas.obtenerTodosLosTickets();
         return res.status(200).send(tickets);
     } catch (e: any) {
         if (e instanceof NotAnymoreTicketsError)

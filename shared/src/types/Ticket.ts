@@ -1,9 +1,10 @@
-import { TramiteType } from '../enums/TramiteType';
+import { TramiteConfig } from "../enums/TramiteConfig";
+
 export interface Ticket {
     id: string;
     letra: string;
     numeroDeControl: number;
-    tipoTramite: TramiteType;
+    tipoTramite: TramiteConfig;
     // fechaCreacion: FechaTicket;
     fechaProgramada: Date;
     descripcion?: string;
