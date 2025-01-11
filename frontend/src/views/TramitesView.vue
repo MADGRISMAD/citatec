@@ -1,19 +1,91 @@
 <template>
   <div class="min-h-screen bg-gray-50">
     <header class="bg-white shadow">
-      <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8 flex items-center justify-between">
+      <nav class="bg-white shadow">
+    <div class="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
+      <div class="relative flex h-16 justify-between">
+        <!-- Logo -->
         <div class="flex items-center">
-          <img class="h-10 w-auto mr-4" src="@/assets/logo.png" alt="TNM Logo" />
-          <h1 class="text-3xl font-bold text-[#1B396A]">Trámites</h1>
+          <img class="h-8 w-auto" src="@/assets/logo.png" alt="TNM Logo" />
         </div>
 
-        <button
-          @click="$router.push('/dashboard')"
-          class="px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-[#1B396A] hover:bg-[#294d8e] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#1B396A]"
+        <!-- Desktop Links -->
+        <div class="hidden sm:ml-6 sm:flex sm:space-x-8">
+          <a
+            href="/dashboard"
+            class="inline-flex items-center border-b-2 border-transparent px-1 pt-1 text-sm font-medium text-gray-500 hover:border-gray-300 hover:text-gray-700"
+          >
+            Dashboard
+          </a>
+          <a
+            href="/materias"
+            class="inline-flex items-center border-b-2 border-transparent px-1 pt-1 text-sm font-medium text-gray-500 hover:border-gray-300 hover:text-gray-700"
+          >
+            Materias
+          </a>
+          <a
+            href="/reporte"
+            class="inline-flex items-center border-b-2 border-transparent px-1 pt-1 text-sm font-medium text-gray-500 hover:border-gray-300 hover:text-gray-700"
+          >
+            Reportes
+          </a>
+          <a
+            href="/tramites"
+            class="inline-flex items-center border-b-2 border-indigo-500 px-1 pt-1 text-sm font-medium text-gray-900"
+            aria-current="page"
+          >
+            Trámites
+          </a>
+        </div>
+
+        <!-- Mobile Menu Button -->
+        <div class="absolute inset-y-0 right-0 flex items-center sm:hidden">
+          <button
+            type="button"
+            class="inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500"
+            aria-controls="mobile-menu"
+            aria-expanded="false"
+          >
+            <span class="sr-only">Open main menu</span>
+            <svg class="block h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mobile Menu -->
+    <div class="sm:hidden" id="mobile-menu">
+      <div class="space-y-1 pb-4 pt-2">
+        <a
+          href="/dashboard"
+          class="block border-l-4 border-transparent py-2 pl-3 pr-4 text-base font-medium text-gray-500 hover:border-gray-300 hover:bg-gray-50 hover:text-gray-700"
         >
           Dashboard
-        </button>
+        </a>
+        <a
+          href="/materias"
+          class="block border-l-4 border-transparent py-2 pl-3 pr-4 text-base font-medium text-gray-500 hover:border-gray-300 hover:bg-gray-50 hover:text-gray-700"
+        >
+          Materias
+        </a>
+        <a
+          href="/reporte"
+          class="block border-l-4 border-transparent py-2 pl-3 pr-4 text-base font-medium text-gray-500 hover:border-gray-300 hover:bg-gray-50 hover:text-gray-700"
+        >
+          Reportes
+        </a>
+        <a
+          href="/tramites"
+          class="block border-l-4 border-indigo-500 bg-indigo-50 py-2 pl-3 pr-4 text-base font-medium text-indigo-700"
+          aria-current="page"
+        >
+          Trámites
+        </a>
       </div>
+    </div>
+  </nav>
     </header>
 
     <!-- Alertas -->
