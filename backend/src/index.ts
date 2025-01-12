@@ -1,5 +1,4 @@
 import express, { Express, Request, Response } from 'express';
-import dotenv from 'dotenv';
 import { Colas } from './classes/Colas';
 import ConfigManager from './classes/ConfigManager';
 import dgram from 'dgram';

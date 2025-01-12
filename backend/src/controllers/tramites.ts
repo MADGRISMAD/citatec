@@ -1,6 +1,5 @@
 import { Request, Response } from 'express';
 import { TramiteService } from '../services/TramiteService';
-import { TramiteManager } from '../classes/TramiteManager';
 
 const tramiteService = new TramiteService();
 export const obtenerTramites = (req: Request, res: Response) => {

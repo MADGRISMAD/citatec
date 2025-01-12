@@ -9,7 +9,11 @@ import { esDiaDisponible, setSiguienteDiaDisponible } from "../utils/Fecha";
 import { redondearAMultiploDe5 } from "../utils/tramites";
 import { TicketEstado } from "shared-types/src/types/TicketArchive";
 import { TramiteManager } from "./TramiteManager";
-import { DATA_DIR, DATA_FOLDER } from "../constants/paths";
+import ConfigManager from "./ConfigManager";
+import { TICKET_PATH } from "../constants/paths";
+
+const DATA_PATH = ConfigManager.get("DATA_PATH") as string;
+
 export class Colas {
     public fechaAnterior: Date | undefined = undefined;
     public fechaDisponible: Date = new Date(HOY());
@@ -37,25 +41,25 @@ export class Colas {
             ...this,
             colas: Object.fromEntries(this.colas)  // Convierte el Map a objeto
         };
-        fs.writeFileSync(DATA_DIR, JSON.stringify(dataToSave));
+        fs.writeFileSync(TICKET_PATH, JSON.stringify(dataToSave));
     }
 
     // Obtiene las colas del archivo temporal
     public cargarColas(): void {
         if (
-            !fs.existsSync(DATA_DIR) ||
-            fs.readFileSync(DATA_DIR).toString() == "" ||
-            Object.keys(JSON.parse(fs.readFileSync(DATA_DIR).toString())).length == 0
+            !fs.existsSync(TICKET_PATH) ||
+            fs.readFileSync(TICKET_PATH).toString() == "" ||
+            Object.keys(JSON.parse(fs.readFileSync(TICKET_PATH).toString())).length == 0
         ) {
-            if (!fs.existsSync(DATA_FOLDER)) {
-                fs.mkdirSync(DATA_FOLDER);
+            if (!fs.existsSync(DATA_PATH)) {
+                fs.mkdirSync(DATA_PATH);
             }
-            fs.writeFileSync(DATA_DIR, JSON.stringify({}));
+            fs.writeFileSync(TICKET_PATH, JSON.stringify({}));
             this.initializeColas();
             return;
         }
     
-        const data: any = JSON.parse(fs.readFileSync(DATA_DIR).toString());
+        const data: any = JSON.parse(fs.readFileSync(TICKET_PATH).toString());
         
         // Convertir el objeto colas a Map si existe
         if (data.colas) {

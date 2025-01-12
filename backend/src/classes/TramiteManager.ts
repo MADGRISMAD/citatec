@@ -1,6 +1,7 @@
 import fs from 'fs';
 import ConfigManager from './ConfigManager';
 import { TramiteConfig } from 'shared-types';
+import { TRAMITES_PATH } from '../constants/paths';
 
 export class TramiteManager {
     constructor() {
@@ -19,7 +20,7 @@ export class TramiteManager {
 
     private loadTramitesConfig(): TramiteConfig[] {
         try {
-            const configPath: string = ConfigManager.get("TRAMITES_PATH");
+            const configPath: string = TRAMITES_PATH;
             const configFile = fs.readFileSync(configPath, 'utf8');
             const config = JSON.parse(configFile);
             return config.tramites;
@@ -80,7 +81,7 @@ export class TramiteManager {
 
     private saveTramitesConfig(tramites: TramiteConfig[]): void {
         fs.writeFileSync(
-            ConfigManager.get("TRAMITES_PATH"),
+            TRAMITES_PATH,
             JSON.stringify({ tramites })
         );
     }

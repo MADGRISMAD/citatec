@@ -3,14 +3,15 @@ import { Request, Response, NextFunction } from 'express'
 import { FingerprintRegistry } from '../interfaces/fingerprintRegistry'
 import { outputLog } from 'shared-types'
 import ConfigManager from '../classes/ConfigManager'
+import { ADMIN_DEVICES_PATH } from '../constants/paths'
 
 
 const getFingerprintFile = () => {
-  if(!fs.existsSync(ConfigManager.get("ADMIN_DEVICES_PATH"))){
-    fs.writeFileSync(ConfigManager.get("ADMIN_DEVICES_PATH"), JSON.stringify([]))
+  if(!fs.existsSync(ADMIN_DEVICES_PATH)){
+    fs.writeFileSync(ADMIN_DEVICES_PATH, JSON.stringify([]))
     return []
   }
-    const data= fs.readFileSync(ConfigManager.get("ADMIN_DEVICES_PATH"), 'utf8')
+    const data= fs.readFileSync(ADMIN_DEVICES_PATH, 'utf8')
     return JSON.parse(data) as FingerprintRegistry[]
 }
 

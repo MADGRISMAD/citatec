@@ -2,9 +2,9 @@ import express from 'express';
 import multer from 'multer';
 import { Request, Response } from 'express';
 import fs from 'fs';
-import ConfigManager from '../classes/ConfigManager';
 import { fileFilter } from '../config/multer';
 import { verifyFingerprint } from '../middlewares/authFingerprint';
+import { MATERIAS_PATH } from '../constants/paths';
 
 export const router = express.Router();
 
@@ -15,10 +15,10 @@ router.use(verifyFingerprint);
 // Rutas
 router.get('/', (req: Request, res: Response) => {
     try {
-        if (!fs.existsSync(ConfigManager.get('MATERIAS_PATH'))) {
+        if (!fs.existsSync(MATERIAS_PATH)) {
             res.status(404).send('No hay materias cargadas');
         }
-        const file = fs.readFileSync(ConfigManager.get('MATERIAS_PATH'));
+        const file = fs.readFileSync(MATERIAS_PATH);
         res.contentType('application/pdf');
         res.send(file);
     } catch (error) {
@@ -32,8 +32,7 @@ router.post('/', upload.single('file'), (req: Request, res: Response) => {
         if (!req.file) {
             return res.status(400).send('No se recibió ningún archivo');
         }
-        fs.writeFileSync(ConfigManager.get('MATERIAS_PATH'), req.file.buffer);
-        console.log("Llega");
+        fs.writeFileSync(MATERIAS_PATH, req.file.buffer);
         return res.status(200).send('Archivo subido correctamente');
     } catch (error) {
         console.error('Error al guardar el archivo:', error);

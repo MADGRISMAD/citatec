@@ -67,29 +67,6 @@ class ConfigManager {
         // this.cache[key] = value;
         return value;
     }
-
-    public getSecret<T>(key: string): T {
-        // Para secrets, SOLO usar variables de entorno en producción
-        const envValue = process.env[key] as unknown as T;
-        if (envValue !== undefined) {
-            return envValue;
-        }
-
-        // En desarrollo, permitir buscar en archivo de configuración
-        if (process.env.NODE_ENV === 'development') {
-            const fileValue = this.get(key);
-            if (fileValue !== undefined) {
-                return fileValue as T;
-            }
-        }
-
-        return undefined as unknown as T;
-    }
-
-    // // Método para limpiar el caché si es necesario
-    // public clearCache(): void {
-    //     this.cache = {};
-    // }
 }
 
 export default ConfigManager.getInstance({
