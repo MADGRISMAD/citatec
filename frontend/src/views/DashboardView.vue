@@ -93,7 +93,7 @@
     <!-- Dashboard Content -->
     <main class="max-w-7xl mx-auto px-6 py-8">
       <!-- Stats -->
-      <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+      <!-- <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
         <div class="bg-white p-6 rounded-lg shadow hover:shadow-lg transition">
           <p class="text-sm text-gray-600">⏳ Tiempo de espera promedio</p>
           <p class="text-2xl font-bold text-[#1B396A]">{{ stats.avgWaitTime }} min</p>
@@ -113,7 +113,7 @@
     <p class="text-sm">📊 Porcentaje de carga de trabajo</p>
     <p class="text-2xl font-bold">{{ workloadPercentage }}%</p>
   </div>
-      </section>
+      </section> -->
 
       <div v-if="showModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
   <!-- Modal Content -->

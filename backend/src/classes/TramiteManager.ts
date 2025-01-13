@@ -21,13 +21,21 @@ export class TramiteManager {
     private loadTramitesConfig(): TramiteConfig[] {
         try {
             const configPath: string = TRAMITES_PATH;
+            
+            if(!fs.existsSync(configPath)){
+                fs.mkdirSync(ConfigManager.get("DATA_PATH"), { recursive: true });
+                fs.writeFileSync(
+                    configPath,
+                    JSON.stringify({ tramites: [] })
+                );
+            }
             const configFile = fs.readFileSync(configPath, 'utf8');
             const config = JSON.parse(configFile);
             return config.tramites;
         } catch (error) {
             console.error('Error loading tramites config:', error);
+            throw error;
             // Cargar configuración por defecto si hay error
-            return this.loadDefaultConfig();
         }
     }
 
@@ -84,15 +92,6 @@ export class TramiteManager {
             TRAMITES_PATH,
             JSON.stringify({ tramites })
         );
-    }
-
-    private loadDefaultConfig(): TramiteConfig[] {
-        return [
-            { nombre: "Inscripcion", duration: 10, active: true },
-            { nombre: "Beca", duration: 5, active: true },
-            { nombre: "Certificado", duration: 5, active: true },
-            { nombre: "Constancia", duration: 60, active: true }
-        ];
     }
 
     public activateTramite(name: string): void {

@@ -10,7 +10,6 @@ export const router = express.Router();
 
 const upload = multer({ fileFilter: fileFilter});
 
-router.use(verifyFingerprint);
 
 // Rutas
 router.get('/', (req: Request, res: Response) => {
@@ -27,7 +26,7 @@ router.get('/', (req: Request, res: Response) => {
     }
 });
 
-router.post('/', upload.single('file'), (req: Request, res: Response) => {
+router.post('/',verifyFingerprint, upload.single('file'), (req: Request, res: Response) => {
     try {
         if (!req.file) {
             return res.status(400).send('No se recibió ningún archivo');

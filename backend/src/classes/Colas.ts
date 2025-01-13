@@ -350,11 +350,11 @@ export class Colas {
         // Filtrar los tickets que no son del día o que ya pasaron, los pasados se cancelan
         tickets = tickets.filter((ticket: Ticket) => {
             const fechaFinalizacion = new Date(ticket.fechaProgramada).getTime() + this.tramiteManager.getTramiteDuration(ticket.tipoTramite.nombre) * 60 * 1000;
+            // Si la fecha de finalización es menor a la fecha actual, se cancela el ticket
+            console.log(fechaFinalizacion, HOY().getTime(), fechaFinalizacion < HOY().getTime());
             if(fechaFinalizacion < HOY().getTime()){
                 const cola = this.colas.get(ticket.tipoTramite.nombre);
-                if (cola) {
-                    cola.eliminarTicket(ticket, TicketEstado.EXPIRADO);
-                }
+                cola?.eliminarTicket(ticket, TicketEstado.EXPIRADO);
                 return false;
             }
             const ticketToDateString = new Date(ticket.fechaProgramada).toLocaleDateString('es-MX').replace(/\//g, "-");
