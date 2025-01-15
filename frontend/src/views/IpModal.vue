@@ -42,6 +42,7 @@
                 class="border border-gray-300 p-2 rounded w-12 text-center"
                 @input="handleInput(index, $event)"
               />
+              <!-- @vue-ignore -->
               <span v-if="index < 3" class="mx-1 text-gray-700">.</span>
             </div>
             <span>:</span>
@@ -78,7 +79,8 @@
   </template>
   
   <script lang="ts">
-  import { defineComponent, ref, nextTick } from "vue";
+  import router from "@/router";
+import { defineComponent, ref, nextTick } from "vue";
   
   export default defineComponent({
     name: "IpModal",
@@ -142,9 +144,11 @@
           return;
         }
   
-        const ipAddress = `${ipSegments.value.join(".")}:${port.value}`;
-        console.log("IP y puerto guardados (ejemplo):", ipAddress);
-  
+        const ipAddress = `${ipSegments.value.join(".")}`;
+        localStorage.setItem('backend_url', ipAddress)
+        localStorage.setItem('port', port.value)
+        // refresh page
+        router.go(0);
         closeModal();
       };
   
