@@ -90,6 +90,7 @@
     </header>
 
     <main class="max-w-4xl mx-auto py-6 sm:px-6 lg:px-8">
+      <IpModal />
       <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
         <div class="p-8 space-y-8">
           <!-- Sección de carga de PDF (solo visible para profesores) -->

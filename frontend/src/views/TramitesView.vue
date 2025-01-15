@@ -117,6 +117,7 @@
     </div>
 
     <main class="max-w-7xl mx-auto px-6 py-8">
+      <IpModal />
       <div class="overflow-x-auto bg-white shadow-md rounded-md">
         <table class="min-w-full border-collapse rounded-md">
           <thead class="bg-[#1B396A] text-white">
