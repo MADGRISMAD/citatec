@@ -128,8 +128,12 @@
         </transition>
       </div>
     </div>
+
+    <!-- Componente IpModal -->
+    <IpModal />
   </div>
 </template>
+
 
 
 

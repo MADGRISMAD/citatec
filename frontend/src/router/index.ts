@@ -8,6 +8,7 @@ import Reporte from '../views/ReportesCitas.vue'
 import user from '../views/UserProfile.vue'
 import materias from '../views/MateriasDisponibles.vue'
 import TramitesView from '@/views/TramitesView.vue'
+import IpModal from '@/views/IpModal.vue'
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -62,6 +63,11 @@ const routes: Array<RouteRecordRaw> = [
     path : '/materias',
     name : 'materias',
     component : materias
+  },
+  {
+    path : '/ip',
+    name : 'ip',
+    component : IpModal
   }
 ]
 

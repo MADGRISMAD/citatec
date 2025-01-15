@@ -1,8 +1,12 @@
 <template>
   <div class="min-h-screen bg-gray-50">
+    
     <header class="bg-white shadow">
+      
       <nav class="bg-white shadow">
+        
     <div class="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
+      
       <div class="relative flex h-16 justify-between">
         <!-- Logo -->
         <div class="flex items-center">
@@ -90,6 +94,7 @@
 
 
     <main class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+      <IpModal />
       <!-- Rango de fechas -->
       <div class="bg-white shadow overflow-hidden sm:rounded-lg p-6 mb-6">
         <h2 class="text-2xl font-semibold mb-4 text-[#1B396A]">
@@ -315,6 +320,7 @@
         </div>
       </div>
     </main>
+    
   </div>
 </template>
 
