@@ -24,12 +24,12 @@ export const checkFingerprint = (req:Request, res: Response, next: NextFunction)
     res.locals.fingerprintFound = true    
     next()
 } 
+  outputLog('Fingerprint not found' + fingerprint)
   next()
 }
 
 export const verifyFingerprint = (req:Request, res: Response, next: NextFunction) => {
     if (!res.locals.fingerprintFound) {
-        outputLog('Fingerprint not found')
         return res.status(401).send('Unauthorized')
     }
     next()
