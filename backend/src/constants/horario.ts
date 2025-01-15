@@ -22,9 +22,7 @@ export const DIAS_DISPONIBLES: Dias[] = [Dias.MONDAY,
     Dias.TUESDAY, 
     Dias.WEDNESDAY, 
     Dias.THURSDAY , 
-    Dias.FRIDAY, 
-    Dias.SATURDAY, 
-    Dias.SUNDAY];
+    Dias.FRIDAY];
 
 export const HORARIO: Record<string, Date> = {
     INICIO: INICIO_HORARIO(),

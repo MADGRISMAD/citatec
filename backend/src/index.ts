@@ -17,7 +17,7 @@ app.use(cors({
 
 // Permite JSON (application/json) en las peticiones
 app.use(express.json());
-
+app.use(express.urlencoded({ extended: true }));
 
 // Crea las colas de los trámites
 export let colas: Colas = new Colas();

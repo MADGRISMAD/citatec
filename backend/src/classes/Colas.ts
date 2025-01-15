@@ -15,7 +15,6 @@ import { TICKET_PATH } from "../constants/paths";
 const DATA_PATH = ConfigManager.get("DATA_PATH") as string;
 
 export class Colas {
-    public fechaAnterior: Date | undefined = undefined;
     public fechaDisponible: Date = new Date(HOY());
     private manejadorHuecos: ManejadorHuecos = new ManejadorHuecos();
     private tramiteManager: TramiteManager;
@@ -118,6 +117,7 @@ export class Colas {
         } else {
             ticket.fechaProgramada = this.calcularFechaParaTicket(ticket.tipoTramite);
             this.colas.get(ticket.tipoTramite.nombre)?.agregarTicket(ticket, false);
+            outputLog(ticket.fechaProgramada);
             this.calcularProximaFechaDisponible(ticket.tipoTramite, ticket.fechaProgramada);
         }
         this.guardarColas();
@@ -145,8 +145,8 @@ export class Colas {
         // Sin tiempo extra porque al final del día no se atienden más trámites
         const minutosTramite = tramite.duration;
 
+        console.log(this.fechaDisponible);
         let fecha = new Date(this.fechaDisponible);
-
         const horaDisponible = fecha.getHours();
         // Si el trámite es creado fuera de un día válido, se programa para el siguiente día válido
         if(!esDiaDisponible(fecha)) {
@@ -191,6 +191,7 @@ export class Colas {
             " con fecha ",
             fecha
         );
+        outputLog(fecha);
         this.guardarColas()
         return fecha;
     }
@@ -201,9 +202,9 @@ export class Colas {
         fechaUltimoTicket: Date
     ): void {
         const nuevaFecha = new Date(fechaUltimoTicket);
+        outputLog(nuevaFecha);
         // Suma el tiempo del trámite
         const minutos = tramite.duration + TIEMPOEXTRA;
-
         //Suma el tiempo extra (ya se sumó el tiempo de trámite)
         redondearAMultiploDe5(nuevaFecha, nuevaFecha.getMinutes() + minutos);
         // Sobrescribe la fecha disponible global
@@ -351,7 +352,6 @@ export class Colas {
         tickets = tickets.filter((ticket: Ticket) => {
             const fechaFinalizacion = new Date(ticket.fechaProgramada).getTime() + this.tramiteManager.getTramiteDuration(ticket.tipoTramite.nombre) * 60 * 1000;
             // Si la fecha de finalización es menor a la fecha actual, se cancela el ticket
-            console.log(fechaFinalizacion, HOY().getTime(), fechaFinalizacion < HOY().getTime());
             if(fechaFinalizacion < HOY().getTime()){
                 const cola = this.colas.get(ticket.tipoTramite.nombre);
                 cola?.eliminarTicket(ticket, TicketEstado.EXPIRADO);
