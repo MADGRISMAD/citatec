@@ -9,12 +9,11 @@
       
       <div class="relative flex h-16 justify-between">
         <!-- Logo -->
-        <div class="flex items-center">
-          <img class="h-8 w-auto" src="@/assets/logo.png" alt="TNM Logo" />
-        </div>
+        <LogoComponent />
 
         <!-- Desktop Links -->
         <div class="hidden sm:ml-6 sm:flex sm:space-x-8">
+          <FingerprintString />
           <a
             href="/dashboard"
             class="inline-flex items-center border-b-2 border-transparent px-1 pt-1 text-sm font-medium text-gray-500 hover:border-gray-300 hover:text-gray-700"
@@ -339,9 +338,11 @@ import { useRoute, useRouter } from "vue-router";
 import { obtenerTramites } from "@/services/tramite";
 import router from "@/router";
 import { toIsoStringInLocalTZ } from "@/utils/date";
+import FingerprintString from "@/components/fingerprintString.vue";
+import LogoComponent from "@/components/LogoComponent.vue";
 export default defineComponent({
   name: "ReportesTickets",
-  components: { BarChart },
+  components: { BarChart, FingerprintString, LogoComponent },
   methods: {
 
   },
@@ -498,6 +499,7 @@ export default defineComponent({
       hacerBusqueda,
     };
   },
+  
 });
 </script>
 

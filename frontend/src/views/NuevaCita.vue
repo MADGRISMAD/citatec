@@ -3,7 +3,7 @@
     <div class="w-full max-w-5xl bg-white rounded-2xl shadow-md overflow-hidden grid grid-cols-1 lg:grid-cols-2">
       <!-- Left Section -->
       <div class="flex flex-col justify-center items-center p-12 bg-gray-100 space-y-6 border-r border-gray-200">
-        <img class="h-16 w-auto" src="@/assets/logo.png" alt="TNM Logo" />
+          <img class="h-16 w-auto" src="@/assets/logo.png" alt="TNM Logo" />
         <h1 class="text-3xl font-bold text-[#1B396A]">Solicitar Cita</h1>
         <p class="text-gray-700 text-center">
           Administra tus citas de forma rápida y eficiente con nuestro sistema.

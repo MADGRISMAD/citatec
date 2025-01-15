@@ -29,8 +29,15 @@
         @click="generarCita" 
         class="px-8 py-3 bg-[#1B396A] text-white font-semibold rounded-full shadow-lg hover:bg-[#294d8e] focus:outline-none focus:ring-2 focus:ring-[#1B396A] focus:ring-opacity-75 transition-transform duration-200 transform hover:scale-105"
       >
-        Generar Cita
-      </button>
+      Generar cita
+    </button>
+    <!-- space and make gray -->
+    <button 
+      @click="maestro" 
+      class="px-8 py-3 bg-gray-500 text-white font-semibold rounded-full shadow-lg hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-opacity-75 transition-transform duration-200 transform hover:scale-105 mt-4"
+    >
+      Soy maestro
+    </button>
     </div>
   </div>
 </template>
@@ -58,11 +65,15 @@ export default defineComponent({
     const generarCita = () => {
       router.push({ path: '/nueva-cita' });
     };
+    const maestro = () => {
+      router.push({ path: 'dashboard' });
+    };
 
     return {
       animationStarted,
       animationComplete,
       generarCita,
+      maestro
     };
   },
 });

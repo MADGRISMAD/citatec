@@ -1,6 +1,5 @@
 import axios, {AxiosInstance } from "axios";
-import FingerprintJS from '@fingerprintjs/fingerprintjs';
-
+import { getFingerprint } from "./fingerprint";
 class CustomAxiosInstance {
   private axiosInstance: AxiosInstance = axios.create();  
 
@@ -13,6 +12,7 @@ class CustomAxiosInstance {
       baseURL: `http://${backend_url}:${port}`,
       headers: {
         "Content-Type": "application/json",
+        "Cache-Control": "no-cache",  
       },
     });
 
@@ -20,17 +20,10 @@ class CustomAxiosInstance {
     
   }
 
-  // Función para obtener el fingerprint
-  async getFingerprint() {
-    const fp = await FingerprintJS.load();
-    const result = await fp.get();
-    return result.visitorId;
-  }
-
   setupInterceptors() {
     this.axiosInstance.interceptors.request.use(async (config) => {
       try {
-        const deviceId = await this.getFingerprint();
+        const deviceId = await getFingerprint();
         config.headers['Device-ID'] = deviceId;
         return config;
       } catch (error) {

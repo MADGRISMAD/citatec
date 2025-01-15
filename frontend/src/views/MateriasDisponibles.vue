@@ -5,12 +5,11 @@
     <div class="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
       <div class="relative flex h-16 justify-between">
         <!-- Logo -->
-        <div class="flex items-center">
-          <img class="h-8 w-auto" src="@/assets/logo.png" alt="TNM Logo" />
-        </div>
+        <LogoComponent />
 
         <!-- Desktop Links -->
         <div class="hidden sm:ml-6 sm:flex sm:space-x-8">
+          <FingerprintString />
           <a
             href="/dashboard"
             class="inline-flex items-center border-b-2 border-transparent px-1 pt-1 text-sm font-medium text-gray-500 hover:border-gray-300 hover:text-gray-700"
@@ -131,6 +130,8 @@
 <script lang="ts">
 import { defineComponent, ref, onMounted } from 'vue';
 import * as materiasService from '@/services/materias';
+import FingerprintString from '@/components/fingerprintString.vue';
+import LogoComponent from '@/components/LogoComponent.vue';
 export default defineComponent({
   name: 'PlanDeEstudios',
   setup() {
@@ -171,6 +172,10 @@ export default defineComponent({
       handleFileUpload,
       uploadPDF,
     };
+  },
+  components: {
+    FingerprintString,
+    LogoComponent
   },
 });
 </script>
