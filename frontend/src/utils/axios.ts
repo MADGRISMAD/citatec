@@ -1,9 +1,8 @@
 import axios, { AxiosInstance, InternalAxiosRequestConfig } from "axios";
 import { getFingerprint } from "./fingerprint";
-import { BACKEND_URL } from "@/constants/url";
 
 const customAxios = axios.create({
-  baseURL: BACKEND_URL,
+  baseURL: "/api",
   headers: {
     "Content-Type": "application/json",
     "Cache-Control": "no-cache",
