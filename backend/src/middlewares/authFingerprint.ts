@@ -17,6 +17,7 @@ export const getFingerprintFile = () => {
 
 export const checkFingerprint = (req:Request, res: Response, next: NextFunction) => {
 
+  console.log(req);
   const fingerprint = req.headers['device-id'] as string
   const fingerprintFile = getFingerprintFile()
     //   filter the fingerprint file to find the fingerprint
@@ -25,7 +26,7 @@ export const checkFingerprint = (req:Request, res: Response, next: NextFunction)
     res.locals.fingerprintFound = true    
     next()
 } 
-  outputLog('Fingerprint not found' + fingerprint)
+  outputLog('Fingerprint not found ' + fingerprint)
   next()
 }
 

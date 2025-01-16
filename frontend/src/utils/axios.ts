@@ -9,17 +9,18 @@ const customAxios = axios.create({
   },
 });
 
-// customAxios.interceptors.request.use(async (config : InternalAxiosRequestConfig) => {
-//   try {
-//     const deviceId = await getFingerprint();
-//     config.headers["device-id"] = deviceId;
+customAxios.interceptors.request.use(async (config : InternalAxiosRequestConfig) => {
+  try {
+    const deviceId = await getFingerprint();
+    if(config.headers["Content-Type"] != 'multipart/form-data')
+    config.headers["device-id"] = deviceId;
     
-//     return config;
-//   } catch (error) {
-//     console.error("Error al obtener fingerprint:", error);
-//     return config;
-//   }
-// });
+    return config;
+  } catch (error) {
+    console.error("Error al obtener fingerprint:", error);
+    return config;
+  }
+});
 
 
 export default customAxios as AxiosInstance;
