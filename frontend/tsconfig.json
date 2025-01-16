@@ -15,7 +15,6 @@
     "baseUrl": ".",
     "types": [
       "webpack-env",
-      "node"
     ],
     "paths": {
       "@/*": [
@@ -37,6 +36,8 @@
     "tests/**/*.tsx"
 , "../backend/src/constants/horario.ts"  ],
   "exclude": [
-    "node_modules"
+    "node_modules",
+    "../backend",
+    "../shared"
   ]
 }
