@@ -1,6 +1,6 @@
-<template>
+<!-- <template>
   <div class="relative">
-    <!-- Ícono de engranaje -->
+    
     <button
       @click="openModal"
       class="p-2 hover:bg-gray-200 rounded-full transition-colors"
@@ -22,7 +22,7 @@
       </svg>
     </button>
 
-    <!-- Modal -->
+    
     <div v-if="showModal" class="fixed inset-0 flex items-center justify-center z-50">
       <div class="absolute inset-0 bg-black bg-opacity-50" @click="closeModal"></div>
 
@@ -31,7 +31,7 @@
         <p class="text-sm text-gray-500 mb-4">Introduce la IP y el puerto del backend.</p>
 
         <div class="flex items-center space-x-1">
-          <!-- Campos para los octetos -->
+          
           <input
             v-for="(value, index) in ipSegments"
             :key="index"
@@ -42,7 +42,7 @@
             @keydown="handleKeyDown(index, $event)"
           />
           <span>:</span>
-          <!-- Campo para el puerto -->
+          
           <input
             ref="portInput"
             type="text"
@@ -72,7 +72,7 @@
       </div>
     </div>
   </div>
-</template>
+</template> 
 
 <script lang="ts">
 import { defineComponent, ref, nextTick } from "vue";
