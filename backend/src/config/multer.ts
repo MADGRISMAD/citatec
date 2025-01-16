@@ -3,10 +3,11 @@ import multer, { FileFilterCallback } from 'multer'
 import path from 'path'
 import { MATERIAS_PATH } from '../constants/paths';
 import fs from 'fs'
+import ConfigManager from '../classes/ConfigManager';
 export const storage = multer.diskStorage({
     destination: (req, file, cb) => {
         // Asegúrate de que el directorio existe
-        const dir = path.dirname(MATERIAS_PATH);
+        const dir = ConfigManager.get("DATA_PATH") as string;
         if (!fs.existsSync(dir)) {
             fs.mkdirSync(dir, { recursive: true });
         }
@@ -14,7 +15,7 @@ export const storage = multer.diskStorage({
     },
     filename: (req, file, cb) => {
         // Usa el nombre del archivo original o un nombre fijo
-        cb(null, path.basename(MATERIAS_PATH));
+        cb(null, 'materias.pdf');
     }
 });
 
@@ -23,10 +24,9 @@ export const fileFilter = (
     file: Express.Multer.File,
     callback: FileFilterCallback
 ): void => {
-    const ext= path.extname(file.originalname)
-    const allowedExtensions = ['.pdf']
+
     if (
-        allowedExtensions.includes(ext)
+        file.mimetype === 'application/pdf'
     ) {
         callback(null, true)
     } else {

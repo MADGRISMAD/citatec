@@ -28,18 +28,21 @@ colas.cargarColas();
 
 app.locals.colas = colas;
 
-// middleware
-app.use(checkFingerprint);
+
 
 // Rutas
 import { router as ticketsRouter } from './routes/tickets';
 import { router as tramitesRouter } from './routes/tramites';
 import { router as statsRouter } from './routes/stats';
 import { router as materiasRouter } from './routes/materias';
+import bodyParser from 'body-parser';
+
+app.use('/materias', materiasRouter)
+// middleware
+app.use(checkFingerprint);
 app.use('/tickets', ticketsRouter);
 app.use('/tramites', tramitesRouter);
 app.use('/stats', statsRouter)
-app.use('/materias', materiasRouter)
 // HEALTH CHECK
 app.get('/health', (req: Request, res: Response) => {
   res.send('Healthy');

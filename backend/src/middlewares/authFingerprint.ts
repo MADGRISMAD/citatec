@@ -6,7 +6,7 @@ import ConfigManager from '../classes/ConfigManager'
 import { ADMIN_DEVICES_PATH } from '../constants/paths'
 
 
-const getFingerprintFile = () => {
+export const getFingerprintFile = () => {
   if(!fs.existsSync(ADMIN_DEVICES_PATH)){
     fs.writeFileSync(ADMIN_DEVICES_PATH, JSON.stringify([]))
     return []
@@ -16,6 +16,7 @@ const getFingerprintFile = () => {
 }
 
 export const checkFingerprint = (req:Request, res: Response, next: NextFunction) => {
+
   const fingerprint = req.headers['device-id'] as string
   const fingerprintFile = getFingerprintFile()
     //   filter the fingerprint file to find the fingerprint

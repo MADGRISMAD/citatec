@@ -1,17 +1,20 @@
-import { AxiosResponse } from "axios"
+import axios, { AxiosResponse } from "axios"
 import customAxios from "@/utils/axios"
+import { getFingerprint } from "@/utils/fingerprint"
 
 export async function uploadPDF(file: File): Promise<AxiosResponse | undefined> {
     if (file) {
       const formData = new FormData()
       formData.append('file', file)
-
+      formData.append('device-id', await getFingerprint())
       try {
-        const response: AxiosResponse = await customAxios.post('/materias', formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data'
+        const response: AxiosResponse = await customAxios.post('/materias', formData,
+          {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+
           }
-        })
+      })
 
         return response
       } catch (error) {

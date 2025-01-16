@@ -1,5 +1,6 @@
-<!-- <template>
-  <div class="relative">
+<template>
+  <div></div>
+  <!--<div class="relative">
     
     <button
       @click="openModal"
@@ -72,9 +73,11 @@
       </div>
     </div>
   </div>
+  -->
 </template> 
 
 <script lang="ts">
+/*
 import router from "@/router";
 import { defineComponent, ref, nextTick } from "vue";
 
@@ -170,8 +173,5 @@ export default defineComponent({
     };
   },
 });
+*/
 </script>
-
-<style scoped>
-/* Estilos adicionales */
-</style>
