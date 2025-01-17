@@ -38,3 +38,9 @@ export async function cambiarDuracionTramite(tramiteType:string, duration:number
     return res.data;
     
 }
+
+export async function crearTramite(nombre: string, duracion:number) {
+    const url =  `/tramites`;
+    const res:AxiosResponse =  await customAxios.post(url, {nombre, duracion});
+    return res.data;
+}

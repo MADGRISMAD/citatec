@@ -22,9 +22,10 @@ export const checkFingerprint = (req:Request, res: Response, next: NextFunction)
     //   filter the fingerprint file to find the fingerprint
   if (fingerprintFile.filter((f) => f.fingerprint == fingerprint).length > 0) {
     // if the fingerprint is found, add to local request object
-    res.locals.fingerprintFound = true    
-    next()
+    res.locals.fingerprintFound = true  
+    outputLog('Fingerprint found ' + fingerprint)  
 } 
+else
   outputLog('Fingerprint not found ' + fingerprint)
   next()
 }

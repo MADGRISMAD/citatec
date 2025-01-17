@@ -156,7 +156,25 @@
               </td>
             </tr>
           </tbody>
+          
         </table>
+        <form @submit.prevent="addTramite" class="flex justify-center p-4">
+          <input type="text" v-model="form['nombre']" class="w-1/2 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-[#1B396A] focus:border-[#1B396A] text-sm" placeholder="Nombre del trámite" />
+          <select
+                    v-model="form.duration"
+                    class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-[#1B396A] focus:border-[#1B396A] text-sm"
+                  >
+                    <option v-for="option in durationOptions" :key="option" :value="option">
+                      {{ option }} min
+                    </option>
+                  </select>
+          <button
+            type="submit"
+            class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-[#1B396A] hover:bg-[#1B396A] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#1B396A]"
+          >
+            Agregar trámite
+          </button>
+        </form>
       </div>
     </main>
   </div>
@@ -165,7 +183,7 @@
 <script lang="ts">
 import FingerprintString from '@/components/fingerprintString.vue';
 import LogoComponent from '@/components/LogoComponent.vue';
-import { cambiarTramiteActivo, obtenerTramites, cambiarDuracionTramite } from '@/services/tramite';
+import { cambiarTramiteActivo, obtenerTramites, cambiarDuracionTramite, crearTramite } from '@/services/tramite';
 import { TramiteConfig } from 'shared-types';
 import { ref, Ref, computed } from 'vue';
 
@@ -174,7 +192,7 @@ export default {
   setup() {
     const tramites: Ref<TramiteConfig[]> = ref([]);
     const alerts = ref<{ type: string; message: string }[]>([]);
-
+    const form = ref({ nombre: '', duration: '' });
     const durationOptions = computed(() => {
       const options = [];
       for (let i = 5; i <= 60; i += i < 30 ? 5 : 10) {
@@ -188,6 +206,31 @@ export default {
       setTimeout(() => {
         alerts.value.shift(); // Elimina la alerta después de 3 segundos
       }, 3000);
+    };
+    
+    const addTramite = (event: Event) => {
+      event.preventDefault();
+      const nombre = form.value.nombre;
+      const duration = parseInt(form.value.duration, 10);
+
+      if (!nombre || !duration) {
+        addAlert('error', 'Por favor, rellena todos los campos.');
+        return;
+      }
+
+      crearTramite(nombre,duration).then(() => {
+        addAlert('success', `Trámite "${nombre}" creado con éxito.`);
+        tramites.value.push({
+          nombre: nombre,
+          duration,
+          active: true,
+        });
+        form.value.nombre = '';
+        form.value.duration = '';
+      }).catch(() => {
+        addAlert('error', `Error al crear el trámite "${nombre}".`);
+      });
+
     };
 
     const toggleTramite = (tramite: TramiteConfig) => {
@@ -235,6 +278,8 @@ export default {
       durationOptions,
       toggleTramite,
       changeTramiteDuration,
+      addTramite,
+      form
     };
   },
   components: {
