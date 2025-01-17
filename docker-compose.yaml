@@ -6,6 +6,8 @@ services:
     networks:
       - frontend
       - backend
+    environment:
+      TZ: "America/Mexico_City"
     depends_on:
       - backend
   backend:
@@ -21,6 +23,7 @@ services:
       START_HOUR: 8,
       END_HOUR: 16,
       DAYS: "1-6"
+      TZ: "America/Mexico_City"
     networks:
       - backend
     ports:
