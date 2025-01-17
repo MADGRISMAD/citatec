@@ -20,6 +20,7 @@ export class ManejadorHuecos {
     }
 
     buscarHuecoDisponible(tramite: TramiteConfig): Date | undefined {
+        let inicioSiguienteHueco: Date;
         const duracionTramiteMilisegundos: number = (parseInt(tramite.duration as unknown as string) + TIEMPOEXTRA) * 60000;
         for (let i = 0; i < this.huecos.length; i++) {
             const inicioHueco: Date = new Date(this.huecos[i][0]);
@@ -51,8 +52,11 @@ export class ManejadorHuecos {
                     return inicioHueco;
                 }
                 cadenaFinal++;
+                inicioSiguienteHueco = new Date(this.huecos[i + cadenaFinal][0]);
                 // Comprueba si el siguiente hueco es justo despues del anterior, para unir los huecos en uno
-            } while (i + cadenaFinal < this.huecos.length && new Date(this.huecos[i + cadenaFinal][0]).getTime() == finHueco.getTime());
+                console.log(inicioSiguienteHueco.getTime(), finHueco.getTime());
+                console.log(inicioSiguienteHueco, finHueco);
+            } while (i + cadenaFinal < this.huecos.length && inicioSiguienteHueco.getTime() == finHueco.getTime());
         }
         return undefined;
     }

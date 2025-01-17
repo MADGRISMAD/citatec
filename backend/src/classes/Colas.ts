@@ -124,7 +124,7 @@ export class Colas {
     private buscarHuecoDisponible(tramite: TramiteConfig): Date | undefined {
         const huecoDisponible =
             this.manejadorHuecos.buscarHuecoDisponible(tramite);
-        // Si hay un hueco disponible y no es en el pasado, se devuelve
+        // Si hay un hueco disponible no es en el pasado y el tramite cabe, se devuelve
         if (huecoDisponible && huecoDisponible >= HOY()) {
             const fecha = new Date(huecoDisponible);
             outputLog(
