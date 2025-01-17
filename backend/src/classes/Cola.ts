@@ -1,7 +1,6 @@
-import {Ticket} from "shared-types"
 import { NotAnymoreTicketsError } from "./Errores";
 import { TicketStatsService } from "./TicketStatsService";
-import { TicketEstado, TicketHistorial } from "shared-types/src/types/TicketArchive";
+import { TicketEstado, TicketHistorial, Ticket } from "shared-types";
 const ticketStatsService = new TicketStatsService();
 export class Cola {
     constructor(public tickets: Ticket[]) {

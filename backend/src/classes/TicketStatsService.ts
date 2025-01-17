@@ -7,7 +7,7 @@ import {
     TicketHistorial, 
     Stats, 
     addTramiteToStats,
-} from 'shared-types/src/types/TicketArchive';
+} from 'shared-types';
 import { StatsFilter } from 'shared-types';
 
 export class TicketStatsService {

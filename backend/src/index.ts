@@ -35,7 +35,6 @@ import { router as ticketsRouter } from './routes/tickets';
 import { router as tramitesRouter } from './routes/tramites';
 import { router as statsRouter } from './routes/stats';
 import { router as materiasRouter } from './routes/materias';
-import bodyParser from 'body-parser';
 
 app.use('/materias', materiasRouter)
 // middleware

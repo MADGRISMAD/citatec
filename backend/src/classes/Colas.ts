@@ -1,4 +1,4 @@
-import { outputLog, Ticket, TramiteConfig } from "shared-types";
+import { outputLog, Ticket, TramiteConfig, TicketEstado } from "shared-types";
 import { Cola } from "./Cola";
 import fs from "fs";
 import { TicketNotFoundError } from "./Errores";
@@ -7,7 +7,6 @@ import { TIEMPOEXTRA } from "../constants/tramite";
 import { ManejadorHuecos } from "./ManejadorHuecos";
 import { esDiaDisponible, setSiguienteDiaDisponible } from "../utils/Fecha";
 import { redondearAMultiploDe5 } from "../utils/tramites";
-import { TicketEstado } from "shared-types/src/types/TicketArchive";
 import { TramiteManager } from "./TramiteManager";
 import ConfigManager from "./ConfigManager";
 import { TICKET_PATH } from "../constants/paths";
