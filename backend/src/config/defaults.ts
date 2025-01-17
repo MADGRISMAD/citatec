@@ -8,5 +8,7 @@ export const defaults: Record<string, any> = {
     TRACES_ENDPOINT: 'http://localhost:4318/v1/traces',
     NODE_ENV: 'development',
     DATA_PATH: path.resolve(__dirname, '../data'),
-
+    START_HOUR: 8,
+    END_HOUR: 16,
+    DAYS: "1-5"
 }
