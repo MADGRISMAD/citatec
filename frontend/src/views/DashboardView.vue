@@ -202,8 +202,8 @@
             </div>
             <!-- Duración -->
             <div class="mt-4">
-              <p class="text-sm text-gray-500 mb-2">Duración Estimada:</p>
-              <p class="text-base font-medium text-gray-700">{{ ticket.tipoTramite.duration }} min</p>
+              <p class="text-sm text-gray-500 mb-2">Fecha de Inicio:</p>
+              <p class="text-base font-medium text-gray-700">{{ new Date(ticket.fechaProgramada).toLocaleTimeString() }}</p>
             </div>
             <!-- Botón de acción -->
 
