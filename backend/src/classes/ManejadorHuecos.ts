@@ -20,7 +20,7 @@ export class ManejadorHuecos {
     }
 
     buscarHuecoDisponible(tramite: TramiteConfig): Date | undefined {
-        const duracionTramiteMilisegundos: number = (tramite.duration + TIEMPOEXTRA) * 60000;
+        const duracionTramiteMilisegundos: number = (parseInt(tramite.duration as unknown as string) + TIEMPOEXTRA) * 60000;
         for (let i = 0; i < this.huecos.length; i++) {
             const inicioHueco: Date = new Date(this.huecos[i][0]);
             // Comprueba si el hueco es en el pasado, lo borra
@@ -62,7 +62,7 @@ export class ManejadorHuecos {
         console.log("Cancelando ticket");
         const fechaInicio:Date = new Date(ticket.fechaProgramada);
         const duracion :number =
-            ticket.tipoTramite.duration + TIEMPOEXTRA;
+            parseInt(ticket.tipoTramite.duration as unknown as string) + TIEMPOEXTRA;
 
         const fechaFinal = new Date(fechaInicio.getTime() + duracion * 60000);
         this.agregarHueco(fechaInicio, fechaFinal);

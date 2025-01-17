@@ -142,48 +142,44 @@ export class Colas {
         // Calcula la fecha para el ticket creado
     // Calcula la fecha para el ticket creado
     private calcularFechaParaTicket(tramite: TramiteConfig): Date {
-        // Sin tiempo extra porque al final del día no se atienden más trámites
-        const minutosTramite = tramite.duration;
-
-
         let fecha = new Date(this.fechaDisponible);
-
+        const minutosTramite = parseInt(tramite.duration as unknown as string)+ TIEMPOEXTRA;
         const horaDisponible = fecha.getHours();
-        // console.log("Hora disponible: ", horaDisponible, "HOrario FINAL", HORARIO.FINAL.getHours(), fecha.getMinutes(), minutosTramite);
-
-        // Si el trámite es creado fuera del horario de atención, se programa para el siguiente día
-        if (
+    
+        // Si estamos fuera del horario de atención o no es un día disponible
+        if (!esDiaDisponible(fecha) || 
             horaDisponible >= HORARIO.FINAL.getHours() ||
-            (horaDisponible == HORARIO.FINAL.getHours() - 1 &&
-                fecha.getMinutes() >= 60 - minutosTramite)
-        ) {
-            // Iniciando el siguiente día disponible
+            horaDisponible < HORARIO.INICIO.getHours()) {
             fecha = setSiguienteDiaDisponible(fecha);
-            fecha.setHours(HORARIO.INICIO.getHours());
+            fecha.setHours(HORARIO.INICIO.getHours(), 0, 0);
             redondearAMultiploDe5(fecha, TIEMPOEXTRA);
-
-            // Llena el hueco con la fecha que se saltó
-            const hueco: Date = new Date(fecha);
-            redondearAMultiploDe5(hueco, 60);
-            /* Si el tramite es creado dentro del horario de atención, 
-            pero no hay tiempo suficiente para atenderlo ese día
-            se programa para el siguiente día, pero se llena el hueco con la fecha que se saltó
-            */
-           
-           
-            this.manejadorHuecos.agregarHueco(fecha, hueco);
-        } else {
-            redondearAMultiploDe5(fecha, fecha.getMinutes());
+            return fecha;
         }
-        console.log(
-            "Se creó un ticket al FINAL para el trámite ",
-            tramite,
-            " con fecha ",
-            fecha
-        );
+
+        // Calcular minutos restantes hasta el final del día
+        const minutosHastaFinal = (HORARIO.FINAL.getHours() * 60 + HORARIO.FINAL.getMinutes() - fecha.getHours() * 60 - fecha.getMinutes());
+        console.log(minutosHastaFinal, minutosTramite, tramite.duration, minutosHastaFinal < minutosTramite);
+        // Si no hay suficiente tiempo para el trámite
+        if (minutosHastaFinal < minutosTramite) {
+            // Crear un hueco desde la hora actual hasta el final del día
+            const inicioHueco = new Date(fecha);
+            const finalHueco = new Date(fecha);
+            finalHueco.setHours(HORARIO.FINAL.getHours(), 0, 0);
+            
+            // Agregar el hueco al manejador de huecos
+            this.manejadorHuecos.agregarHueco(inicioHueco, finalHueco);
+            
+            // Programar para el siguiente día disponible
+            fecha = setSiguienteDiaDisponible(fecha);
+            fecha.setHours(HORARIO.INICIO.getHours(), 0, 0);
+            redondearAMultiploDe5(fecha, TIEMPOEXTRA);
+            return fecha;
+        }
+    
+        // Si hay tiempo suficiente, redondear a múltiplo de 5
+        redondearAMultiploDe5(fecha, fecha.getMinutes());
         return fecha;
     }
-
     // Calcula la próxima fecha disponible para sacar un ticket
     private calcularProximaFechaDisponible(
         tramite: TramiteConfig,
