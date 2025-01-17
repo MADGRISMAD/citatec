@@ -96,7 +96,6 @@ export function crearTicket(req: Request, res: Response) {
         try {
             const ticketExistenteEnTramite: Ticket =
                 colas.buscarTicketPorNumControl(
-                    tramiteType,
                     ticket.numeroDeControl
                 );
             if (ticketExistenteEnTramite) {

@@ -264,10 +264,11 @@ export class Colas {
     }
 
     public buscarTicketPorNumControl(
-        tramite: string,
         numControl: number
     ): Ticket {
-        const tickets: Ticket[] = this.obtenerTicketsDeCola(tramite);
+        for(const tramite of this.tramiteManager.getActiveTramites()){
+
+        const tickets: Ticket[] = this.obtenerTicketsDeCola(tramite.nombre);
         const ticket: Ticket | undefined = tickets.find(
             (ticket: Ticket) =>
                 ticket.numeroDeControl == numControl &&
@@ -283,6 +284,7 @@ export class Colas {
                 " en la cola de " +
                 tramite
         );
+    }
     }
 
     // Cancela la cita de un ticket
