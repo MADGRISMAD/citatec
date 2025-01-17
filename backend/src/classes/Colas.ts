@@ -106,7 +106,6 @@ export class Colas {
     public agregarTicket(ticket: Ticket): void {
         this.verificarFechaDisponible();
         const fechaHueco: Date | undefined = this.buscarHuecoDisponible(ticket.tipoTramite);
-        console.log("ENTRA A AGREGAR TICKET");
         if (fechaHueco) {
             ticket.fechaProgramada = new Date(fechaHueco);
             const cola:Cola = this.colas.get(ticket.tipoTramite.nombre) as Cola;
@@ -118,7 +117,6 @@ export class Colas {
             this.colas.get(ticket.tipoTramite.nombre)?.agregarTicket(ticket, false);
             this.calcularProximaFechaDisponible(ticket.tipoTramite, ticket.fechaProgramada);
         }
-        console.log("SALE A AGREGAR TICKET");
         this.guardarColas();
     }
 
@@ -263,7 +261,6 @@ export class Colas {
     public buscarTicketPorNumControl(
         numControl: number
     ): Ticket {
-        console.log("INICIA BUSQUEDA");
         for(const tramite of this.tramiteManager.getActiveTramites()){
 
         const tickets: Ticket[] = this.obtenerTicketsDeCola(tramite.nombre);
@@ -275,10 +272,8 @@ export class Colas {
         if (ticket) {
             return ticket;
         }
-        console.log("LOOP");
 
     }
-    console.log("TERMINA BUSQUEDA");
     throw new TicketNotFoundError(
         "No se encontró el ticket con número de control " +
             numControl
