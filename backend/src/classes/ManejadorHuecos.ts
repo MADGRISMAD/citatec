@@ -10,6 +10,7 @@ export class ManejadorHuecos {
     agregarHueco(fechaInicio: Date, fechaFinal: Date): void {
         const nuevoHueco: [Date, Date] = [fechaInicio, fechaFinal];
 
+        console.log("Agregando hueco:", nuevoHueco[0], nuevoHueco[1]);
         const index = this.huecos.findIndex(rango => compararRangosDeFechas(rango, nuevoHueco) > 0);
         if (index === -1) {
             this.huecos.push(nuevoHueco);
