@@ -38,9 +38,23 @@ const RANGO_DIAS = ConfigManager.get("DAYS") as string;
 const [INICIO_DIAS, FINAL_DIAS]= RANGO_DIAS.split("-").map(Number);
 
 export const DIAS_DISPONIBLES: Dias[] = [];
+
+if (INICIO_DIAS < 0 || INICIO_DIAS > 6) {
+    throw new Error("Invalid DAYS value");
+}
+
+if (FINAL_DIAS < 0 || FINAL_DIAS > 6) {
+    throw new Error("Invalid DAYS value");
+}
+
+if (INICIO_DIAS > FINAL_DIAS) {
+    throw new Error("Invalid DAYS value");
+}
+
 for (let i = INICIO_DIAS; i <= FINAL_DIAS; i++) {
     DIAS_DISPONIBLES.push(Dias[i as unknown as keyof typeof Dias]);
 }
+console.log("Días disponibles: ", DIAS_DISPONIBLES);
 export const HORARIO: Record<string, Date> = {
     INICIO: INICIO_HORARIO(),
     FINAL: FIN_HORARIO(),
