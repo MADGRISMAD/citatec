@@ -89,8 +89,6 @@ export function crearTicket(req: Request, res: Response) {
             return res.status(400).json({ message: "Missing parameters" });
         }
         
-        console.log(tramiteService.validateTramiteType(tramiteType));
-
         if (tramiteService.validateTramiteType(tramiteType) == false) {
             return res.status(400).json({ message: "Invalid tramite type" });
         }
@@ -113,7 +111,6 @@ export function crearTicket(req: Request, res: Response) {
         return res.status(201).send(ticket);
     } catch (e: any) {
         outputLog(e);
-        console.log(e.stack);
         return res.status(500).json({ message: e.message });
     }
 }

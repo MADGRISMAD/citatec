@@ -3,9 +3,7 @@ import customAxios from "../utils/axios";
 import { AxiosResponse } from "axios";
 export async function crearTicket(body: object, tramiteType: string, numeroDeControl:string) {
     const url = `/tickets/${tramiteType}/${numeroDeControl}`;
-    console.log(url);
     const res:AxiosResponse<Ticket> = await customAxios.post(url, body);
-    console.log(res.data);
     return res.data as Ticket;
 }
 

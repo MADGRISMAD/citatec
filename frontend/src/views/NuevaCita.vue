@@ -172,7 +172,6 @@ export default defineComponent({
 
 
     onMounted(async () => {
-      console.log("Entra");
 
       try {
         Object.assign(services, await obtenerTramitesActivos());
@@ -181,7 +180,6 @@ export default defineComponent({
         error.value = "No se pudieron obtener los trámites";
       } finally {
         loading.value = false;
-        console.log(services);
       }
     });
     const selectService = (service: TramiteConfig) => {
