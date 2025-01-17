@@ -1,0 +1,35 @@
+services:
+  frontend:
+    image: frontend:latest
+    ports:
+      - "80:80"
+    networks:
+      - frontend
+      - backend
+    depends_on:
+      - backend
+  backend:
+    image: backend:latest
+    environment:
+      PORT: 3000
+      METRICS_ENDPOINT: 'http://localhost:4318/v1/metrics'
+      METRICS_INTERVAL: 1000
+      LOGS_ENDPOINT: 'http://localhost:4318/v1/logs'
+      TRACES_ENDPOINT: 'http://localhost:4318/v1/traces'
+      NODE_ENV: 'production'
+      DATA_PATH: '/app/data'
+      START_HOUR: 8,
+      END_HOUR: 16,
+      DAYS: "1-6"
+    networks:
+      - backend
+    ports:
+      - "45678:45678/udp"
+    volumes:
+      - ./data:/app/data
+
+networks:
+  frontend:
+    driver: bridge
+  backend:
+    driver: bridge
