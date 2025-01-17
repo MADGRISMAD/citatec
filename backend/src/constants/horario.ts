@@ -52,9 +52,8 @@ if (INICIO_DIAS > FINAL_DIAS) {
 }
 
 for (let i = INICIO_DIAS; i <= FINAL_DIAS; i++) {
-    DIAS_DISPONIBLES.push(Dias[i as unknown as keyof typeof Dias]);
+    DIAS_DISPONIBLES.push(i );
 }
-console.log("Días disponibles: ", DIAS_DISPONIBLES);
 export const HORARIO: Record<string, Date> = {
     INICIO: INICIO_HORARIO(),
     FINAL: FIN_HORARIO(),

@@ -1,5 +1,5 @@
 import { DIAS_DISPONIBLES } from "../constants/horario";
-
+import { Dias } from "shared-types";
 export function setSiguienteDiaDisponible(fecha: Date): Date {
     while(true) {
         fecha.setDate(fecha.getDate() + 1);
@@ -16,4 +16,5 @@ export function compararRangosDeFechas(a: [Date, Date], b: [Date, Date]): number
 
 export function esDiaDisponible(fecha: Date): boolean {
     return DIAS_DISPONIBLES.includes(fecha.getDay());
+
 }

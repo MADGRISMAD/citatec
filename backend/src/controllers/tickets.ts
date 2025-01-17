@@ -68,7 +68,6 @@ export function crearTicket(req: Request, res: Response) {
     try {
         const {numeroDeControl, tramiteType} = req.params as unknown as {numeroDeControl: number, tramiteType: string, letra?: string};
         const {descripcion} = req.body as {descripcion: string};
-
         // Validar numero de control
         const validateControlNumber = (number: string) => {
             const regex = /^[A-Za-z]\d{8}$|^\d{8}$/;
@@ -105,7 +104,6 @@ export function crearTicket(req: Request, res: Response) {
                 });
             }
         } catch (e: any) {}
-
         colas.agregarTicket(ticket);
         return res.status(201).send(ticket);
     } catch (e: any) {
