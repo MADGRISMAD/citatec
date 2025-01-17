@@ -12,6 +12,9 @@ ENV LOGS_ENDPOINT: 'http://localhost:4318/v1/logs'
 ENV TRACES_ENDPOINT: 'http://localhost:4318/v1/traces'
 ENV NODE_ENV: 'production'
 ENV DATA_PATH: '/data'
+ENV START_HOUR: 8,
+ENV END_HOUR: 16,
+ENV DAYS: "1-5"
 
 COPY package*.json ./
 COPY dist/ ./
