@@ -17,7 +17,7 @@ services:
       LOGS_ENDPOINT: 'http://localhost:4318/v1/logs'
       TRACES_ENDPOINT: 'http://localhost:4318/v1/traces'
       NODE_ENV: 'production'
-      DATA_PATH: '/app/data'
+      DATA_PATH: '/data'
       START_HOUR: 8,
       END_HOUR: 16,
       DAYS: "1-6"
@@ -25,8 +25,9 @@ services:
       - backend
     ports:
       - "45678:45678/udp"
+      - "4318:4318"
     volumes:
-      - ./data:/app/data
+      - ./data:/data
 
 networks:
   frontend:
