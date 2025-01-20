@@ -20,7 +20,6 @@ if(ConfigManager.get("START_HOUR") >= ConfigManager.get("END_HOUR")) {
     throw new Error("START_HOUR must at least 1 hour before END_HOUR");
 }
 
-// 8:00 AM
 function INICIO_HORARIO(): Date{
     const hoy:Date = HOY();
     return new Date(hoy.getFullYear(), hoy.getMonth(), hoy.getDate(), ConfigManager.get("START_HOUR"), 0, 0);
@@ -28,7 +27,6 @@ function INICIO_HORARIO(): Date{
 }
 
 
-// 4:00 PM
 function FIN_HORARIO(): Date {
     const hoy:Date = HOY();
     return new Date(hoy.getFullYear(), hoy.getMonth(), hoy.getDate(), ConfigManager.get("END_HOUR"), 0, 0);

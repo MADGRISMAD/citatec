@@ -22,7 +22,7 @@ services:
       DATA_PATH: '/data'
       START_HOUR: 8,
       END_HOUR: 16,
-      DAYS: "1-6"
+      DAYS: "1-1"
       TZ: "America/Mexico_City"
     networks:
       - backend

@@ -73,7 +73,7 @@
 
 
 <script lang="ts">
-import { TramiteConfig } from 'shared-types';
+import { Ticket, TramiteConfig } from 'shared-types';
 import { defineComponent, ref, onMounted } from 'vue';
 import {loadPDF} from '@/services/materias';
 export default defineComponent({
@@ -88,7 +88,7 @@ export default defineComponent({
       try {
         const savedTicket = localStorage.getItem('ticket');
         if (savedTicket) {
-          const ticket = JSON.parse(savedTicket);
+          const ticket = JSON.parse(savedTicket) as unknown as Ticket;
           tipoTramite.value = ticket.tipoTramite;
           fechaProgramada.value = new Date(ticket.fechaProgramada);
         }
@@ -101,8 +101,8 @@ export default defineComponent({
     const addToGoogleCalendar = () => {
       if (!fechaProgramada.value || !tipoTramite.value) return;
 
-      const startDate = fechaProgramada.value.toISOString().replace(/[-:]/g, '').split('.')[0];
-      const endDate = new Date(fechaProgramada.value.getTime() + 30 * 60000) // Duración: +30 min
+      const startDate = new Date(fechaProgramada.value.getTime() - new Date().getTimezoneOffset() * 60000).toISOString().replace(/[-:]/g, '').split('.')[0];
+      const endDate = new Date(fechaProgramada.value.getTime() + tipoTramite.value.duration * 60000 - new Date().getTimezoneOffset() * 60000)
         .toISOString()
         .replace(/[-:]/g, '')
         .split('.')[0];
@@ -123,11 +123,8 @@ export default defineComponent({
     const downloadICSFile = () => {
       if (!fechaProgramada.value || !tipoTramite.value) return;
 
-      const startDate = fechaProgramada.value.toISOString().replace(/[-:]/g, '').split('.')[0];
-      const endDate = new Date(fechaProgramada.value.getTime() + 30 * 60000) // Duración: +30 min
-        .toISOString()
-        .replace(/[-:]/g, '')
-        .split('.')[0];
+      const startDate = new Date(fechaProgramada.value.getTime() - new Date().getTimezoneOffset() * 60000).toISOString().replace(/[-:]/g, '').split('.')[0];
+      const endDate = new Date(fechaProgramada.value.getTime() + tipoTramite.value.duration * 60000 - new Date().getTimezoneOffset() * 60000)
 
       const icsContent = `
 BEGIN:VCALENDAR
@@ -136,7 +133,7 @@ CALSCALE:GREGORIAN
 BEGIN:VEVENT
 DTSTART:${startDate}
 DTEND:${endDate}
-SUMMARY:${tipoTramite.value}
+SUMMARY:${tipoTramite.value.nombre}
 DESCRIPTION:Recuerda llevar todos tus documentos necesarios.
 LOCATION:Oficina de Trámites
 END:VEVENT

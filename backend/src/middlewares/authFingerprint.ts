@@ -8,7 +8,12 @@ import { ADMIN_DEVICES_PATH } from '../constants/paths'
 
 export const getFingerprintFile = () => {
   if(!fs.existsSync(ADMIN_DEVICES_PATH)){
-    fs.writeFileSync(ADMIN_DEVICES_PATH, JSON.stringify([]))
+    fs.writeFileSync(ADMIN_DEVICES_PATH, JSON.stringify([
+      {
+        "sid": "identificadorPrueba",
+        "fingerprint" : "7660b98e396e2818239b740d50f42cfc"
+    }
+    ]))
     return []
   }
     const data= fs.readFileSync(ADMIN_DEVICES_PATH, 'utf8')
